@@ -1,0 +1,148 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+
+<title>DSpace 1.7.2 Demonstration Repository</title>
+
+<meta http-equiv="content-type" content="application/xhtml+xml; charset=UTF-8" />
+<meta name="author" content="DSpace - Institution Document Repository Software" />
+<meta name="description" content="Come test-drive the latest release of the DSpace software and leave feedback." />
+<meta name="keywords" content="dspace, demonstration, testathon, feedback, repository, jspui, xmlui, 1.7" />
+<meta name="robots" content="noarchive" />
+<meta name="googlebot" content="noarchive" />
+
+<link rel="stylesheet" type="text/css" media="screen" href="css/screen.css" />
+
+<script xmlns:i18n="http://apache.org/cocoon/i18n/2.1" type="text/javascript">
+var uservoiceOptions = {
+  /* required */
+  key: 'duraspace',
+  host: 'duraspace.uservoice.com',
+  forum: '84583',
+  showTab: true,
+  /* optional */
+  alignment: 'left',
+  background_color:'#f00',
+  text_color: 'white',
+  hover_color: '#06C',
+  lang: 'en'
+};
+
+function _loadUserVoice() {
+  var s = document.createElement('script');
+  s.setAttribute('type', 'text/javascript');
+  s.setAttribute('src', ("https:" == document.location.protocol ? "https://" : "http://") + "cdn.uservoice.com/javascripts/widgets/tab.js");
+  document.getElementsByTagName('head')[0].appendChild(s);
+}
+_loadSuper = window.onload;
+window.onload = (typeof window.onload != 'function') ? _loadUserVoice : function() { _loadSuper(); _loadUserVoice(); };
+</script>
+
+</head>
+<body>
+
+	<!-- header starts-->
+	<div id="header-wrap"><div id="header" class="container_16">						
+		
+		<!--
+		<h1 id="logo-text"><a href="index.html" title="">Testathon 1.7</a></h1>
+		<p id="intro">Find, report, and squash bugs...</p>
+		-->		
+
+		<h1 id="logo-text"><a href="index.html" title="">DSpace 1.7.2 Demo</a></h1>
+                <p id="intro">Try out the latest version of DSpace!</p>
+
+		<!-- navigation -->
+		<div  id="nav">
+			<ul>
+				<li id="current"><a href="http://demo.dspace.org">Home</a></li>
+				<li><a href="http://duraspace.uservoice.com">Feedback</a></li>
+				<li><a href="https://wiki.duraspace.org/display/DSPACE/DSpace+Release+1.7.0+Notes">Release Notes</a></li>
+				<li><a href="http://demo.dspace.org/jspui">JSPUI</a></li>
+				<li><a href="http://demo.dspace.org/xmlui">XMLUI</a></li>
+			</ul>		
+		</div>		
+		
+		<div id="header-image"></div> 		
+				
+	
+	<!-- header ends here -->
+	</div></div>
+	
+	<!-- content starts -->
+	<div id="content-outer"><div id="content-wrapper" class="container_16">
+	
+		<!-- main -->
+		<div id="main" class="grid_8">
+				
+			<a name="TemplateInfo"></a>
+			<h2><a href="index.html">Try out DSpace</a></h2>
+
+			<!--
+			<p class="post-info">Posted by <a href="https://wiki.duraspace.org/display/~peterdietz">Peter Dietz</a> | Filed under <a href="https://wiki.duraspace.org/display/DSPACE/DSpace+Release+1.7.0+Testathon+Page">testathon</a>, <a href="https://wiki.duraspace.org/display/DSPACE/DSpace+Release+1.7.0+Notes">dspace-1.7</a></p>
+			-->
+
+			<h3>Demo Interfaces</h3>			
+
+			<p>This is the the demo.dspace.org test site.  It hosts demo installations of all <strong><a href="http://www.dspace.org">DSpace</a> web applications</strong>:
+			<ul> 
+			 <li><a class="main-ui" href="/jspui">JSPUI</a> (traditional JSP-based interface)</li> 
+			 <li><a class="main-ui" href="/xmlui">XMLUI</a> (Manakin / XML-based interface)</li> 
+			 <li><a href="/oai/request?verb=Identify">OAI-PMH Demo</a> 
+			    <ul><li>More info on <a href="http://www.openarchives.org/pmh/">OAI-PMH protocol and its usage</a>.</li></ul> 
+			 </li> 
+			 <li><a href="/sword/servicedocument">SWORD Service Document</a> (requires login)
+			    <ul><li>More info on <a href="http://www.swordapp.org/">SWORD protocol and its usage</a>.</li></ul> 
+			 </li> 
+			 <li><a href="/lni/dav/">LNI - Lightweight Network Interface</a> (requires login)
+			    <ul><li>More info on the <a href="http://wiki.dspace.org/index.php/LightweightNetworkInterface">DSpace Lightweight Network Interface (LNI) and its usage</a>.</li></ul> 
+			 </li> 
+			</ul> 
+			</p>
+
+			<h3>Give Us Feedback!</h3>
+			
+			<p>Each page of this DSpace Demo site has a <span style="color:red">red feedback button</span> on the left hand side of the page.  
+			You can report issues, or suggest fixes just by clicking on that feedback button from whatever page you are on.
+			You can also see a list of all suggestions on the right hand side of this homepage, and vote on ones you agree with.</p>
+
+			<h3 id="irc">Where to Ask Questions</h3>
+			<p>Developers and power-users are available online in IRC (freenode.net #dspace). Feel free to join us by choosing your own "Nickname" below, and clicking "Connect".</p>
+			<iframe src="http://webchat.freenode.net?randomnick=1&channels=dspace&prompt=1&uio=d4" width="100%" height="400"></iframe>
+			
+		
+		<!-- main ends -->
+		</div>
+		
+		<!-- left-columns starts -->
+		<div class="grid_8 alpha">
+			<div class="sidemenu">	
+
+				<h3>Leave Feedback</h3>
+				<iframe id="uservoice-feedback" src="http://duraspace.uservoice.com/forums/84583/widgets/popin.html?lang=en&amp;referer=http://demo.dspace.org" height="800" width="100%"></iframe>
+
+			</div>
+		<!-- end left-columns -->
+		</div>
+	
+	<!-- contents end here -->	
+	</div></div>
+
+	<!-- footer starts here -->	
+	<div id="footer-wrapper" class="container_16">
+		<div id="footer-bottom">
+			<p class="bottom-right" >
+				<a href="http://dspace.org">DSpace</a> |
+				<a href="http://wiki.dspace.org">DSpace Wiki</a> |
+				<a href="http://www.duraspace.org">DuraSpace</a>
+			</p>
+	
+		</div>	
+			
+	</div>
+	<!-- footer ends here -->
+
+</body>
+</html>
