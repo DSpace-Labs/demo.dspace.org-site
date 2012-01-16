@@ -1,1 +1,7 @@
-This is the homepage content for the http://demo.dspace.org/ website. It does not include the DSpace Demo site itself, just the homepage.
+This codebase manages the homepage content for the http://demo.dspace.org/ website. The codebase is available publicly on GitHub at http://github.com/DSpace/demo.dspace.org
+
+To Install/Use: Place these files in the [Tomcat]/webapps/ROOT/ folder, as they act as the "splashpage" for the DSpace Demo Site.
+
+All content is subject to the license and copyright terms available at http://www.dspace.org/license/
+
+Use at your own risk.
