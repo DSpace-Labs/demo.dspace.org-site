@@ -119,6 +119,15 @@ $PGCTL stop -D "$PGDATA" -s -m fast -w
 checkerr
 echo "ok"
 echo ""
+
+# If Postgres Log file isn't writable, delete & recreate
+# This sometimes happens with the /etc/init.d script if it creates a log owned by root
+if [ ! -w $PGLOG ]; then
+	# The reason we can force remove this file is that it's under our user directory
+	rm -f $PGLOG
+   	touch $PGLOG
+fi
+
 echo "Starting PostgreSQL: "
 # Start Postgres and wait until completely started (-w)
 $PGCTL start -D "$PGDATA" -w >>$PGLOG 2>&1
