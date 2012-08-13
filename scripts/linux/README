@@ -1,0 +1,9 @@
+This /scripts/linux/ directory contains Linux scripts used on demo.dspace.org
+which may also be useful to the broader DSpace Community.
+
+* 'reset-dspace-content' - This is a BASH script which can completely reset a DSpace
+instance back to a base set of content (defined in a set of AIPs). It wipes out
+all existing DSpace content (metadata, files, people, groups) and restores the 
+content described by a set of AIPs. The AIPs must be pre-generated using the 
+DSpace AIP Backup & Restore tools:
+https://wiki.duraspace.org/display/DSDOC18/AIP+Backup+and+Restore
