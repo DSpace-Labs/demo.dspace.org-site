@@ -1,162 +1,217 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>DSpace 3.0 Demonstration Repository</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="DSpace - Institution Document Repository Software" />
+    <meta name="description" content="Come test-drive the latest release of the DSpace software and leave feedback." />
+    <meta name="keywords" content="dspace, demonstration, testathon, feedback, repository, jspui, xmlui, manakin" />
+    <meta name="robots" content="noarchive" />
+    <meta name="googlebot" content="noarchive" />
 
-<head>
+    <!-- Le styles -->
+    <link href="./assets/css/bootstrap.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+    </style>
 
-<title>DSpace 3.0 Demonstration Repository</title>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="./assets/js/html5shiv.js"></script>
+    <![endif]-->
 
-<meta http-equiv="content-type" content="application/xhtml+xml; charset=UTF-8" />
-<meta name="author" content="DSpace - Institution Document Repository Software" />
-<meta name="description" content="Come test-drive the latest release of the DSpace software and leave feedback." />
-<meta name="keywords" content="dspace, demonstration, testathon, feedback, repository, jspui, xmlui, manakin" />
-<meta name="robots" content="noarchive" />
-<meta name="googlebot" content="noarchive" />
+    <!-- Fav and touch icons -->
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="./assets/ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="./assets/ico/apple-touch-icon-114-precomposed.png">
+      <link rel="apple-touch-icon-precomposed" sizes="72x72" href="./assets/ico/apple-touch-icon-72-precomposed.png">
+                    <link rel="apple-touch-icon-precomposed" href="./assets/ico/apple-touch-icon-57-precomposed.png">
+                                   <link rel="shortcut icon" href="./assets/ico/favicon.png">
+  </head>
 
-<link rel="stylesheet" type="text/css" media="screen" href="css/screen.css" />
+  <body>
 
-<script src="http://code.jquery.com/jquery-latest.js"></script>
-<script>
-// This bit of Javascript uses the JIRA Issue Collector plugin to embed
-// an easy-to-use JIRA issue creator form into every page. See:
-// https://marketplace.atlassian.com/plugins/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin
-// https://confluence.atlassian.com/display/JIRA/Using+the+Issue+Collector
-// Requires jQuery!
-$.ajax({
-    url: "https://jira.duraspace.org/s/en_US-qzzyst/732/13/1.1/_/download/batch/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector-embededjs/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector-embededjs.js?collectorId=60e7afac",
-    type: "get",
-    cache: true,
-    dataType: "script"
-});
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="brand" href="#">DSpace 3.0 Demo</a>
+          <div class="nav-collapse collapse">
+            <ul class="nav">
+              <li class="active"><a href="/">Home</a></li>
+              <li><a href="https://wiki.duraspace.org/display/DSPACE/DSpace+Release+3.0+Notes">Release Notes</a></li>
+              
+              <!-- Interfaces -->
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Interfaces <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                  <li><a href="http://demo.dspace.org/xmlui">XMLUI</a></li>
+                  <li><a href="http://demo.dspace.org/jspui">JSPUI</a></li>
+                  <li><a href="http://demo.dspace.org/oai/request?verb=Identify">OAI-PMH</a></li>
+                  <li><a href="http://demo.dspace.org/sword/servicedocument">SWORD Service Document (v.1)</a></li>
+                  <li><a href="http://demo.dspace.org/swordv2/servicedocument">SWORD Service Document (v.2)</a></li>
+                  <li><a href="http://demo.dspace.org/lni/dav/">LNI - Lightweight Network Interface</a></li>
+                  <li class="divider"></li>
+                  <li class="nav-header">Rest API's</li>
+                  <li><a href="http://demo.dspace.org/rest-hedtek/">REST API - Hedtek Implementation</a></li>
+                  <li><a href="https://github.com/wijiti/dspace-rest-api">REST API - Wijiti (demo not yet available)</a></li>
 
-</script>
-<!-- Google Analytics -->
-<script type="text/javascript">
+                  <li class="divider"></li>
+                  <li class="nav-header">REST Client Consumer Apps</li>
+                  <li><a href="http://dspace-rest-client-play.herokuapp.com/">Play! Rest Client - (using Hedtek)</a></li>
+                </ul>
+              </li>
+              <!-- /Interfaces -->
 
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-33620726-1']);
-  _gaq.push(['_trackPageview']);
+              <li><a href="http://demo.dspace.org/javadocs">Javadoc API</a></li>
+              <li><a href="https://sourceforge.net/projects/dspace/">Download</a></li>
+              <li><a href="https://github.com/DSpace/DSpace">Github</a></li>
 
-  (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-  })();
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
 
-</script>
-</head>
-<body>
+    <div class="container">
 
-	<!-- header starts-->
-	<div id="header-wrap"><div id="header" class="container_16">						
-		
-		<!--
-		<h1 id="logo-text"><a href="index.html" title="">Testathon 3.0</a></h1>
-		<p id="intro">Find, report, and squash bugs...</p>
-		-->
+      <!-- Main hero unit for a primary marketing message or call to action -->
+      <div class="hero-unit">
+        <h1>DSpace 3.0 Demo</h1>
+        <p>This is the the demo.dspace.org test site. It hosts demo installations of all <a href="http://www.dspace.org">DSpace</a> web applications.</p>
+      </div>
 
-		<h1 id="logo-text"><a href="index.html" title="">DSpace 3.0 Demo</a></h1>
-                <p id="intro">Try out the latest version of DSpace!</p>
+      <!-- Example row of columns -->
+      <div class="row">
+        <div class="span8">
+          <h2>Demo Interfaces</h2>
+          <p>Try out the demo versions of the standard DSpace web applications:
+          <ul> 
+           <li><a class="btn btn-primary" href="/xmlui">XMLUI</a> (Manakin, the XML / XSLT / Cocoon user interface)</li>
+           <li><a class="btn" href="/jspui">JSPUI</a> (traditional JSP-based interface)</li> 
+           <li><a class="btn" href="/oai/request?verb=Identify">OAI-PMH</a> 
+              <ul>
+                <li>Supported <a href="/oai/request?verb=ListMetadataFormats">Metadata Harvesting Formats</a></li>
+                <li>More info on <a href="http://www.openarchives.org/pmh/">OAI-PMH protocol and its usage</a>.</li>
+              </ul> 
+           </li> 
+           <li><a class="btn" href="/sword/servicedocument">SWORD (v.1)</a> Service Document (requires login)
+              <ul>
+                <li>More info on <a href="http://www.swordapp.org/">SWORD protocol and its usage</a>.</li>
+              </ul> 
+           </li> 
+           <li><a class="btn" href="/swordv2/servicedocument">SWORD (v.2)</a> Service Document (requires login)
+              <ul>
+                <li>More info on <a href="http://www.swordapp.org/">SWORD protocol and its usage</a>.</li>
+              </ul>
+            </li>
 
-		<!-- navigation -->
-		<div  id="nav">
-			<ul>
-				<li id="current"><a href="http://demo.dspace.org">Home</a></li>
-				<li><a href="https://wiki.duraspace.org/display/DSPACE/DSpace+Release+3.0+Notes">Release Notes</a></li>
-				<li><a href="http://demo.dspace.org/xmlui">XMLUI</a></li>
-				<li><a href="http://demo.dspace.org/jspui">JSPUI</a></li>
-				<li><a href="http://demo.dspace.org/javadocs">API</a></li>
-				<li><a href="https://sourceforge.net/projects/dspace/">Download</a></li>
-				<li><a href="https://github.com/DSpace/DSpace">Github</a></li>
-			</ul>		
-		</div>		
-		
-		<div id="header-image"></div> 		
-				
-	
-	<!-- header ends here -->
-	</div></div>
-	
-	<!-- content starts -->
-	<div id="content-outer"><div id="content-wrapper" class="container_16">
-	
-		<!-- main -->
-		<div id="main" class="grid_8">
-				
-			<a name="TemplateInfo"></a>
-			
-			<h2><a href="index.html">Try out DSpace</a></h2>
-			<!--
-			<h2><a href="index.html">Help Test DSpace 3.0!</a></h2>
-			-->
-			<h3>Demo Interfaces</h3>			
+           <li><a class="btn" href="/lni/dav/">LNI - Lightweight Network Interface</a> (requires login)
+              <ul>
+                <li>More info on the <a href="https://wiki.duraspace.org/display/DSPACE/LightweightNetworkInterface">DSpace Lightweight Network Interface (LNI) and its usage</a>.</li>
+              </ul> 
+           </li> 
+          </ul>
 
-			<p>This is the the demo.dspace.org test site.  It hosts demo installations of all <strong><a href="http://www.dspace.org">DSpace</a> web applications</strong>:
-			<ul> 
- 			 <li><a class="main-ui" href="/xmlui">XMLUI</a> (Manakin, the XML / XSLT / Cocoon user interface)</li>
-			 <li><a class="main-ui" href="/jspui">JSPUI</a> (traditional JSP-based interface)</li> 
-			 <li><a href="/oai/request?verb=Identify">OAI-PMH Demo</a> 
-			    <ul><li>Supported <a href="/oai/request?verb=ListMetadataFormats">Metadata Harvesting Formats</a></li>
-				<li>More info on <a href="http://www.openarchives.org/pmh/">OAI-PMH protocol and its usage</a>.</li></ul> 
-			 </li> 
-			 <li><a href="/sword/servicedocument">SWORD Service Document (v.1)</a> (requires login)
-			    <ul><li>More info on <a href="http://www.swordapp.org/">SWORD protocol and its usage</a>.</li></ul> 
-			 </li> 
-			 <li><a href="/swordv2/servicedocument">SWORD Service Document (v.2)</a> (requires login)
-                            <ul><li>More info on <a href="http://www.swordapp.org/">SWORD protocol and its usage</a>.</li></ul>
-                         </li>
+          <h3>Optional Interfaces</h3>
+          <ul>
+            <li><a href="http://demo.dspace.org/rest-hedtek/">REST API - Hedtek Implementation</a></li>
+            <li><a href="https://github.com/wijiti/dspace-rest-api">REST API - Wijiti (demo not yet available)</a></li>
+            <li><a href="http://dspace-rest-client-play.herokuapp.com/">Play! Rest Client - (using Hedtek)</a></li>
+          </ul> 
+        </div>
 
-			 <li><a href="/lni/dav/">LNI - Lightweight Network Interface</a> (requires login)
-			    <ul><li>More info on the <a href="https://wiki.duraspace.org/display/DSPACE/LightweightNetworkInterface">DSpace Lightweight Network Interface (LNI) and its usage</a>.</li></ul> 
-			 </li> 
-			</ul> 
-			</p>
 
-			<h3>Download DSpace</h3>
 
-			<p>After you have tried out DSpace, you may wish to download and install it for yourself:
-			<ul>
-			  <li><a href="https://sourceforge.net/projects/dspace/">Download source or binary release (zip)</a></li>
-                          <li><a href="https://github.com/DSpace/DSpace">GitHub</a> codebase</li>
-			</ul>
-			</p>
-		<!-- main ends -->
-		</div>
-		
-		<!-- left-columns starts -->
-		<div class="grid_8 alpha">
-			<div class="sidemenu">	
 
-				<h3>Give Us Feedback!</h3>
 
-			 	<p>Each page of this DSpace Demo site has a <span style="color:blue">blue "Provide Feedback" button</span> on the right hand side of the page.
-                        	You can report issues, or suggest fixes just by clicking on that feedback button from whatever page you are on.</p>
-				<p>You may also search existing issues and vote on them by visiting our <a href="https://jira.duraspace.org/browse/DS">DSpace Issue Tracker<a>.</p>
+        
 
-			 	<h3 id="irc">Where to Ask Questions</h3>
-				<p>Developers and power-users are available online in <a href="http://webchat.freenode.net?channels=dspace">IRC (freenode.net #dspace)</a>. Feel free to join us by choosing your own "Nickname" below, and clicking "Connect".</p>
-                        	<iframe src="http://webchat.freenode.net?randomnick=1&channels=dspace&prompt=1&uio=d4" width="100%" height="400"></iframe>
 
-			</div>
-		<!-- end left-columns -->
-		</div>
-	
-	<!-- contents end here -->	
-	</div></div>
+        <div class="span4">
+          <div class="row">
+            <h3>Give Us Feedback!</h3>
+            <p>Each page of this DSpace Demo site has a <span style="color:blue">blue "Provide Feedback" button</span> on the right hand side of the page.
+                            You can report issues, or suggest fixes just by clicking on that feedback button from whatever page you are on.</p>
+            <p>You may also search existing issues and vote on them by visiting our <a href="https://jira.duraspace.org/browse/DS">DSpace Issue Tracker</a>.</p>
+          </div>
+          <div class="row">
+            <h3>Download DSpace</h3>
+            <p>After you have tried out DSpace, you may wish to download and install it for yourself:
+              <ul>
+                <li><a href="https://sourceforge.net/projects/dspace/">Download source or binary release (zip)</a></li>
+                            <li><a href="https://github.com/DSpace/DSpace">GitHub</a> codebase</li>
+              </ul>
+            </p>
+          </div>
+        </div>
 
-	<!-- footer starts here -->	
-	<div id="footer-wrapper" class="container_16">
-		<div id="footer-bottom">
-			<p class="bottom-right" >
-				<a href="http://dspace.org">DSpace</a> |
-				<a href="https://wiki.duraspace.org/display/DSPACE/Home">DSpace Wiki</a> |
-				<a href="http://www.duraspace.org">DuraSpace</a>
-			</p>
-	
-		</div>	
-			
-	</div>
-	<!-- footer ends here -->
+      </div><!-- /first row -->
 
-</body>
+      <div class="row">
+        <div class="span12">
+          <h2>Where to Ask Questions</h2>
+          <p>Developers and power-users are available online in <a href="http://webchat.freenode.net?channels=dspace">IRC (freenode.net #dspace)</a>. Feel free to join us by choosing your own "Nickname" below, and clicking "Connect".</p>
+          <iframe src="http://webchat.freenode.net?randomnick=1&channels=dspace&prompt=1&uio=d4" width="100%" height="400"></iframe>
+        </div>    
+      </div>
+
+      <hr>
+
+      <footer>
+        <p>&copy; DSpace 2013</p>
+        <p class="bottom-right" >
+        <a href="http://dspace.org">DSpace</a> |
+        <a href="https://wiki.duraspace.org/display/DSPACE/Home">DSpace Wiki</a> |
+        <a href="http://www.duraspace.org">DuraSpace</a>
+      </p>
+      </footer>
+
+    </div> <!-- /container -->
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="./assets/js/bootstrap.js"></script>
+
+    <script>
+      // This bit of Javascript uses the JIRA Issue Collector plugin to embed
+      // an easy-to-use JIRA issue creator form into every page. See:
+      // https://marketplace.atlassian.com/plugins/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin
+      // https://confluence.atlassian.com/display/JIRA/Using+the+Issue+Collector
+      // Requires jQuery!
+      $.ajax({
+          url: "https://jira.duraspace.org/s/en_US-qzzyst/732/13/1.1/_/download/batch/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector-embededjs/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector-embededjs.js?collectorId=60e7afac",
+          type: "get",
+          cache: true,
+          dataType: "script"
+      });
+
+    </script>
+    
+    <!-- Google Analytics -->
+    <script type="text/javascript">
+
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-33620726-1']);
+        _gaq.push(['_trackPageview']);
+
+        (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+
+    </script>
+
+  </body>
 </html>
