@@ -60,12 +60,12 @@
                   <li><a href="http://demo.dspace.org/swordv2/servicedocument">SWORD Service Document (v.2)</a></li>
                   <li><a href="http://demo.dspace.org/lni/dav/">LNI - Lightweight Network Interface</a></li>
                   <li class="divider"></li>
-                  <li class="nav-header">Rest API's</li>
+                  <li class="nav-header">3rd Party Rest API's</li>
                   <li><a href="http://demo.dspace.org/rest-hedtek/">REST API - Hedtek Implementation</a></li>
                   <li><a href="https://github.com/wijiti/dspace-rest-api">REST API - Wijiti (demo not yet available)</a></li>
 
                   <li class="divider"></li>
-                  <li class="nav-header">REST Client Consumer Apps</li>
+                  <li class="nav-header">3rd Party REST Client Consumer Apps</li>
                   <li><a href="http://dspace-rest-client-play.herokuapp.com/">Play! Rest Client - (using Hedtek)</a></li>
                 </ul>
               </li>
@@ -92,40 +92,47 @@
       <!-- Example row of columns -->
       <div class="row">
         <div class="span8">
-          <h2>Demo Interfaces</h2>
-          <p>Try out the demo versions of the standard DSpace web applications:
+          <h2>Demo Web Applications</h2>
+          <p>Try out the demo versions of the standard DSpace web applications:</p>
+
+          <h3>User Interfaces</h3>
           <ul> 
            <li><a class="btn btn-primary" href="/xmlui">XMLUI</a> (Manakin, the XML / XSLT / Cocoon user interface)</li>
-           <li><a class="btn" href="/jspui">JSPUI</a> (traditional JSP-based interface)</li> 
-           <li><a class="btn" href="/oai/request?verb=Identify">OAI-PMH</a> 
+           <li><a class="btn" href="/jspui">JSPUI</a> (traditional JSP-based interface)</li>
+          </ul>
+
+          <h3>Program Interfaces</h3>
+          <ul>
+            <li><a class="btn" href="/oai/request?verb=Identify">OAI (Open Archives Initiative)</a> Interface that allows for Metadata and Bitstream (content-file) harvesting, supporting OAI-PMH (Protocol for Metadata Harvest) and OAI-ORE (Object Reuse and Exchange) protocols
               <ul>
                 <li>Supported <a href="/oai/request?verb=ListMetadataFormats">Metadata Harvesting Formats</a></li>
+                <li>DSpace <a href="https://wiki.duraspace.org/display/DSDOC3x/OAI+2.0+Server">Documentation on OAI 2.0</a></li>
                 <li>More info on <a href="http://www.openarchives.org/pmh/">OAI-PMH protocol and its usage</a>.</li>
               </ul> 
-           </li> 
-           <li><a class="btn" href="/sword/servicedocument">SWORD (v.1)</a> Service Document (requires login)
+            </li>
+            <li><a class="btn" href="/sword/servicedocument">SWORD (v.1)</a> (Simple Web service Offering Repository Deposit) Service Document (requires login)
               <ul>
                 <li>More info on <a href="http://www.swordapp.org/">SWORD protocol and its usage</a>.</li>
               </ul> 
-           </li> 
-           <li><a class="btn" href="/swordv2/servicedocument">SWORD (v.2)</a> Service Document (requires login)
+            </li> 
+            <li><a class="btn" href="/swordv2/servicedocument">SWORD (v.2)</a> Service Document (requires login)
               <ul>
                 <li>More info on <a href="http://www.swordapp.org/">SWORD protocol and its usage</a>.</li>
               </ul>
             </li>
 
-           <li><a class="btn" href="/lni/dav/">LNI - Lightweight Network Interface</a> (requires login)
+            <li><a class="btn" href="/lni/dav/">LNI - Lightweight Network Interface</a> A WebDAV / SOAP / RPC API (requires login)
               <ul>
                 <li>More info on the <a href="https://wiki.duraspace.org/display/DSPACE/LightweightNetworkInterface">DSpace Lightweight Network Interface (LNI) and its usage</a>.</li>
               </ul> 
-           </li> 
+            </li> 
           </ul>
 
-          <h3>Optional Interfaces</h3>
+          <h3>Third Party Interfaces</h3>
           <ul>
-            <li><a href="http://demo.dspace.org/rest-hedtek/">REST API - Hedtek Implementation</a></li>
-            <li><a href="https://github.com/wijiti/dspace-rest-api">REST API - Wijiti (demo not yet available)</a></li>
-            <li><a href="http://dspace-rest-client-play.herokuapp.com/">Play! Rest Client - (using Hedtek)</a></li>
+            <li><a href="http://demo.dspace.org/rest-hedtek/">(Hedtek) REST API</a> A read-only API, outputs DSpace content in JSON or XML for various endpoints (communities, collections, items, bitstreams, eperson, groups), also allows for search and harvesting repo content</li>
+            <li><a href="https://github.com/wijiti/dspace-rest-api">(Wijiti) REST API</a> (source code only, demo not yet available)</li>
+            <li><a href="http://dspace-rest-client-play.herokuapp.com/">DSpace REST API Client</a> A simple app to kick the tires of the (Hedtek) REST API, built using Java Play! MVC Framework, data source is demo.dspace.org repository, exposed through the Hedtek version of REST API</li>
           </ul> 
         </div>
 
