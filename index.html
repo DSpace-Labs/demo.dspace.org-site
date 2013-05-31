@@ -85,23 +85,23 @@
 
       <!-- Main hero unit for a primary marketing message or call to action -->
       <div class="hero-unit">
-        <h1>DSpace 3.1 Demo</h1>
-        <p>This is the the demo.dspace.org test site. It hosts demo installations of all <a href="http://www.dspace.org">DSpace</a> web applications.</p>
+        <h1>DSpace 3.1 - Demo Instance</h1>
+        <p>This is the demonstration, test-it-out, kick the tires, see how it works instance of DSpace. DSpace is composed of a core-API, and offers several distinct Web Interfaces.</p>
       </div>
 
       <!-- Example row of columns -->
       <div class="row">
-        <div class="span8">
-          <h2>Demo Web Applications</h2>
-          <p>Try out the demo versions of the standard DSpace web applications:</p>
-
-          <h3>User Interfaces</h3>
-          <ul> 
-           <li><a class="btn btn-primary" href="/xmlui">XMLUI</a> (Manakin, the XML / XSLT / Cocoon user interface)</li>
-           <li><a class="btn" href="/jspui">JSPUI</a> (traditional JSP-based interface)</li>
+        <div class="span12">
+          <h2>User Interfaces</h3>
+          <p>Try out the demo versions of the standard DSpace web applications.</p>
+          <ul class="thumbnails"> 
+           <li class="span4"><a href="/xmlui"><h3>XMLUI (Cocoon/XSLT)</h3><img class="img-polaroid" src="images/screenshots/xmlui.jpg"/></a> (Manakin, the XML / XSLT / Cocoon user interface)</li>
+           <li class="span4"><a href="/jspui"><h3>JSPUI (JSP)</h3><img class="img-polaroid" src="images/screenshots/jspui.jpg"/></a> (traditional JSP-based interface)</li>
+           <li class="span4"><a href="http://mobile.demo.dspace.org/xmlui/"><h3>XMLUI - Mobile</h3><img class="img-polaroid" src="images/screenshots/xmlui-mobile.jpg"/></a></li>
           </ul>
 
-          <h3>Program Interfaces</h3>
+          <h2>Program Interfaces</h2>
+          <p>Programmatic Interfaces allow other systems to communicate with DSpace. Some interfaces are read-only to allow for harvesting, others enable content to be submitted to DSpace.</p>
           <ul>
             <li><a class="btn" href="/oai/request?verb=Identify">OAI (Open Archives Initiative)</a> Interface that allows for Metadata and Bitstream (content-file) harvesting, supporting OAI-PMH (Protocol for Metadata Harvest) and OAI-ORE (Object Reuse and Exchange) protocols
               <ul>
@@ -128,11 +128,13 @@
             </li> 
           </ul>
 
-          <h3>Third Party Interfaces</h3>
-          <ul>
-            <li><a href="http://demo.dspace.org/rest-hedtek/">(Hedtek) REST API</a> A read-only API, outputs DSpace content in JSON or XML for various endpoints (communities, collections, items, bitstreams, eperson, groups), also allows for search and harvesting repo content</li>
-            <li><a href="https://github.com/wijiti/dspace-rest-api">(Wijiti) REST API</a> (source code only, demo not yet available)</li>
-            <li><a href="http://dspace-rest-client-play.herokuapp.com/">DSpace REST API Client</a> A simple app to kick the tires of the (Hedtek) REST API, built using Java Play! MVC Framework, data source is demo.dspace.org repository, exposed through the Hedtek version of REST API</li>
+          <h2>Third Party Interfaces</h2>
+          <ul class="thumbnails">
+            <li class="span4"><a href="https://wiki.duraspace.org/display/DSPACE/WebMVC+(Freemarker)+UI"><h3>WebMVC Freemarker UI</h3><img src="images/screenshots/webmvc-freemarkerui.jpg" class="img-polaroid"/></a>User Interface built with Spring Web MVC framework, with Freemarker templating language.</li>
+            <li class="span4"><h3>Play! REST Client</h3><img src="images/screenshots/play-rest-client.jpg"/><a href="http://dspace-rest-client-play.herokuapp.com/">DSpace REST API Client</a> A simple app to kick the tires of the (Hedtek) REST API, built using Java Play! MVC Framework, data source is DSpace Demo repository's REST API.</li>
+            <li class="span4"><h3>HedTek REST API</h3><a href="http://demo.dspace.org/rest-hedtek/">(Hedtek) REST API</a> A read-only API, outputs DSpace content in JSON or XML for various endpoints (communities, collections, items, bitstreams, eperson, groups), also allows for search and harvesting repo content</li>
+            <li class="span4"><h3>Wijiti REST API</h3><a href="https://github.com/wijiti/dspace-rest-api">(Wijiti) REST API</a> (source code only, demo not yet available)</li>
+            
           </ul> 
         </div>
 
@@ -143,7 +145,11 @@
         
 
 
-        <div class="span4">
+        <div class="span12">
+          <div class="row">
+            <h3>What is DSpace</h3>
+            <p><a href="http://www.dspace.org">DSpace</a> is an open source repository software package typically used for creating open access repositories for scholarly and/or published digital content. While DSpace shares some feature overlap with content management systems and document management systems, the DSpace repository software serves a specific need as a digital archives system, focused on the long-term storage, access and preservation of digital content.</p>
+          </div>
           <div class="row">
             <h3>Give Us Feedback!</h3>
             <p>Each page of this DSpace Demo site has a <span style="color:blue">blue "Provide Feedback" button</span> on the right hand side of the page.
@@ -173,7 +179,7 @@
 
       <hr>
 
-      <footer>
+      <footer class="well">
         <p>&copy; DSpace 2013</p>
         <p class="bottom-right" >
         <a href="http://dspace.org">DSpace</a> |
