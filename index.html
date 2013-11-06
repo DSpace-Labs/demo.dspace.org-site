@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="DSpace - Institution Document Repository Software" />
     <meta name="description" content="Come test-drive the latest release of the DSpace software and leave feedback." />
-    <meta name="keywords" content="dspace, demonstration, testathon, feedback, repository, jspui, xmlui, manakin" />
+    <meta name="keywords" content="dspace, demonstration, testathon, feedback, repository, jspui, xmlui, manakin, rest" />
     <meta name="robots" content="noarchive" />
     <meta name="googlebot" content="noarchive" />
 
@@ -55,13 +55,13 @@
                 <ul class="dropdown-menu">
                   <li><a href="http://demo.dspace.org/xmlui">XMLUI</a></li>
                   <li><a href="http://demo.dspace.org/jspui">JSPUI</a></li>
+                  <li><a href="http://demo.dspace.org/rest">REST API (official)</a></li>
                   <li><a href="http://demo.dspace.org/oai/request?verb=Identify">OAI-PMH</a></li>
                   <li><a href="http://demo.dspace.org/sword/servicedocument">SWORD Service Document (v.1)</a></li>
                   <li><a href="http://demo.dspace.org/swordv2/servicedocument">SWORD Service Document (v.2)</a></li>
                   <li><a href="http://demo.dspace.org/lni/dav/">LNI - Lightweight Network Interface</a></li>
                   <li class="divider"></li>
                   <li class="nav-header">3rd Party Rest API's</li>
-                  <li><a href="http://ec2-75-101-213-28.compute-1.amazonaws.com:8080/rest/">REST API - JERSEY (Demo)</a></li>
                   <li><a href="http://demo.dspace.org/rest-hedtek/">REST API - Hedtek (Demo)</a></li>
                   <li><a href="https://github.com/wijiti/dspace-rest-api">REST API - Wijiti (GitHub)</a></li>
 
@@ -96,7 +96,7 @@
           <h2>User Interfaces</h3>
           <p>Try out the demo versions of the standard DSpace web applications.</p>
           <ul class="thumbnails"> 
-           <li class="span4"><a href="/xmlui"><h3>XMLUI (Cocoon/XSLT)</h3><img class="img-polaroid" src="images/screenshots/xmlui.jpg"/></a> (Manakin, the XML / XSLT / Cocoon user interface)</li>
+           <li class="span4"><a href="/xmlui"><h3>XMLUI (Cocoon/XSLT)</h3><img class="img-polaroid" src="images/screenshots/xmlui.jpg"/></a> (The XML / XSLT / Cocoon user interface, aka Manakin)</li>
            <li class="span4"><a href="/jspui"><h3>JSPUI (JSP)</h3><img class="img-polaroid" src="images/screenshots/jspui.jpg"/></a> (traditional JSP-based interface - build with bootstrap CSS)</li>
            <li class="span4"><a href="http://mobile.demo.dspace.org/xmlui/"><h3>XMLUI - Mobile</h3><img class="img-polaroid" src="images/screenshots/xmlui-mobile.jpg"/></a></li>
           </ul>
@@ -104,6 +104,11 @@
           <h2>Program Interfaces</h2>
           <p>Programmatic Interfaces allow other systems to communicate with DSpace. Some interfaces are read-only to allow for harvesting, others enable content to be submitted to DSpace.</p>
           <ul>
+            <li><a class="btn" href="/rest/">REST API</a> Official REST API for DSpace (Jersey based), first released in 4.0.
+              <ul>
+                <li>DSpace <a href="https://wiki.duraspace.org/display/DSDOC4x/REST+API">Documentation on REST API</a></li>
+              </ul>
+            </li>
             <li><a class="btn" href="/oai/request?verb=Identify">OAI (Open Archives Initiative)</a> Interface that allows for Metadata and Bitstream (content-file) harvesting, supporting OAI-PMH (Protocol for Metadata Harvest) and OAI-ORE (Object Reuse and Exchange) protocols
               <ul>
                 <li>Supported <a href="/oai/request?verb=ListMetadataFormats">Metadata Harvesting Formats</a></li>
@@ -135,16 +140,8 @@
             <li class="span4"><h3>Play! REST Client</h3><img src="images/screenshots/play-rest-client.jpg"/><a href="http://dspace-rest-client-play.herokuapp.com/">DSpace REST API Client</a> A simple app to kick the tires of the (Hedtek) REST API, built using Java Play! MVC Framework, data source is DSpace Demo repository's REST API.</li>
             <li class="span4"><h3>HedTek REST API</h3><a href="http://demo.dspace.org/rest-hedtek/">(Hedtek) REST API</a> A read-only API, outputs DSpace content in JSON or XML for various endpoints (communities, collections, items, bitstreams, eperson, groups), also allows for search and harvesting repo content</li>
             <li class="span4"><h3>Wijiti REST API</h3><a href="https://github.com/wijiti/dspace-rest-api">(Wijiti) REST API</a> (source code only, demo not yet available)</li>
-            
           </ul> 
         </div>
-
-
-
-
-
-        
-
 
         <div class="span12">
           <div class="row">
