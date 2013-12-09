@@ -261,7 +261,7 @@ checkerr
 echo ""
 
 # --------------------------------------
-# Step 8 : Update Discovery indexes
+# Step 8 : Rebuild/Reset Discovery indexes
 # --------------------------------------
 echo "Rebuilding Discovery (Solr) Indexes..."
 # Note: the '-f' option tells Discovery to force a reindex of everything and remove docs which no longer exist
@@ -270,13 +270,20 @@ $HOME/dspace/bin/dspace index-discovery -f
 checkerr
 
 # --------------------------------------
-# Step 9 : Update OAI indexes
+# Step 9 : Rebuild/Reset OAI indexes
 # --------------------------------------
 echo "Rebuilding OAI-PMH (Solr) Indexes..."
-# NORE: the '-c' option clears out existing items in the index. '-o' re-optimizes the index after indexing.
+# NOTE: the '-c' option clears out existing items in the index. '-o' re-optimizes the index.
 $HOME/dspace/bin/dspace oai import -o -c
 checkerr
 
+# --------------------------------------
+# Step 10 : Rebuild/Reset Solr Statistics indexes
+# --------------------------------------
+echo "Rebuilding Statistics (Solr) Indexes..."
+# NOTE: the '-b' and '-r' reindex all bitstreams and remove deleted ones. '-o' re-optimizes the index.
+$HOME/dspace/bin/dspace stats-util -b -r -o
+checkerr
 
 echo ""
 echo ""
