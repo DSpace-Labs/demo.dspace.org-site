@@ -243,14 +243,14 @@ checkerr
 echo ""
 
 # ----------------------------------------------
-# Step 6 : Re-index content
+# Step 6 : Re-index content (only necessary for DSpace 3.x and earlier)
 # ----------------------------------------------
 
-echo "Reindexing all content in DSpace..."
-$HOME/dspace/bin/dspace index-init
-checkerr
+#echo "Reindexing all content in DSpace..."
+#$HOME/dspace/bin/dspace index-init
+#checkerr
 
-echo ""
+#echo ""
 
 # --------------------------------------
 # Step 7 : Start up Tomcat
@@ -265,8 +265,18 @@ echo ""
 # --------------------------------------
 echo "Rebuilding Discovery (Solr) Indexes..."
 # Note: the '-f' option tells Discovery to force a reindex of everything and remove docs which no longer exist
-$HOME/dspace/bin/dspace update-discovery-index -f
+# NOTE: Prior to DSpace 4 this was the "update-discovery-index" script. It has been renamed to "index-discovery"
+$HOME/dspace/bin/dspace index-discovery -f
 checkerr
+
+# --------------------------------------
+# Step 9 : Update OAI indexes
+# --------------------------------------
+echo "Rebuilding OAI-PMH (Solr) Indexes..."
+# NORE: the '-c' option clears out existing items in the index. '-o' re-optimizes the index after indexing.
+$HOME/dspace/bin/dspace oai import -o -c
+checkerr
+
 
 echo ""
 echo ""
