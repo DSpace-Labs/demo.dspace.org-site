@@ -211,6 +211,12 @@ checkerr
 
 echo ""
 
+echo "... Loading DCTerms Registry"
+$HOME/dspace/bin/dspace dsrun org.dspace.administer.MetadataImporter -f $HOME/dspace/config/registries/dcterms-types.xml
+checkerr
+
+echo ""
+
 echo "... Loading SWORD Metadata Registry"
 $HOME/dspace/bin/dspace dsrun org.dspace.administer.MetadataImporter -f $HOME/dspace/config/registries/sword-metadata.xml
 checkerr
@@ -276,13 +282,19 @@ echo "Rebuilding OAI-PMH (Solr) Indexes..."
 # NOTE: the '-c' option clears out existing items in the index. '-o' re-optimizes the index.
 $HOME/dspace/bin/dspace oai import -o -c
 checkerr
+# Also immediately clean the cache
+$HOME/dspace/bin/dspace oai clean-cache
+checkerr
 
 # --------------------------------------
 # Step 10 : Rebuild/Reset Solr Statistics indexes
 # --------------------------------------
 echo "Rebuilding Statistics (Solr) Indexes..."
 # NOTE: the '-b' and '-r' reindex all bitstreams and remove deleted ones. '-o' re-optimizes the index.
-$HOME/dspace/bin/dspace stats-util -b -r -o
+# (Unfortunately these have to be separate calls, as they are mutually exclusive)
+$HOME/dspace/bin/dspace stats-util -b -r
+checkerr
+$HOME/dspace/bin/dspace stats-util -o
 checkerr
 
 echo ""
