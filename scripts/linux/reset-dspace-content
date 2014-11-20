@@ -173,6 +173,11 @@ echo "... Dropping existing 'dspace' database"
 $POSTGRES_HOME/bin/dropdb -U dspace dspace
 checkerr
 
+# Delete all data in the triplestore
+echo "... Deleting all data in the triplestore"
+$HOME/dspace/bin/dspace rdfizer --delete-all
+checkerr
+
 echo ""
 
 # --------------------------------------
