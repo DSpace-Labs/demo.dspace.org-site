@@ -163,6 +163,11 @@ echo ""
 # --------------------------------------
 echo "Removing all DSpace content (files + metadata)"
 
+# Delete all data in the triplestore
+echo "... Deleting all data in the triplestore"
+$HOME/dspace/bin/dspace rdfizer --delete-all
+checkerr
+
 # Move existing 'assetstore' folder (all content files)
 echo "... Moving existing 'assetstore' to $BACKUP_DIR"
 mv $HOME/dspace/assetstore $BACKUP_DIR
@@ -171,11 +176,6 @@ checkerr
 # Drop the existing 'dspace' database 
 echo "... Dropping existing 'dspace' database"
 $POSTGRES_HOME/bin/dropdb -U dspace dspace
-checkerr
-
-# Delete all data in the triplestore
-echo "... Deleting all data in the triplestore"
-$HOME/dspace/bin/dspace rdfizer --delete-all
 checkerr
 
 echo ""
