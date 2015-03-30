@@ -110,6 +110,12 @@ echo ""
 sudo service tomcat stop
 checkerr
 
+echo "Stopping JETTY: "
+$HOME/bin/stop-jetty
+checkerr
+echo "ok"
+echo ""
+
 # We reboot Postgres in order to kill any other sessions that may exist
 # We must reboot Postgres WITHOUT using the 'service' (/etc/init.d) script
 # so that we can specify the '-w' (wait) flag.
@@ -267,6 +273,11 @@ echo ""
 # --------------------------------------
 # Step 7 : Start up Tomcat
 # --------------------------------------
+$HOME/bin/start-jetty
+checkerr
+
+echo ""
+
 sudo service tomcat start
 checkerr
 
@@ -285,9 +296,8 @@ checkerr
 # Step 9 : Rebuild/Reset OAI indexes
 # --------------------------------------
 echo "Rebuilding OAI-PMH (Solr) Indexes..."
-# NOTE: the '-c' option clears out existing items in the index. '-o' re-optimizes the index.
-$HOME/dspace/bin/dspace oai import -o -c
-checkerr
+# NOTE: the '-c' option clears out existing items in the index.
+$HOME/dspace/bin/dspace oai import -c
 # Also immediately clean the cache
 $HOME/dspace/bin/dspace oai clean-cache
 checkerr
