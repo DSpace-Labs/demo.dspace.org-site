@@ -1,0 +1,5 @@
+#!/bin/bash
+# Run Tomcat as a Unix daemon (jsvc)
+# This allows Tomcat to use port 80 while also running as non-root
+# (NOTE: THIS SCRIPT USES ~/.profile FOR ALL TOMCAT/JSVC SETTINGS)
+sudo service tomcat start

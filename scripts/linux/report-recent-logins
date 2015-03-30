@@ -1,0 +1,9 @@
+#!/bin/bash
+#
+# This very basic script searches the DSpace log files to report a total number
+# of successful DSpace logins per day.
+#
+echo "================================================"
+echo "Report of total successful DSpace logins per day"
+echo "================================================"
+grep -c "authenticate:type=PasswordAuthentication" ~/dspace/log/dspace.log.*

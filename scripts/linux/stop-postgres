@@ -1,0 +1,3 @@
+#!/bin/bash
+# (NOTE: THIS SCRIPT USES ~/.profile FOR ALL POSTGRES SETTINGS)
+sudo service postgresql stop

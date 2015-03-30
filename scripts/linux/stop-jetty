@@ -1,0 +1,2 @@
+#!/bin/bash
+/home/dspace/solr-4.10.2/bin/solr stop -p 8983

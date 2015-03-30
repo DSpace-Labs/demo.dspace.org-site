@@ -1,0 +1,2 @@
+#!/bin/bash
+/home/dspace/solr-4.10.2/bin/solr start -p 8983 -solr.home /home/dspace/dspace/solr

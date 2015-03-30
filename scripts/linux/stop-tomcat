@@ -1,0 +1,4 @@
+#!/bin/bash
+# Stop Tomcat as a Unix daemon (jsvc)
+# (NOTE: THIS SCRIPT USES ~/.profile FOR ALL TOMCAT/JSVC SETTINGS)
+sudo service tomcat stop
