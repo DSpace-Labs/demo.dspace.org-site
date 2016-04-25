@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>DSpace 5.5 Demonstration Repository</title>
+    <title>DSpace 6.0-RC1 Demonstration Repository</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="DSpace - Institution Document Repository Software" />
     <meta name="description" content="Come test-drive the latest release of the DSpace software and leave feedback." />
@@ -42,11 +42,11 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="brand" href="#">DSpace 5.5 Demo</a>
+          <a class="brand" href="#">DSpace 6.0-RC1 Demo</a>
           <div class="nav-collapse collapse">
             <ul class="nav">
               <li class="active"><a href="/">Home</a></li>
-              <li><a href="https://wiki.duraspace.org/display/DSDOC5x/Release+Notes">Release Notes</a></li>
+              <li><a href="https://wiki.duraspace.org/display/DSDOC6x/Release+Notes">Release Notes</a></li>
 
               <!-- Interfaces -->
               <li class="dropdown">
@@ -58,8 +58,7 @@
                   <li><a href="http://demo.dspace.org/oai/request?verb=Identify">OAI-PMH</a></li>
                   <li><a href="http://demo.dspace.org/sword/servicedocument">SWORD Service Document (v.1)</a></li>
                   <li><a href="http://demo.dspace.org/swordv2/servicedocument">SWORD Service Document (v.2)</a></li>
-                  <li><a href="http://demo.dspace.org/data/">RDF - Linked Open Data [new in DSpace 5]</a></li>
-                  <li><a href="http://demo.dspace.org/lni/dav/">LNI - Lightweight Network Interface [optional in DSpace 5]</a></li>
+                  <li><a href="http://demo.dspace.org/data/">RDF - Linked Open Data</a></li>
                   <li class="divider"></li>
 
                   <li class="divider"></li>
@@ -83,8 +82,9 @@
 
       <!-- Main hero unit for a primary marketing message or call to action -->
       <div class="hero-unit">
-        <h1>DSpace 5.5 - Demo Instance</h1>
+        <h1>DSpace 6.0-RC1 - Demo Instance</h1>
         <p>This is the demonstration, test-it-out, kick the tires, see how it works instance of DSpace. DSpace is composed of a core-API, and offers several distinct Web Interfaces.</p>
+        <p><strong>From April 25 through May 6, please join us in testing this <a href="https://wiki.duraspace.org/display/DSDOC6x/Release+Notes">6.0</a> pre-release in our <a href="https://wiki.duraspace.org/display/DSPACE/DSpace+Release+6.0+Testathon+Page">6.0 Testathon</a></strong></p>        
       </div>
 
       <!-- Example row of columns -->
@@ -103,13 +103,13 @@
           <ul>
             <li><a class="btn" href="https://demo.dspace.org/rest/">REST API</a> Official REST API for DSpace (Jersey based), first released in 4.x.
               <ul>
-                <li>DSpace <a href="https://wiki.duraspace.org/display/DSDOC5x/REST+API">Documentation on REST API</a></li>
+                <li>DSpace <a href="https://wiki.duraspace.org/display/DSDOC6x/REST+API">Documentation on REST API</a></li>
               </ul>
             </li>
             <li><a class="btn" href="/oai/request?verb=Identify">OAI (Open Archives Initiative)</a> Interface that allows for Metadata and Bitstream (content-file) harvesting, supporting OAI-PMH (Protocol for Metadata Harvest) and OAI-ORE (Object Reuse and Exchange) protocols
               <ul>
                 <li>Supported <a href="/oai/request?verb=ListMetadataFormats">Metadata Harvesting Formats</a></li>
-                <li>DSpace <a href="https://wiki.duraspace.org/display/DSDOC5x/OAI+2.0+Server">Documentation on OAI 2.0</a></li>
+                <li>DSpace <a href="https://wiki.duraspace.org/display/DSDOC6x/OAI+2.0+Server">Documentation on OAI 2.0</a></li>
                 <li>More info on <a href="http://www.openarchives.org/pmh/">OAI-PMH protocol and its usage</a>.</li>
               </ul> 
             </li>
@@ -124,22 +124,15 @@
               </ul>
             </li>
 
-            <li><a class="btn" href="/rdf/">RDF</a> Linked Open Data [new in DSpace 5]
+            <li><a class="btn" href="/rdf/">RDF</a> Linked Open Data
               <ul>
-                <li>More info on the <a href="https://wiki.duraspace.org/display/DSDOC5x/Linked+(Open)+Data">DSpace RDF Linked Open Data interface and its usage</a>.</li>
-              </ul> 
-            </li> 
-
-            <li><a class="btn" href="/lni/dav/">LNI - Lightweight Network Interface</a> A WebDAV / SOAP / RPC API (requires login) [optional in DSpace 5]
-              <ul>
-                <li>More info on the <a href="https://wiki.duraspace.org/display/DSPACE/LightweightNetworkInterface">DSpace Lightweight Network Interface (LNI) and its usage</a>.</li>
+                <li>More info on the <a href="https://wiki.duraspace.org/display/DSDOC6x/Linked+(Open)+Data">DSpace RDF Linked Open Data interface and its usage</a>.</li>
               </ul> 
             </li> 
           </ul>
 
           <h2>Third Party Interfaces</h2>
           <ul class="thumbnails">
-            <li class="span4"><a href="https://wiki.duraspace.org/display/DSPACE/WebMVC+(Freemarker)+UI"><h3>WebMVC Freemarker UI</h3><img src="images/screenshots/webmvc-freemarkerui.jpg" class="img-polaroid"/></a>User Interface built with Spring Web MVC framework, with Freemarker templating language.</li>
             <li class="span4"><h3>Play! REST Client</h3><img src="images/screenshots/play-rest-client.jpg"/><a href="http://dspace-rest-client-play.herokuapp.com/">DSpace REST API Client</a> A simple app to kick the tires of the (Hedtek) REST API, built using Java Play! MVC Framework, data source is DSpace Demo repository's REST API.</li>
           </ul> 
         </div>
@@ -152,7 +145,7 @@
           <div class="row">
             <h3>Give Us Feedback!</h3>
             <p>Each page of this DSpace Demo site has a <span style="color:blue">blue "Provide Feedback" button</span> on the right hand side of the page.
-                            You can report issues, or suggest fixes just by clicking on that feedback button from whatever page you are on.</p>
+               You can report issues, or suggest fixes just by clicking on that feedback button from whatever page you are on.</p>
             <p>You may also search existing issues and vote on them by visiting our <a href="https://jira.duraspace.org/browse/DS">DSpace Issue Tracker</a>.</p>
           </div>
           <div class="row">

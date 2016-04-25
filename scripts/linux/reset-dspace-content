@@ -201,6 +201,10 @@ echo "... Creating empty 'dspace' database"
 $POSTGRES_HOME/bin/createdb -U dspace -E UNICODE dspace
 checkerr
 
+echo "... Creating the pgcrypto extension"
+$POSTGRES_HOME/bin/psql -c "CREATE EXTENSION pgcrypto"
+checkerr
+
 echo ""
 
 ## DSpace 5 should now create the tables on its own thanks to Flyway
@@ -208,6 +212,10 @@ echo ""
 #echo "... Recreating all necessary DSpace database tables"
 #$POSTGRES_HOME/bin/psql -U dspace dspace -f $HOME/dspace/etc/postgres/database_schema.sql
 #checkerr
+
+echo "... Running migrations to assemble the tables"
+$HOME/dspace/bin/dspace database migrate
+checkerr
 
 echo ""
 
