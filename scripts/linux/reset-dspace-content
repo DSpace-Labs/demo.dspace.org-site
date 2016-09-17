@@ -254,6 +254,8 @@ echo ""
 # ----------------------------------------------
 
 echo "Recursively restoring content from AIPs at $AIP_DIR (starting with $SITE_AIP_NAME AIP)"
+#create upload directory as it will be used as temporary directory
+mkdir $HOME/dspace/upload
 # This packager command performs a recursive AIP ingest, starting with the Site AIP
 # * It creates missing metadata fields (createMetadataFields)
 # * It also skips over any "could not find a parent DSpaceObject" errors (skipIfParentMissing)
