@@ -16,7 +16,7 @@
 # 2. Backs up current DB & Assetstore to "$BACKUP_DIR"
 # 3. Deletes existing DB & Assetstore
 # 4. Resets DSpace back to a 'fresh-install' state.
-# 5. Imports the AIPs in "$AIP_DIR" into DSpace as default content 
+# 5. Imports the AIPs in "$AIP_DIR" into DSpace as default content
 #   (This also autocreates several epeople and groups)
 #    SEE README in ~/AIP-restore/ for info on updating these AIPs
 # 6. Refreshes all Indexes & Restarts Tomcat
@@ -44,9 +44,9 @@ SITE_AIP_NAME="SITE@10673-0.zip"
 # Initial Admin email
 ADMIN_EMAIL="dspacedemo+admin@gmail.com"
 
-# Extra PostgreSQL variables (needed to restart PostgreSQL easily)
-PGCTL="$POSTGRES_HOME/bin/pg_ctl"
-PGLOG="$PGDATA/serverlog"
+# Postgres Version and Cluster name
+PG_VERSION="9.5"
+PG_CLUSTER="main"
 
 ###################
 ## GLOBAL FUNCTIONS
@@ -65,7 +65,7 @@ checkerr()
 		echo ""
 		echo " A backup of the data prior to this 'reset' is available at"
 		echo " $BACKUP_DIR"
-		echo " You should be able to restore that data by doing the following..." 
+		echo " You should be able to restore that data by doing the following..."
 		echo "    1. dropdb dspace"
 		echo "    2. createdb -U dspace -E UNICODE dspace"
 		echo "    3. psql -U dspace dspace < $BACKUP_DIR/pg_dump.sql"
@@ -85,7 +85,7 @@ if [ "$1" != "-n" ]; then
     echo "  (NOTE: If you wish to skip this message in the future, pass the '-n' flag"
     echo "   into this script, which causes it to run in non-interactive mode)"
     echo ""
-    echo -n "Are you sure you want to continue? (y/n) " 
+    echo -n "Are you sure you want to continue? (y/n) "
     read -e CONTINUE
 
     if [ $CONTINUE != "Y" -a $CONTINUE != "y" ]; then
@@ -107,12 +107,12 @@ echo ""
 # --------------------------------------
 # Step 1 : Stop Tomcat & reboot Postgres
 # --------------------------------------
-sudo service tomcat stop
+sudo service tomcat7 stop
 checkerr
 
-echo "Stopping JETTY: "
-$HOME/bin/stop-jetty
-checkerr
+#echo "Stopping JETTY: "
+#$HOME/bin/stop-jetty
+#checkerr
 echo "ok"
 echo ""
 
@@ -121,22 +121,16 @@ echo ""
 # so that we can specify the '-w' (wait) flag.
 echo "Stopping PostgreSQL: "
 # Stop Postgres quickly & wait until completely stopped (-w)
-$PGCTL stop -D "$PGDATA" -s -m fast -w
+sudo /usr/bin/pg_ctlcluster $PG_VERSION $PG_CLUSTER stop -m fast -- -s -W
+#$PGCTL stop -D "$PGDATA" -s -m fast -w
 checkerr
 echo "ok"
 echo ""
 
-# If Postgres Log file isn't writable, delete & recreate
-# This sometimes happens with the /etc/init.d script if it creates a log owned by root
-if [ ! -w $PGLOG ]; then
-	# The reason we can force remove this file is that it's under our user directory
-	rm -f $PGLOG
-   	touch $PGLOG
-fi
-
 echo "Starting PostgreSQL: "
 # Start Postgres and wait until completely started (-w)
-$PGCTL start -D "$PGDATA" -w >>$PGLOG 2>&1
+sudo /usr/bin/pg_ctlcluster $PG_VERSION $PG_CLUSTER start -- -w
+#$PGCTL start -D "$PGDATA" -w >>$PGLOG 2>&1
 checkerr
 echo "ok"
 echo ""
@@ -155,11 +149,11 @@ if [ -d "$BACKUP_DIR" ]; then
 fi
 
 echo "... Creating $BACKUP_DIR temp directory"
-mkdir $BACKUP_DIR
+mkdir -p $BACKUP_DIR
 checkerr
 
 echo "... Performing full database dump to $BACKUP_DIR/pg_dump.sql"
-$POSTGRES_HOME/bin/pg_dump -U dspace -E UNICODE dspace > $BACKUP_DIR/pg_dump.sql
+/usr/bin/pg_dump -U dspace -E UNICODE dspace > $BACKUP_DIR/pg_dump.sql
 checkerr
 
 echo ""
@@ -172,16 +166,16 @@ echo "Removing all DSpace content (files + metadata)"
 # Delete all data in the triplestore
 echo "... Deleting all data in the triplestore"
 $HOME/dspace/bin/dspace rdfizer --delete-all
-checkerr
+#checkerr
 
 # Move existing 'assetstore' folder (all content files)
 echo "... Moving existing 'assetstore' to $BACKUP_DIR"
 mv $HOME/dspace/assetstore $BACKUP_DIR
 checkerr
 
-# Drop the existing 'dspace' database 
+# Drop the existing 'dspace' database
 echo "... Dropping existing 'dspace' database"
-$POSTGRES_HOME/bin/dropdb -U dspace dspace
+/usr/bin/dropdb -U dspace dspace
 checkerr
 
 echo ""
@@ -198,11 +192,12 @@ checkerr
 
 # Recreate an empty 'dspace' database
 echo "... Creating empty 'dspace' database"
-$POSTGRES_HOME/bin/createdb -U dspace -E UNICODE dspace
+/usr/bin/createdb -h localhost -O dspace -U postgres -E UNICODE dspace
+#/usr/bin/createdb -U dspace -E UNICODE dspace
 checkerr
 
 echo "... Creating the pgcrypto extension"
-$POSTGRES_HOME/bin/psql -c "CREATE EXTENSION pgcrypto"
+/usr/bin/psql -h localhost -U postgres -c "CREATE EXTENSION pgcrypto" dspace
 checkerr
 
 echo ""
@@ -283,12 +278,12 @@ echo ""
 # --------------------------------------
 # Step 7 : Start up Tomcat
 # --------------------------------------
-$HOME/bin/start-jetty
-checkerr
+#$HOME/bin/start-jetty
+#checkerr
 
-echo ""
+#echo ""
 
-sudo service tomcat start
+sudo service tomcat7 start
 checkerr
 
 echo ""
