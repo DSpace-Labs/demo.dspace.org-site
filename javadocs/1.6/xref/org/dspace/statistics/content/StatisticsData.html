@@ -1,0 +1,91 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1" />
+<title>StatisticsData xref</title>
+<link type="text/css" rel="stylesheet" href="../../../../stylesheet.css" />
+</head>
+<body>
+<div id="overview"><a href="../../../../../apidocs/org/dspace/statistics/content/StatisticsData.html">View Javadoc</a></div><pre>
+
+<a name="1" href="#1">1</a>   <em class="jxr_javadoccomment">/**</em>
+<a name="2" href="#2">2</a>   <em class="jxr_javadoccomment"> * $Id: StatisticsData.java 4405 2009-10-07 08:35:32Z mdiggory $</em>
+<a name="3" href="#3">3</a>   <em class="jxr_javadoccomment"> * $URL: <a href="http://scm.dspace.org/svn/repo/dspace/trunk/dspace-stats/src/main/java/org/dspace/statistics/content/StatisticsData.java" target="alexandria_uri">http://scm.dspace.org/svn/repo/dspace/trunk/dspace-stats/src/main/java/org/dspace/statistics/content/StatisticsData.java</a> $</em>
+<a name="4" href="#4">4</a>   <em class="jxr_javadoccomment"> * *************************************************************************</em>
+<a name="5" href="#5">5</a>   <em class="jxr_javadoccomment"> * Copyright (c) 2002-2009, DuraSpace.  All rights reserved</em>
+<a name="6" href="#6">6</a>   <em class="jxr_javadoccomment"> * Licensed under the DuraSpace Foundation License.</em>
+<a name="7" href="#7">7</a>   <em class="jxr_javadoccomment"> *</em>
+<a name="8" href="#8">8</a>   <em class="jxr_javadoccomment"> * A copy of the DuraSpace License has been included in this</em>
+<a name="9" href="#9">9</a>   <em class="jxr_javadoccomment"> * distribution and is available at: <a href="http://scm.dspace.org/svn/repo/licenses/LICENSE.txt" target="alexandria_uri">http://scm.dspace.org/svn/repo/licenses/LICENSE.txt</a></em>
+<a name="10" href="#10">10</a>  <em class="jxr_javadoccomment"> */</em>
+<a name="11" href="#11">11</a>  <strong class="jxr_keyword">package</strong> org.dspace.statistics.content;
+<a name="12" href="#12">12</a>  
+<a name="13" href="#13">13</a>  <strong class="jxr_keyword">import</strong> org.dspace.statistics.Dataset;
+<a name="14" href="#14">14</a>  <strong class="jxr_keyword">import</strong> org.dspace.statistics.content.filter.StatisticsFilter;
+<a name="15" href="#15">15</a>  <strong class="jxr_keyword">import</strong> org.dspace.core.Context;
+<a name="16" href="#16">16</a>  <strong class="jxr_keyword">import</strong> org.apache.solr.client.solrj.SolrServerException;
+<a name="17" href="#17">17</a>  
+<a name="18" href="#18">18</a>  <strong class="jxr_keyword">import</strong> java.util.List;
+<a name="19" href="#19">19</a>  <strong class="jxr_keyword">import</strong> java.util.ArrayList;
+<a name="20" href="#20">20</a>  <strong class="jxr_keyword">import</strong> java.sql.SQLException;
+<a name="21" href="#21">21</a>  <strong class="jxr_keyword">import</strong> java.io.IOException;
+<a name="22" href="#22">22</a>  <strong class="jxr_keyword">import</strong> java.text.ParseException;
+<a name="23" href="#23">23</a>  
+<a name="24" href="#24">24</a>  <em class="jxr_javadoccomment">/**</em>
+<a name="25" href="#25">25</a>  <em class="jxr_javadoccomment"> * </em>
+<a name="26" href="#26">26</a>  <em class="jxr_javadoccomment"> * @author kevinvandevelde at atmire.com</em>
+<a name="27" href="#27">27</a>  <em class="jxr_javadoccomment"> * Date: 23-feb-2009</em>
+<a name="28" href="#28">28</a>  <em class="jxr_javadoccomment"> * Time: 12:37:04</em>
+<a name="29" href="#29">29</a>  <em class="jxr_javadoccomment"> * </em>
+<a name="30" href="#30">30</a>  <em class="jxr_javadoccomment"> */</em>
+<a name="31" href="#31">31</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">abstract</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../org/dspace/statistics/content/StatisticsData.html">StatisticsData</a> {
+<a name="32" href="#32">32</a>  
+<a name="33" href="#33">33</a>      <strong class="jxr_keyword">private</strong> <a href="../../../../org/dspace/statistics/Dataset.html">Dataset</a> dataset;
+<a name="34" href="#34">34</a>      <strong class="jxr_keyword">private</strong> List&lt;DatasetGenerator&gt; datasetgenerators;
+<a name="35" href="#35">35</a>  
+<a name="36" href="#36">36</a>      <strong class="jxr_keyword">private</strong> List&lt;StatisticsFilter&gt; filters;
+<a name="37" href="#37">37</a>  
+<a name="38" href="#38">38</a>      <strong class="jxr_keyword">protected</strong> <a href="../../../../org/dspace/statistics/content/StatisticsData.html">StatisticsData</a>() {
+<a name="39" href="#39">39</a>          datasetgenerators = <strong class="jxr_keyword">new</strong> ArrayList&lt;DatasetGenerator&gt;(2);
+<a name="40" href="#40">40</a>          filters = <strong class="jxr_keyword">new</strong> ArrayList&lt;StatisticsFilter&gt;();
+<a name="41" href="#41">41</a>      }
+<a name="42" href="#42">42</a>  
+<a name="43" href="#43">43</a>      <strong class="jxr_keyword">protected</strong> <a href="../../../../org/dspace/statistics/content/StatisticsData.html">StatisticsData</a>(<a href="../../../../org/dspace/statistics/Dataset.html">Dataset</a> dataset) {
+<a name="44" href="#44">44</a>          <strong class="jxr_keyword">this</strong>.dataset = dataset;
+<a name="45" href="#45">45</a>          datasetgenerators = <strong class="jxr_keyword">new</strong> ArrayList&lt;DatasetGenerator&gt;(2);
+<a name="46" href="#46">46</a>          filters = <strong class="jxr_keyword">new</strong> ArrayList&lt;StatisticsFilter&gt;();
+<a name="47" href="#47">47</a>      }
+<a name="48" href="#48">48</a>  
+<a name="49" href="#49">49</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> addDatasetGenerator(<a href="../../../../org/dspace/statistics/content/DatasetGenerator.html">DatasetGenerator</a> set){
+<a name="50" href="#50">50</a>          datasetgenerators.add(set);
+<a name="51" href="#51">51</a>      }
+<a name="52" href="#52">52</a>  
+<a name="53" href="#53">53</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> addFilters(<a href="../../../../org/dspace/statistics/content/filter/StatisticsFilter.html">StatisticsFilter</a> filter){
+<a name="54" href="#54">54</a>          filters.add(filter);
+<a name="55" href="#55">55</a>      }
+<a name="56" href="#56">56</a>  
+<a name="57" href="#57">57</a>  
+<a name="58" href="#58">58</a>      <strong class="jxr_keyword">public</strong> List&lt;DatasetGenerator&gt; getDatasetGenerators() {
+<a name="59" href="#59">59</a>          <strong class="jxr_keyword">return</strong> datasetgenerators;
+<a name="60" href="#60">60</a>      }
+<a name="61" href="#61">61</a>  
+<a name="62" href="#62">62</a>      <strong class="jxr_keyword">public</strong> List&lt;StatisticsFilter&gt; getFilters() {
+<a name="63" href="#63">63</a>          <strong class="jxr_keyword">return</strong> filters;
+<a name="64" href="#64">64</a>      }
+<a name="65" href="#65">65</a>  
+<a name="66" href="#66">66</a>      <strong class="jxr_keyword">public</strong> <a href="../../../../org/dspace/statistics/Dataset.html">Dataset</a> getDataset() {
+<a name="67" href="#67">67</a>          <strong class="jxr_keyword">return</strong> dataset;
+<a name="68" href="#68">68</a>      }
+<a name="69" href="#69">69</a>  
+<a name="70" href="#70">70</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setDataset(<a href="../../../../org/dspace/statistics/Dataset.html">Dataset</a> dataset) {
+<a name="71" href="#71">71</a>          <strong class="jxr_keyword">this</strong>.dataset = dataset;
+<a name="72" href="#72">72</a>      }
+<a name="73" href="#73">73</a>  
+<a name="74" href="#74">74</a>  
+<a name="75" href="#75">75</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">abstract</strong> <a href="../../../../org/dspace/statistics/Dataset.html">Dataset</a> createDataset(<a href="../../../../org/dspace/core/Context.html">Context</a> context) <strong class="jxr_keyword">throws</strong> SQLException, SolrServerException, IOException, ParseException;
+<a name="76" href="#76">76</a>  
+<a name="77" href="#77">77</a>  }
+</pre>
+<hr/><div id="footer">This page was automatically generated by <a href="http://maven.apache.org/">Maven</a></div></body>
+</html>
+

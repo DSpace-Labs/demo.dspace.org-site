@@ -1,0 +1,471 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<rss version="0.91">
+  <channel>
+    <title>DSpace Services API - Checkstyle report</title>
+    <link>http://projects.dspace.org</link>
+    <description>DSpace Services API - Checkstyle report</description>
+    <language>en-us</language>
+    <copyright>&#169;Monday, September 1, 2008 - 2010 The DSpace Foundation</copyright>
+    <item>
+      <title>File: 31,
+             Errors: 586,
+             Warnings: 0,
+             Infos: 0
+      </title>
+            <link>http://projects.dspace.org/checkstyle.html</link>
+      <description>
+        <p>Click <a href="http://projects.dspace.org/checkstyle.html">here</a> for the full Checkstyle report.</p>
+
+        <table summary="Files" boder="1">
+          <thead>
+            <tr>
+              <th>Files</th>
+              <th style="width:30px;"><abbr title="Info">I</abbr></th>
+              <th style="width:30px;"><abbr title="Warning">W</abbr></th>
+              <th style="width:30px;"><abbr title="Error">E</abbr></th>
+            </tr>
+          </thead>
+          <tbody>
+                          <tr>
+                <td>
+                  <a href="http://projects.dspace.org/checkstyle.html#org.dspace.kernel.mixins.ShutdownService.java">org/dspace/kernel/mixins/ShutdownService.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  4
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://projects.dspace.org/checkstyle.html#org.dspace.kernel.mixins.ServiceChangeListener.java">org/dspace/kernel/mixins/ServiceChangeListener.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  14
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://projects.dspace.org/checkstyle.html#org.dspace.services.model.RequestInterceptor.java">org/dspace/services/model/RequestInterceptor.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  21
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://projects.dspace.org/checkstyle.html#org.dspace.providers.CacheProvider.java">org/dspace/providers/CacheProvider.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  15
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://projects.dspace.org/checkstyle.html#org.dspace.providers.package-info.java">org/dspace/providers/package-info.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://projects.dspace.org/checkstyle.html#org.dspace.services.RequestService.java">org/dspace/services/RequestService.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  44
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://projects.dspace.org/checkstyle.html#org.dspace.kernel.mixins.OrderedService.java">org/dspace/kernel/mixins/OrderedService.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  4
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://projects.dspace.org/checkstyle.html#org.dspace.kernel.CommonLifecycle.java">org/dspace/kernel/CommonLifecycle.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  9
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://projects.dspace.org/checkstyle.html#org.dspace.services.model.Request.java">org/dspace/services/model/Request.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  18
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://projects.dspace.org/checkstyle.html#org.dspace.services.model.CacheConfig.java">org/dspace/services/model/CacheConfig.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  5
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://projects.dspace.org/checkstyle.html#org.dspace.kernel.package-info.java">org/dspace/kernel/package-info.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://projects.dspace.org/checkstyle.html#org.dspace.services.model.EventListener.java">org/dspace/services/model/EventListener.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  11
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://projects.dspace.org/checkstyle.html#org.dspace.kernel.DSpaceKernel.java">org/dspace/kernel/DSpaceKernel.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  18
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://projects.dspace.org/checkstyle.html#org.dspace.services.ConfigurationService.java">org/dspace/services/ConfigurationService.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  47
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://projects.dspace.org/checkstyle.html#org.dspace.services.model.Session.java">org/dspace/services/model/Session.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  21
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://projects.dspace.org/checkstyle.html#org.dspace.kernel.mixins.package-info.java">org/dspace/kernel/mixins/package-info.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://projects.dspace.org/checkstyle.html#org.dspace.kernel.Activator.java">org/dspace/kernel/Activator.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  28
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://projects.dspace.org/checkstyle.html#org.dspace.services.SessionService.java">org/dspace/services/SessionService.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  14
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://projects.dspace.org/checkstyle.html#org.dspace.kernel.ServiceManager.java">org/dspace/kernel/ServiceManager.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  47
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://projects.dspace.org/checkstyle.html#org.dspace.services.model.Event.java">org/dspace/services/model/Event.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  131
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://projects.dspace.org/checkstyle.html#org.dspace.services.EventService.java">org/dspace/services/EventService.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  8
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://projects.dspace.org/checkstyle.html#org.dspace.services.package-info.java">org/dspace/services/package-info.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://projects.dspace.org/checkstyle.html#org.dspace.kernel.mixins.InitializedService.java">org/dspace/kernel/mixins/InitializedService.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  4
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://projects.dspace.org/checkstyle.html#org.dspace.constants.package-info.java">org/dspace/constants/package-info.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://projects.dspace.org/checkstyle.html#org.dspace.services.CachingService.java">org/dspace/services/CachingService.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  23
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://projects.dspace.org/checkstyle.html#org.dspace.kernel.mixins.ServiceManagerReadyAware.java">org/dspace/kernel/mixins/ServiceManagerReadyAware.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  7
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://projects.dspace.org/checkstyle.html#org.dspace.kernel.mixins.ConfigChangeListener.java">org/dspace/kernel/mixins/ConfigChangeListener.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  15
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://projects.dspace.org/checkstyle.html#org.dspace.kernel.DSpaceKernelManager.java">org/dspace/kernel/DSpaceKernelManager.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  42
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://projects.dspace.org/checkstyle.html#org.dspace.services.model.package-info.java">org/dspace/services/model/package-info.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://projects.dspace.org/checkstyle.html#org.dspace.services.model.Cache.java">org/dspace/services/model/Cache.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  28
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://projects.dspace.org/checkstyle.html#org.dspace.constants.Constants.java">org/dspace/constants/Constants.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  7
+                </td>
+              </tr>
+                      </tbody>
+        </table>
+        
+      </description>
+    </item>
+  </channel>
+</rss>
+

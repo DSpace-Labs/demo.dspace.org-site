@@ -1,0 +1,692 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1" />
+<title>BitstreamReader xref</title>
+<link type="text/css" rel="stylesheet" href="../../../../../stylesheet.css" />
+</head>
+<body>
+<div id="overview"><a href="../../../../../../apidocs/org/dspace/app/xmlui/cocoon/BitstreamReader.html">View Javadoc</a></div><pre>
+
+<a name="1" href="#1">1</a>   <em class="jxr_comment">/*</em>
+<a name="2" href="#2">2</a>   <em class="jxr_comment"> * BitsreamReader.java</em>
+<a name="3" href="#3">3</a>   <em class="jxr_comment"> *</em>
+<a name="4" href="#4">4</a>   <em class="jxr_comment"> * Version: $Revision: 4465 $</em>
+<a name="5" href="#5">5</a>   <em class="jxr_comment"> *</em>
+<a name="6" href="#6">6</a>   <em class="jxr_comment"> * Date: $Date: 2009-10-23 19:46:21 -0700 (Fri, 23 Oct 2009) $</em>
+<a name="7" href="#7">7</a>   <em class="jxr_comment"> *</em>
+<a name="8" href="#8">8</a>   <em class="jxr_comment"> * Copyright (c) 2002, Hewlett-Packard Company and Massachusetts</em>
+<a name="9" href="#9">9</a>   <em class="jxr_comment"> * Institute of Technology.  All rights reserved.</em>
+<a name="10" href="#10">10</a>  <em class="jxr_comment"> *</em>
+<a name="11" href="#11">11</a>  <em class="jxr_comment"> * Redistribution and use in source and binary forms, with or without</em>
+<a name="12" href="#12">12</a>  <em class="jxr_comment"> * modification, are permitted provided that the following conditions are</em>
+<a name="13" href="#13">13</a>  <em class="jxr_comment"> * met:</em>
+<a name="14" href="#14">14</a>  <em class="jxr_comment"> *</em>
+<a name="15" href="#15">15</a>  <em class="jxr_comment"> * - Redistributions of source code must retain the above copyright</em>
+<a name="16" href="#16">16</a>  <em class="jxr_comment"> * notice, this list of conditions and the following disclaimer.</em>
+<a name="17" href="#17">17</a>  <em class="jxr_comment"> *</em>
+<a name="18" href="#18">18</a>  <em class="jxr_comment"> * - Redistributions in binary form must reproduce the above copyright</em>
+<a name="19" href="#19">19</a>  <em class="jxr_comment"> * notice, this list of conditions and the following disclaimer in the</em>
+<a name="20" href="#20">20</a>  <em class="jxr_comment"> * documentation and/or other materials provided with the distribution.</em>
+<a name="21" href="#21">21</a>  <em class="jxr_comment"> *</em>
+<a name="22" href="#22">22</a>  <em class="jxr_comment"> * - Neither the name of the Hewlett-Packard Company nor the name of the</em>
+<a name="23" href="#23">23</a>  <em class="jxr_comment"> * Massachusetts Institute of Technology nor the names of their</em>
+<a name="24" href="#24">24</a>  <em class="jxr_comment"> * contributors may be used to endorse or promote products derived from</em>
+<a name="25" href="#25">25</a>  <em class="jxr_comment"> * this software without specific prior written permission.</em>
+<a name="26" href="#26">26</a>  <em class="jxr_comment"> *</em>
+<a name="27" href="#27">27</a>  <em class="jxr_comment"> * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS</em>
+<a name="28" href="#28">28</a>  <em class="jxr_comment"> * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT</em>
+<a name="29" href="#29">29</a>  <em class="jxr_comment"> * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR</em>
+<a name="30" href="#30">30</a>  <em class="jxr_comment"> * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT</em>
+<a name="31" href="#31">31</a>  <em class="jxr_comment"> * HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,</em>
+<a name="32" href="#32">32</a>  <em class="jxr_comment"> * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,</em>
+<a name="33" href="#33">33</a>  <em class="jxr_comment"> * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS</em>
+<a name="34" href="#34">34</a>  <em class="jxr_comment"> * OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND</em>
+<a name="35" href="#35">35</a>  <em class="jxr_comment"> * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR</em>
+<a name="36" href="#36">36</a>  <em class="jxr_comment"> * TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE</em>
+<a name="37" href="#37">37</a>  <em class="jxr_comment"> * USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH</em>
+<a name="38" href="#38">38</a>  <em class="jxr_comment"> * DAMAGE.</em>
+<a name="39" href="#39">39</a>  <em class="jxr_comment"> */</em>
+<a name="40" href="#40">40</a>  
+<a name="41" href="#41">41</a>  <strong class="jxr_keyword">package</strong> org.dspace.app.xmlui.cocoon;
+<a name="42" href="#42">42</a>  
+<a name="43" href="#43">43</a>  <strong class="jxr_keyword">import</strong> java.io.IOException;
+<a name="44" href="#44">44</a>  <strong class="jxr_keyword">import</strong> java.io.InputStream;
+<a name="45" href="#45">45</a>  <strong class="jxr_keyword">import</strong> java.io.UnsupportedEncodingException;
+<a name="46" href="#46">46</a>  <strong class="jxr_keyword">import</strong> java.net.URLEncoder;
+<a name="47" href="#47">47</a>  <strong class="jxr_keyword">import</strong> java.sql.SQLException;
+<a name="48" href="#48">48</a>  <strong class="jxr_keyword">import</strong> java.util.Map;
+<a name="49" href="#49">49</a>  
+<a name="50" href="#50">50</a>  <strong class="jxr_keyword">import</strong> javax.mail.internet.MimeUtility;
+<a name="51" href="#51">51</a>  <strong class="jxr_keyword">import</strong> javax.servlet.http.HttpServletResponse;
+<a name="52" href="#52">52</a>  
+<a name="53" href="#53">53</a>  <strong class="jxr_keyword">import</strong> org.apache.avalon.excalibur.pool.Recyclable;
+<a name="54" href="#54">54</a>  <strong class="jxr_keyword">import</strong> org.apache.avalon.framework.parameters.Parameters;
+<a name="55" href="#55">55</a>  <strong class="jxr_keyword">import</strong> org.apache.cocoon.ProcessingException;
+<a name="56" href="#56">56</a>  <strong class="jxr_keyword">import</strong> org.apache.cocoon.ResourceNotFoundException;
+<a name="57" href="#57">57</a>  <strong class="jxr_keyword">import</strong> org.apache.cocoon.environment.ObjectModelHelper;
+<a name="58" href="#58">58</a>  <strong class="jxr_keyword">import</strong> org.apache.cocoon.environment.Request;
+<a name="59" href="#59">59</a>  <strong class="jxr_keyword">import</strong> org.apache.cocoon.environment.Response;
+<a name="60" href="#60">60</a>  <strong class="jxr_keyword">import</strong> org.apache.cocoon.environment.SourceResolver;
+<a name="61" href="#61">61</a>  <strong class="jxr_keyword">import</strong> org.apache.cocoon.environment.http.HttpEnvironment;
+<a name="62" href="#62">62</a>  <strong class="jxr_keyword">import</strong> org.apache.cocoon.environment.http.HttpResponse;
+<a name="63" href="#63">63</a>  <strong class="jxr_keyword">import</strong> org.apache.cocoon.reading.AbstractReader;
+<a name="64" href="#64">64</a>  <strong class="jxr_keyword">import</strong> org.apache.cocoon.util.ByteRange;
+<a name="65" href="#65">65</a>  <strong class="jxr_keyword">import</strong> org.dspace.app.xmlui.utils.AuthenticationUtil;
+<a name="66" href="#66">66</a>  <strong class="jxr_keyword">import</strong> org.dspace.app.xmlui.utils.ContextUtil;
+<a name="67" href="#67">67</a>  <strong class="jxr_keyword">import</strong> org.dspace.authorize.AuthorizeException;
+<a name="68" href="#68">68</a>  <strong class="jxr_keyword">import</strong> org.dspace.authorize.AuthorizeManager;
+<a name="69" href="#69">69</a>  <strong class="jxr_keyword">import</strong> org.dspace.authorize.ResourcePolicy;
+<a name="70" href="#70">70</a>  <strong class="jxr_keyword">import</strong> org.dspace.content.Bitstream;
+<a name="71" href="#71">71</a>  <strong class="jxr_keyword">import</strong> org.dspace.content.Bundle;
+<a name="72" href="#72">72</a>  <strong class="jxr_keyword">import</strong> org.dspace.content.DSpaceObject;
+<a name="73" href="#73">73</a>  <strong class="jxr_keyword">import</strong> org.dspace.content.Item;
+<a name="74" href="#74">74</a>  <strong class="jxr_keyword">import</strong> org.dspace.core.ConfigurationManager;
+<a name="75" href="#75">75</a>  <strong class="jxr_keyword">import</strong> org.dspace.core.Constants;
+<a name="76" href="#76">76</a>  <strong class="jxr_keyword">import</strong> org.dspace.core.Context;
+<a name="77" href="#77">77</a>  <strong class="jxr_keyword">import</strong> org.dspace.handle.HandleManager;
+<a name="78" href="#78">78</a>  <strong class="jxr_keyword">import</strong> org.dspace.usage.UsageEvent;
+<a name="79" href="#79">79</a>  <strong class="jxr_keyword">import</strong> org.dspace.utils.DSpace;
+<a name="80" href="#80">80</a>  <strong class="jxr_keyword">import</strong> org.xml.sax.SAXException;
+<a name="81" href="#81">81</a>  
+<a name="82" href="#82">82</a>  <strong class="jxr_keyword">import</strong> org.apache.log4j.Logger;
+<a name="83" href="#83">83</a>  <strong class="jxr_keyword">import</strong> org.dspace.core.LogManager;
+<a name="84" href="#84">84</a>  
+<a name="85" href="#85">85</a>  <em class="jxr_javadoccomment">/**</em>
+<a name="86" href="#86">86</a>  <em class="jxr_javadoccomment"> * The BitstreamReader will query DSpace for a particular bitstream and transmit</em>
+<a name="87" href="#87">87</a>  <em class="jxr_javadoccomment"> * it to the user. There are several method of specifing the bitstream to be</em>
+<a name="88" href="#88">88</a>  <em class="jxr_javadoccomment"> * develivered. You may refrence a bitstream by either it's id or attempt to</em>
+<a name="89" href="#89">89</a>  <em class="jxr_javadoccomment"> * resolve the bitstream's name.</em>
+<a name="90" href="#90">90</a>  <em class="jxr_javadoccomment"> *</em>
+<a name="91" href="#91">91</a>  <em class="jxr_javadoccomment"> *  /bitstream/{handle}/{sequence}/{name}</em>
+<a name="92" href="#92">92</a>  <em class="jxr_javadoccomment"> *</em>
+<a name="93" href="#93">93</a>  <em class="jxr_javadoccomment"> *  &amp;lt;map:read type="BitstreamReader"&gt;</em>
+<a name="94" href="#94">94</a>  <em class="jxr_javadoccomment"> *    &amp;lt;map:parameter name="handle" value="{1}/{2}"/&amp;gt;</em>
+<a name="95" href="#95">95</a>  <em class="jxr_javadoccomment"> *    &amp;lt;map:parameter name="sequence" value="{3}"/&amp;gt;</em>
+<a name="96" href="#96">96</a>  <em class="jxr_javadoccomment"> *    &amp;lt;map:parameter name="name" value="{4}"/&amp;gt;</em>
+<a name="97" href="#97">97</a>  <em class="jxr_javadoccomment"> *  &amp;lt;/map:read&amp;gt;</em>
+<a name="98" href="#98">98</a>  <em class="jxr_javadoccomment"> *</em>
+<a name="99" href="#99">99</a>  <em class="jxr_javadoccomment"> *  When no handle is assigned yet you can access a bistream</em>
+<a name="100" href="#100">100</a> <em class="jxr_javadoccomment"> *  using it's internal ID.</em>
+<a name="101" href="#101">101</a> <em class="jxr_javadoccomment"> *</em>
+<a name="102" href="#102">102</a> <em class="jxr_javadoccomment"> *  /bitstream/id/{bitstreamID}/{sequence}/{name}</em>
+<a name="103" href="#103">103</a> <em class="jxr_javadoccomment"> *</em>
+<a name="104" href="#104">104</a> <em class="jxr_javadoccomment"> *  &amp;lt;map:read type="BitstreamReader"&gt;</em>
+<a name="105" href="#105">105</a> <em class="jxr_javadoccomment"> *    &amp;lt;map:parameter name="bitstreamID" value="{1}"/&amp;gt;</em>
+<a name="106" href="#106">106</a> <em class="jxr_javadoccomment"> *    &amp;lt;map:parameter name="sequence" value="{2}"/&amp;gt;</em>
+<a name="107" href="#107">107</a> <em class="jxr_javadoccomment"> *  &amp;lt;/map:read&amp;gt;</em>
+<a name="108" href="#108">108</a> <em class="jxr_javadoccomment"> *</em>
+<a name="109" href="#109">109</a> <em class="jxr_javadoccomment"> *  Alternativly, you can access the bitstream via a name instead</em>
+<a name="110" href="#110">110</a> <em class="jxr_javadoccomment"> *  of directly through it's sequence.</em>
+<a name="111" href="#111">111</a> <em class="jxr_javadoccomment"> *</em>
+<a name="112" href="#112">112</a> <em class="jxr_javadoccomment"> *  /html/{handle}/{name}</em>
+<a name="113" href="#113">113</a> <em class="jxr_javadoccomment"> *</em>
+<a name="114" href="#114">114</a> <em class="jxr_javadoccomment"> *  &amp;lt;map:read type="BitstreamReader"&amp;gt;</em>
+<a name="115" href="#115">115</a> <em class="jxr_javadoccomment"> *    &amp;lt;map:parameter name="handle" value="{1}/{2}"/&amp;gt;</em>
+<a name="116" href="#116">116</a> <em class="jxr_javadoccomment"> *    &amp;lt;map:parameter name="name" value="{3}"/&amp;gt;</em>
+<a name="117" href="#117">117</a> <em class="jxr_javadoccomment"> *  &amp;lt;/map:read&amp;gt;</em>
+<a name="118" href="#118">118</a> <em class="jxr_javadoccomment"> *</em>
+<a name="119" href="#119">119</a> <em class="jxr_javadoccomment"> *  Again when no handle is available you can also access it</em>
+<a name="120" href="#120">120</a> <em class="jxr_javadoccomment"> *  via an internal itemID &amp; name.</em>
+<a name="121" href="#121">121</a> <em class="jxr_javadoccomment"> *</em>
+<a name="122" href="#122">122</a> <em class="jxr_javadoccomment"> *  /html/id/{itemID}/{name}</em>
+<a name="123" href="#123">123</a> <em class="jxr_javadoccomment"> *</em>
+<a name="124" href="#124">124</a> <em class="jxr_javadoccomment"> *  &amp;lt;map:read type="BitstreamReader"&amp;gt;</em>
+<a name="125" href="#125">125</a> <em class="jxr_javadoccomment"> *    &amp;lt;map:parameter name="itemID" value="{1}"/&amp;gt;</em>
+<a name="126" href="#126">126</a> <em class="jxr_javadoccomment"> *    &amp;lt;map:parameter name="name" value="{2}"/&amp;gt;</em>
+<a name="127" href="#127">127</a> <em class="jxr_javadoccomment"> *  &amp;lt;/map:read&amp;gt;</em>
+<a name="128" href="#128">128</a> <em class="jxr_javadoccomment"> *</em>
+<a name="129" href="#129">129</a> <em class="jxr_javadoccomment"> * @author Scott Phillips</em>
+<a name="130" href="#130">130</a> <em class="jxr_javadoccomment"> */</em>
+<a name="131" href="#131">131</a> 
+<a name="132" href="#132">132</a> <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../../org/dspace/app/xmlui/cocoon/BitstreamReader.html">BitstreamReader</a> <strong class="jxr_keyword">extends</strong> AbstractReader implements Recyclable
+<a name="133" href="#133">133</a> {
+<a name="134" href="#134">134</a> 
+<a name="135" href="#135">135</a>         <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> Logger log = Logger.getLogger(BitstreamReader.<strong class="jxr_keyword">class</strong>);
+<a name="136" href="#136">136</a>         
+<a name="137" href="#137">137</a>     <em class="jxr_javadoccomment">/**</em>
+<a name="138" href="#138">138</a> <em class="jxr_javadoccomment">     * Messages to be sent when the user is not authorized to view</em>
+<a name="139" href="#139">139</a> <em class="jxr_javadoccomment">     * a particular bitstream. They will be redirected to the login</em>
+<a name="140" href="#140">140</a> <em class="jxr_javadoccomment">     * where this message will be displayed.</em>
+<a name="141" href="#141">141</a> <em class="jxr_javadoccomment">     */</em>
+<a name="142" href="#142">142</a>         <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">static</strong> String AUTH_REQUIRED_HEADER = <span class="jxr_string">"xmlui.BitstreamReader.auth_header"</span>;
+<a name="143" href="#143">143</a>         <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">static</strong> String AUTH_REQUIRED_MESSAGE = <span class="jxr_string">"xmlui.BitstreamReader.auth_message"</span>;
+<a name="144" href="#144">144</a>         
+<a name="145" href="#145">145</a>     <em class="jxr_javadoccomment">/**</em>
+<a name="146" href="#146">146</a> <em class="jxr_javadoccomment">     * How big of a buffer should we use when reading from the bitstream before</em>
+<a name="147" href="#147">147</a> <em class="jxr_javadoccomment">     * writting to the HTTP response?</em>
+<a name="148" href="#148">148</a> <em class="jxr_javadoccomment">     */</em>
+<a name="149" href="#149">149</a>     <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> BUFFER_SIZE = 8192;
+<a name="150" href="#150">150</a> 
+<a name="151" href="#151">151</a>     <em class="jxr_javadoccomment">/**</em>
+<a name="152" href="#152">152</a> <em class="jxr_javadoccomment">     * When should a bitstream expire in milliseconds. This should be set to</em>
+<a name="153" href="#153">153</a> <em class="jxr_javadoccomment">     * some low value just to prevent someone hiting DSpace repeatily from</em>
+<a name="154" href="#154">154</a> <em class="jxr_javadoccomment">     * killing the server. Note: 1000 milliseconds are in a second.</em>
+<a name="155" href="#155">155</a> <em class="jxr_javadoccomment">     *</em>
+<a name="156" href="#156">156</a> <em class="jxr_javadoccomment">     * Format: minutes * seconds * milliseconds</em>
+<a name="157" href="#157">157</a> <em class="jxr_javadoccomment">     *  60 * 60 * 1000 == 1 hour</em>
+<a name="158" href="#158">158</a> <em class="jxr_javadoccomment">     */</em>
+<a name="159" href="#159">159</a>     <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> expires = 60 * 60 * 1000;
+<a name="160" href="#160">160</a> 
+<a name="161" href="#161">161</a>     <em class="jxr_javadoccomment">/**</em><em class="jxr_javadoccomment"> The Cocoon response */</em>
+<a name="162" href="#162">162</a>     <strong class="jxr_keyword">protected</strong> Response response;
+<a name="163" href="#163">163</a> 
+<a name="164" href="#164">164</a>     <em class="jxr_javadoccomment">/**</em><em class="jxr_javadoccomment"> The Cocoon request */</em>
+<a name="165" href="#165">165</a>     <strong class="jxr_keyword">protected</strong> Request request;
+<a name="166" href="#166">166</a> 
+<a name="167" href="#167">167</a>     <em class="jxr_javadoccomment">/**</em><em class="jxr_javadoccomment"> The bitstream file */</em>
+<a name="168" href="#168">168</a>     <strong class="jxr_keyword">protected</strong> InputStream bitstreamInputStream;
+<a name="169" href="#169">169</a>     
+<a name="170" href="#170">170</a>     <em class="jxr_javadoccomment">/**</em><em class="jxr_javadoccomment"> The bitstream's reported size */</em>
+<a name="171" href="#171">171</a>     <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">long</strong> bitstreamSize;
+<a name="172" href="#172">172</a>     
+<a name="173" href="#173">173</a>     <em class="jxr_javadoccomment">/**</em><em class="jxr_javadoccomment"> The bitstream's mime-type */</em>
+<a name="174" href="#174">174</a>     <strong class="jxr_keyword">protected</strong> String bitstreamMimeType;
+<a name="175" href="#175">175</a>     
+<a name="176" href="#176">176</a>     <em class="jxr_javadoccomment">/**</em><em class="jxr_javadoccomment"> The bitstream's name */</em>
+<a name="177" href="#177">177</a>     <strong class="jxr_keyword">protected</strong> String bitstreamName;
+<a name="178" href="#178">178</a>     
+<a name="179" href="#179">179</a>     <em class="jxr_javadoccomment">/**</em><em class="jxr_javadoccomment"> True if bitstream is readable by anonymous users */</em>
+<a name="180" href="#180">180</a>     <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">boolean</strong> isAnonymouslyReadable;
+<a name="181" href="#181">181</a> 
+<a name="182" href="#182">182</a>     <em class="jxr_javadoccomment">/**</em><em class="jxr_javadoccomment"> <a href="../../../../../org/dspace/content/Item.html">Item</a> containing the <a href="../../../../../org/dspace/content/Bitstream.html">Bitstream</a> */</em>
+<a name="183" href="#183">183</a>     <strong class="jxr_keyword">private</strong> <a href="../../../../../org/dspace/content/Item.html">Item</a> item = <strong class="jxr_keyword">null</strong>;
+<a name="184" href="#184">184</a> 
+<a name="185" href="#185">185</a>     <em class="jxr_javadoccomment">/**</em><em class="jxr_javadoccomment"> True if user agent making this request was identified as spider. */</em>
+<a name="186" href="#186">186</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">boolean</strong> isSpider = false;
+<a name="187" href="#187">187</a> 
+<a name="188" href="#188">188</a>     <em class="jxr_javadoccomment">/**</em>
+<a name="189" href="#189">189</a> <em class="jxr_javadoccomment">     * Set up the bitstream reader.</em>
+<a name="190" href="#190">190</a> <em class="jxr_javadoccomment">     *</em>
+<a name="191" href="#191">191</a> <em class="jxr_javadoccomment">     * See the class description for information on configuration options.</em>
+<a name="192" href="#192">192</a> <em class="jxr_javadoccomment">     */</em>
+<a name="193" href="#193">193</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setup(SourceResolver resolver, Map objectModel, String src,
+<a name="194" href="#194">194</a>             Parameters par) <strong class="jxr_keyword">throws</strong> ProcessingException, SAXException,
+<a name="195" href="#195">195</a>             IOException
+<a name="196" href="#196">196</a>     {
+<a name="197" href="#197">197</a>         <strong class="jxr_keyword">super</strong>.setup(resolver, objectModel, src, par);
+<a name="198" href="#198">198</a> 
+<a name="199" href="#199">199</a>         <strong class="jxr_keyword">try</strong>
+<a name="200" href="#200">200</a>         {
+<a name="201" href="#201">201</a>             <strong class="jxr_keyword">this</strong>.request = ObjectModelHelper.getRequest(objectModel);
+<a name="202" href="#202">202</a>             <strong class="jxr_keyword">this</strong>.response = ObjectModelHelper.getResponse(objectModel);
+<a name="203" href="#203">203</a>             <a href="../../../../../org/dspace/core/Context.html">Context</a> context = ContextUtil.obtainContext(objectModel);
+<a name="204" href="#204">204</a>             
+<a name="205" href="#205">205</a>             <em class="jxr_comment">// Get our parameters that identify the bitstream</em>
+<a name="206" href="#206">206</a>             <strong class="jxr_keyword">int</strong> itemID = par.getParameterAsInteger(<span class="jxr_string">"itemID"</span>, -1);
+<a name="207" href="#207">207</a>             <strong class="jxr_keyword">int</strong> bitstreamID = par.getParameterAsInteger(<span class="jxr_string">"bitstreamID"</span>, -1);
+<a name="208" href="#208">208</a>             String handle = par.getParameter(<span class="jxr_string">"handle"</span>, <strong class="jxr_keyword">null</strong>);
+<a name="209" href="#209">209</a>             
+<a name="210" href="#210">210</a>             <strong class="jxr_keyword">int</strong> sequence = par.getParameterAsInteger(<span class="jxr_string">"sequence"</span>, -1);
+<a name="211" href="#211">211</a>             String name = par.getParameter(<span class="jxr_string">"name"</span>, <strong class="jxr_keyword">null</strong>);
+<a name="212" href="#212">212</a>         
+<a name="213" href="#213">213</a>             <strong class="jxr_keyword">this</strong>.isSpider = par.getParameter(<span class="jxr_string">"userAgent"</span>, <span class="jxr_string">""</span>).equals(<span class="jxr_string">"spider"</span>);
+<a name="214" href="#214">214</a> 
+<a name="215" href="#215">215</a>             <em class="jxr_comment">// Reslove the bitstream</em>
+<a name="216" href="#216">216</a>             <a href="../../../../../org/dspace/content/Bitstream.html">Bitstream</a> bitstream = <strong class="jxr_keyword">null</strong>;
+<a name="217" href="#217">217</a>             <a href="../../../../../org/dspace/content/DSpaceObject.html">DSpaceObject</a> dso = <strong class="jxr_keyword">null</strong>;
+<a name="218" href="#218">218</a>             
+<a name="219" href="#219">219</a>             <strong class="jxr_keyword">if</strong> (bitstreamID &gt; -1)
+<a name="220" href="#220">220</a>             {
+<a name="221" href="#221">221</a>                 <em class="jxr_comment">// Direct refrence to the individual bitstream ID.</em>
+<a name="222" href="#222">222</a>                 bitstream = Bitstream.find(context, bitstreamID);
+<a name="223" href="#223">223</a>             }
+<a name="224" href="#224">224</a>             <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (itemID &gt; -1)
+<a name="225" href="#225">225</a>             {
+<a name="226" href="#226">226</a>                 <em class="jxr_comment">// Referenced by internal itemID</em>
+<a name="227" href="#227">227</a>                 item = Item.find(context, itemID);
+<a name="228" href="#228">228</a>                 
+<a name="229" href="#229">229</a>                 <strong class="jxr_keyword">if</strong> (sequence &gt; -1)
+<a name="230" href="#230">230</a>                 {
+<a name="231" href="#231">231</a>                         bitstream = findBitstreamBySequence(item, sequence);
+<a name="232" href="#232">232</a>                 }
+<a name="233" href="#233">233</a>                 <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (name != <strong class="jxr_keyword">null</strong>)
+<a name="234" href="#234">234</a>                 {
+<a name="235" href="#235">235</a>                         bitstream = findBitstreamByName(item, name);
+<a name="236" href="#236">236</a>                 }
+<a name="237" href="#237">237</a>             }
+<a name="238" href="#238">238</a>             <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (handle != <strong class="jxr_keyword">null</strong>)
+<a name="239" href="#239">239</a>             {
+<a name="240" href="#240">240</a>                 <em class="jxr_comment">// Reference by an item's handle.</em>
+<a name="241" href="#241">241</a>                 dso = HandleManager.resolveToObject(context,handle);
+<a name="242" href="#242">242</a> 
+<a name="243" href="#243">243</a>                 <strong class="jxr_keyword">if</strong> (dso instanceof Item)
+<a name="244" href="#244">244</a>                 {
+<a name="245" href="#245">245</a>                     item = (Item)dso;
+<a name="246" href="#246">246</a> 
+<a name="247" href="#247">247</a>                     <strong class="jxr_keyword">if</strong> (sequence &gt; -1)
+<a name="248" href="#248">248</a>                     {
+<a name="249" href="#249">249</a>                         bitstream = findBitstreamBySequence(item,sequence);
+<a name="250" href="#250">250</a>                     }
+<a name="251" href="#251">251</a>                     <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (name != <strong class="jxr_keyword">null</strong>)
+<a name="252" href="#252">252</a>                     {
+<a name="253" href="#253">253</a>                         bitstream = findBitstreamByName(item,name);
+<a name="254" href="#254">254</a>                     }
+<a name="255" href="#255">255</a>                 }
+<a name="256" href="#256">256</a>             }
+<a name="257" href="#257">257</a> 
+<a name="258" href="#258">258</a>             <em class="jxr_comment">//if initial search was by sequence number and found nothing,</em>
+<a name="259" href="#259">259</a>             <em class="jxr_comment">//then try to find bitstream by name (assuming we have a file name)</em>
+<a name="260" href="#260">260</a>             <strong class="jxr_keyword">if</strong>((sequence &gt; -1 &amp;&amp; bitstream==<strong class="jxr_keyword">null</strong>) &amp;&amp; name!=<strong class="jxr_keyword">null</strong>)
+<a name="261" href="#261">261</a>             {
+<a name="262" href="#262">262</a>                 bitstream = findBitstreamByName(item,name);
+<a name="263" href="#263">263</a> 
+<a name="264" href="#264">264</a>                 <em class="jxr_comment">//if we found bitstream by name, send a redirect to its new sequence number location</em>
+<a name="265" href="#265">265</a>                 <strong class="jxr_keyword">if</strong>(bitstream!=<strong class="jxr_keyword">null</strong>)
+<a name="266" href="#266">266</a>                 {
+<a name="267" href="#267">267</a>                     String redirectURL = <span class="jxr_string">""</span>;
+<a name="268" href="#268">268</a> 
+<a name="269" href="#269">269</a>                     <em class="jxr_comment">//build redirect URL based on whether item has a handle assigned yet</em>
+<a name="270" href="#270">270</a>                     <strong class="jxr_keyword">if</strong>(item.getHandle()!=<strong class="jxr_keyword">null</strong> &amp;&amp; item.getHandle().length()&gt;0)
+<a name="271" href="#271">271</a>                       redirectURL = request.getContextPath() + <span class="jxr_string">"/bitstream/handle/"</span> + item.getHandle();
+<a name="272" href="#272">272</a>                     <strong class="jxr_keyword">else</strong>
+<a name="273" href="#273">273</a>                       redirectURL = request.getContextPath() + <span class="jxr_string">"/bitstream/item/"</span> + item.getID();
+<a name="274" href="#274">274</a> 
+<a name="275" href="#275">275</a>                         redirectURL += <span class="jxr_string">"/"</span> + name + <span class="jxr_string">"?sequence="</span> + bitstream.getSequenceID();
+<a name="276" href="#276">276</a> 
+<a name="277" href="#277">277</a>                         HttpServletResponse httpResponse = (HttpServletResponse)
+<a name="278" href="#278">278</a>                         objectModel.get(HttpEnvironment.HTTP_RESPONSE_OBJECT);
+<a name="279" href="#279">279</a>                         httpResponse.sendRedirect(redirectURL);
+<a name="280" href="#280">280</a>                         <strong class="jxr_keyword">return</strong>;
+<a name="281" href="#281">281</a>                 }
+<a name="282" href="#282">282</a>             }
+<a name="283" href="#283">283</a> 
+<a name="284" href="#284">284</a>             <em class="jxr_comment">// Was a bitstream found?</em>
+<a name="285" href="#285">285</a>             <strong class="jxr_keyword">if</strong> (bitstream == <strong class="jxr_keyword">null</strong>)
+<a name="286" href="#286">286</a>             {
+<a name="287" href="#287">287</a>                 <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> ResourceNotFoundException(<span class="jxr_string">"Unable to locate bitstream"</span>);
+<a name="288" href="#288">288</a>             }
+<a name="289" href="#289">289</a> 
+<a name="290" href="#290">290</a>             <em class="jxr_comment">// Is there a User logged in and does the user have access to read it?</em>
+<a name="291" href="#291">291</a>             <strong class="jxr_keyword">boolean</strong> isAuthorized = AuthorizeManager.authorizeActionBoolean(context, bitstream, Constants.READ);
+<a name="292" href="#292">292</a>             <strong class="jxr_keyword">if</strong> (item != <strong class="jxr_keyword">null</strong> &amp;&amp; item.isWithdrawn() &amp;&amp; !AuthorizeManager.isAdmin(context))
+<a name="293" href="#293">293</a>             {
+<a name="294" href="#294">294</a>                 isAuthorized = false;
+<a name="295" href="#295">295</a>                 log.info(LogManager.getHeader(context, <span class="jxr_string">"view_bitstream"</span>, <span class="jxr_string">"handle="</span> + item.getHandle() + <span class="jxr_string">",withdrawn=true"</span>));
+<a name="296" href="#296">296</a>             }
+<a name="297" href="#297">297</a> 
+<a name="298" href="#298">298</a>             <strong class="jxr_keyword">if</strong> (!isAuthorized)
+<a name="299" href="#299">299</a>             {
+<a name="300" href="#300">300</a>                 <strong class="jxr_keyword">if</strong>(context.getCurrentUser() != <strong class="jxr_keyword">null</strong>){
+<a name="301" href="#301">301</a>                         <em class="jxr_comment">// A user is logged in, but they are not authorized to read this bitstream,</em>
+<a name="302" href="#302">302</a>                         <em class="jxr_comment">// instead of asking them to login again we'll point them to a friendly error</em>
+<a name="303" href="#303">303</a>                         <em class="jxr_comment">// message that tells them the bitstream is restricted.</em>
+<a name="304" href="#304">304</a>                         String redictURL = request.getContextPath() + <span class="jxr_string">"/handle/"</span>;
+<a name="305" href="#305">305</a>                         <strong class="jxr_keyword">if</strong> (item!=<strong class="jxr_keyword">null</strong>){
+<a name="306" href="#306">306</a>                                 redictURL += item.getHandle();
+<a name="307" href="#307">307</a>                         }
+<a name="308" href="#308">308</a>                         <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong>(dso!=<strong class="jxr_keyword">null</strong>){
+<a name="309" href="#309">309</a>                                 redictURL += dso.getHandle();
+<a name="310" href="#310">310</a>                         }
+<a name="311" href="#311">311</a>                         redictURL += <span class="jxr_string">"/restricted-resource?bitstreamId="</span> + bitstream.getID();
+<a name="312" href="#312">312</a> 
+<a name="313" href="#313">313</a>                         HttpServletResponse httpResponse = (HttpServletResponse)
+<a name="314" href="#314">314</a>                         objectModel.get(HttpEnvironment.HTTP_RESPONSE_OBJECT);
+<a name="315" href="#315">315</a>                         httpResponse.sendRedirect(redictURL);
+<a name="316" href="#316">316</a>                         <strong class="jxr_keyword">return</strong>;
+<a name="317" href="#317">317</a>                 }
+<a name="318" href="#318">318</a>                 <strong class="jxr_keyword">else</strong>{
+<a name="319" href="#319">319</a> 
+<a name="320" href="#320">320</a>                         <em class="jxr_comment">// The user does not have read access to this bitstream. Inturrupt this current request</em>
+<a name="321" href="#321">321</a>                         <em class="jxr_comment">// and then forward them to the login page so that they can be authenticated. Once that is</em>
+<a name="322" href="#322">322</a>                         <em class="jxr_comment">// successfull they will request will be resumed.</em>
+<a name="323" href="#323">323</a>                         AuthenticationUtil.interruptRequest(objectModel, AUTH_REQUIRED_HEADER, AUTH_REQUIRED_MESSAGE, <strong class="jxr_keyword">null</strong>);
+<a name="324" href="#324">324</a> 
+<a name="325" href="#325">325</a>                         <em class="jxr_comment">// Redirect</em>
+<a name="326" href="#326">326</a>                         String redictURL = request.getContextPath() + <span class="jxr_string">"/login"</span>;
+<a name="327" href="#327">327</a> 
+<a name="328" href="#328">328</a>                         HttpServletResponse httpResponse = (HttpServletResponse)
+<a name="329" href="#329">329</a>                         objectModel.get(HttpEnvironment.HTTP_RESPONSE_OBJECT);
+<a name="330" href="#330">330</a>                         httpResponse.sendRedirect(redictURL);
+<a name="331" href="#331">331</a>                         <strong class="jxr_keyword">return</strong>;
+<a name="332" href="#332">332</a>                 }
+<a name="333" href="#333">333</a>             }
+<a name="334" href="#334">334</a>                 
+<a name="335" href="#335">335</a>             <em class="jxr_comment">// Success, bitstream found and the user has access to read it.</em>
+<a name="336" href="#336">336</a>             <em class="jxr_comment">// Store these for later retreval:</em>
+<a name="337" href="#337">337</a>             <strong class="jxr_keyword">this</strong>.bitstreamInputStream = bitstream.retrieve();
+<a name="338" href="#338">338</a>             <strong class="jxr_keyword">this</strong>.bitstreamSize = bitstream.getSize();
+<a name="339" href="#339">339</a>             <strong class="jxr_keyword">this</strong>.bitstreamMimeType = bitstream.getFormat().getMIMEType();
+<a name="340" href="#340">340</a>             <strong class="jxr_keyword">this</strong>.bitstreamName = bitstream.getName();
+<a name="341" href="#341">341</a>             <strong class="jxr_keyword">if</strong> (context.getCurrentUser() == <strong class="jxr_keyword">null</strong>)
+<a name="342" href="#342">342</a>             {
+<a name="343" href="#343">343</a>                 <strong class="jxr_keyword">this</strong>.isAnonymouslyReadable = <strong class="jxr_keyword">true</strong>;
+<a name="344" href="#344">344</a>             }
+<a name="345" href="#345">345</a>             <strong class="jxr_keyword">else</strong>
+<a name="346" href="#346">346</a>             {
+<a name="347" href="#347">347</a>                 <strong class="jxr_keyword">this</strong>.isAnonymouslyReadable = false;
+<a name="348" href="#348">348</a>                 <strong class="jxr_keyword">for</strong> (ResourcePolicy rp : AuthorizeManager.getPoliciesActionFilter(context, bitstream, Constants.READ))
+<a name="349" href="#349">349</a>                 {
+<a name="350" href="#350">350</a>                     <strong class="jxr_keyword">if</strong> (rp.getGroupID() == 0)
+<a name="351" href="#351">351</a>                         <strong class="jxr_keyword">this</strong>.isAnonymouslyReadable = <strong class="jxr_keyword">true</strong>;
+<a name="352" href="#352">352</a>                 }
+<a name="353" href="#353">353</a>             }
+<a name="354" href="#354">354</a> 
+<a name="355" href="#355">355</a>             <em class="jxr_comment">// Trim any path information from the bitstream</em>
+<a name="356" href="#356">356</a>             <strong class="jxr_keyword">if</strong> (bitstreamName != <strong class="jxr_keyword">null</strong> &amp;&amp; bitstreamName.length() &gt;0 )
+<a name="357" href="#357">357</a>             {
+<a name="358" href="#358">358</a>                         <strong class="jxr_keyword">int</strong> finalSlashIndex = bitstreamName.lastIndexOf(<span class="jxr_string">"/"</span>);
+<a name="359" href="#359">359</a>                         <strong class="jxr_keyword">if</strong> (finalSlashIndex &gt; 0)
+<a name="360" href="#360">360</a>                         {
+<a name="361" href="#361">361</a>                                 bitstreamName = bitstreamName.substring(finalSlashIndex+1);
+<a name="362" href="#362">362</a>                         }
+<a name="363" href="#363">363</a>             }
+<a name="364" href="#364">364</a>             <strong class="jxr_keyword">else</strong>
+<a name="365" href="#365">365</a>             {
+<a name="366" href="#366">366</a>                 <em class="jxr_comment">// In-case there is no bitstream name...</em>
+<a name="367" href="#367">367</a>                 bitstreamName = <span class="jxr_string">"bitstream"</span>;
+<a name="368" href="#368">368</a>             }
+<a name="369" href="#369">369</a>             
+<a name="370" href="#370">370</a>             <em class="jxr_comment">// Log that the bitstream has been viewed, this is none-cached and the complexity</em>
+<a name="371" href="#371">371</a>             <em class="jxr_comment">// of adding it to the sitemap for every possible bitstre uri is not very tractable</em>
+<a name="372" href="#372">372</a>             <strong class="jxr_keyword">new</strong> DSpace().getEventService().fireEvent(
+<a name="373" href="#373">373</a>                                 <strong class="jxr_keyword">new</strong> <a href="../../../../../org/dspace/usage/UsageEvent.html">UsageEvent</a>(
+<a name="374" href="#374">374</a>                                                 UsageEvent.Action.VIEW,
+<a name="375" href="#375">375</a>                                                 ObjectModelHelper.getRequest(objectModel),
+<a name="376" href="#376">376</a>                                                 ContextUtil.obtainContext(ObjectModelHelper.getRequest(objectModel)),
+<a name="377" href="#377">377</a>                                                 bitstream));
+<a name="378" href="#378">378</a> 
+<a name="379" href="#379">379</a>         }
+<a name="380" href="#380">380</a>         <strong class="jxr_keyword">catch</strong> (SQLException sqle)
+<a name="381" href="#381">381</a>         {
+<a name="382" href="#382">382</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> ProcessingException(<span class="jxr_string">"Unable to read bitstream."</span>,sqle);
+<a name="383" href="#383">383</a>         }
+<a name="384" href="#384">384</a>         <strong class="jxr_keyword">catch</strong> (AuthorizeException ae)
+<a name="385" href="#385">385</a>         {
+<a name="386" href="#386">386</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> ProcessingException(<span class="jxr_string">"Unable to read bitstream."</span>,ae);
+<a name="387" href="#387">387</a>         }
+<a name="388" href="#388">388</a>     }
+<a name="389" href="#389">389</a> 
+<a name="390" href="#390">390</a>     
+<a name="391" href="#391">391</a>     
+<a name="392" href="#392">392</a>     
+<a name="393" href="#393">393</a>     
+<a name="394" href="#394">394</a>     <em class="jxr_javadoccomment">/**</em>
+<a name="395" href="#395">395</a> <em class="jxr_javadoccomment">     * Find the bitstream identified by a sequence number on this item.</em>
+<a name="396" href="#396">396</a> <em class="jxr_javadoccomment">     *</em>
+<a name="397" href="#397">397</a> <em class="jxr_javadoccomment">     * @param item A DSpace item</em>
+<a name="398" href="#398">398</a> <em class="jxr_javadoccomment">     * @param sequence The sequence of the bitstream</em>
+<a name="399" href="#399">399</a> <em class="jxr_javadoccomment">     * @return The bitstream or null if none found.</em>
+<a name="400" href="#400">400</a> <em class="jxr_javadoccomment">     */</em>
+<a name="401" href="#401">401</a>     <strong class="jxr_keyword">private</strong> <a href="../../../../../org/dspace/content/Bitstream.html">Bitstream</a> findBitstreamBySequence(<a href="../../../../../org/dspace/content/Item.html">Item</a> item, <strong class="jxr_keyword">int</strong> sequence) <strong class="jxr_keyword">throws</strong> SQLException
+<a name="402" href="#402">402</a>     {
+<a name="403" href="#403">403</a>         <strong class="jxr_keyword">if</strong> (item == <strong class="jxr_keyword">null</strong>)
+<a name="404" href="#404">404</a>                 <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">null</strong>;
+<a name="405" href="#405">405</a>         
+<a name="406" href="#406">406</a>         <a href="../../../../../org/dspace/content/Bundle.html">Bundle</a>[] bundles = item.getBundles();
+<a name="407" href="#407">407</a>         <strong class="jxr_keyword">for</strong> (Bundle bundle : bundles)
+<a name="408" href="#408">408</a>         {
+<a name="409" href="#409">409</a>             <a href="../../../../../org/dspace/content/Bitstream.html">Bitstream</a>[] bitstreams = bundle.getBitstreams();
+<a name="410" href="#410">410</a> 
+<a name="411" href="#411">411</a>             <strong class="jxr_keyword">for</strong> (Bitstream bitstream : bitstreams)
+<a name="412" href="#412">412</a>             {
+<a name="413" href="#413">413</a>                 <strong class="jxr_keyword">if</strong> (bitstream.getSequenceID() == sequence)
+<a name="414" href="#414">414</a>                 {
+<a name="415" href="#415">415</a>                         <strong class="jxr_keyword">return</strong> bitstream;
+<a name="416" href="#416">416</a>                 }
+<a name="417" href="#417">417</a>             }
+<a name="418" href="#418">418</a>         }
+<a name="419" href="#419">419</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">null</strong>;
+<a name="420" href="#420">420</a>     }
+<a name="421" href="#421">421</a>     
+<a name="422" href="#422">422</a>     <em class="jxr_javadoccomment">/**</em>
+<a name="423" href="#423">423</a> <em class="jxr_javadoccomment">     * Return the bitstream from the given item that is identified by the</em>
+<a name="424" href="#424">424</a> <em class="jxr_javadoccomment">     * given name. If the name has prepended directories they will be removed</em>
+<a name="425" href="#425">425</a> <em class="jxr_javadoccomment">     * one at a time until a bitstream is found. Note that if two bitstreams</em>
+<a name="426" href="#426">426</a> <em class="jxr_javadoccomment">     * have the same name then the first bitstream will be returned.</em>
+<a name="427" href="#427">427</a> <em class="jxr_javadoccomment">     *</em>
+<a name="428" href="#428">428</a> <em class="jxr_javadoccomment">     * @param item A DSpace item</em>
+<a name="429" href="#429">429</a> <em class="jxr_javadoccomment">     * @param name The name of the bitstream</em>
+<a name="430" href="#430">430</a> <em class="jxr_javadoccomment">     * @return The bitstream or null if none found.</em>
+<a name="431" href="#431">431</a> <em class="jxr_javadoccomment">     */</em>
+<a name="432" href="#432">432</a>     <strong class="jxr_keyword">private</strong> <a href="../../../../../org/dspace/content/Bitstream.html">Bitstream</a> findBitstreamByName(<a href="../../../../../org/dspace/content/Item.html">Item</a> item, String name) <strong class="jxr_keyword">throws</strong> SQLException
+<a name="433" href="#433">433</a>     {
+<a name="434" href="#434">434</a>         <strong class="jxr_keyword">if</strong> (name == <strong class="jxr_keyword">null</strong> || item == <strong class="jxr_keyword">null</strong>)
+<a name="435" href="#435">435</a>                 <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">null</strong>;
+<a name="436" href="#436">436</a>     
+<a name="437" href="#437">437</a>         <em class="jxr_comment">// Determine our the maximum number of directories that will be removed for a path.</em>
+<a name="438" href="#438">438</a>         <strong class="jxr_keyword">int</strong> maxDepthPathSearch = 3;
+<a name="439" href="#439">439</a>         <strong class="jxr_keyword">if</strong> (ConfigurationManager.getProperty(<span class="jxr_string">"xmlui.html.max-depth-guess"</span>) != <strong class="jxr_keyword">null</strong>)
+<a name="440" href="#440">440</a>                 maxDepthPathSearch = ConfigurationManager.getIntProperty(<span class="jxr_string">"xmlui.html.max-depth-guess"</span>);
+<a name="441" href="#441">441</a>         
+<a name="442" href="#442">442</a>         <em class="jxr_comment">// Search for the named bitstream on this item. Each time through the loop</em>
+<a name="443" href="#443">443</a>         <em class="jxr_comment">// a directory is removed from the name until either our maximum depth is</em>
+<a name="444" href="#444">444</a>         <em class="jxr_comment">// reached or the bitstream is found. Note: an extra pass is added on to the</em>
+<a name="445" href="#445">445</a>         <em class="jxr_comment">// loop for a last ditch effort where all directory paths will be removed.</em>
+<a name="446" href="#446">446</a>         <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">int</strong> i = 0; i &lt; maxDepthPathSearch+1; i++)
+<a name="447" href="#447">447</a>         {
+<a name="448" href="#448">448</a>                 <em class="jxr_comment">// Search through all the bitstreams and see</em>
+<a name="449" href="#449">449</a>                 <em class="jxr_comment">// if the name can be found</em>
+<a name="450" href="#450">450</a>                 <a href="../../../../../org/dspace/content/Bundle.html">Bundle</a>[] bundles = item.getBundles();
+<a name="451" href="#451">451</a>                 <strong class="jxr_keyword">for</strong> (Bundle bundle : bundles)
+<a name="452" href="#452">452</a>                 {
+<a name="453" href="#453">453</a>                     <a href="../../../../../org/dspace/content/Bitstream.html">Bitstream</a>[] bitstreams = bundle.getBitstreams();
+<a name="454" href="#454">454</a>         
+<a name="455" href="#455">455</a>                     <strong class="jxr_keyword">for</strong> (Bitstream bitstream : bitstreams)
+<a name="456" href="#456">456</a>                     {
+<a name="457" href="#457">457</a>                         <strong class="jxr_keyword">if</strong> (name.equals(bitstream.getName()))
+<a name="458" href="#458">458</a>                         {
+<a name="459" href="#459">459</a>                                 <strong class="jxr_keyword">return</strong> bitstream;
+<a name="460" href="#460">460</a>                         }
+<a name="461" href="#461">461</a>                     }
+<a name="462" href="#462">462</a>                 }
+<a name="463" href="#463">463</a>                 
+<a name="464" href="#464">464</a>                 <em class="jxr_comment">// The bitstream was not found, so try removing a directory</em>
+<a name="465" href="#465">465</a>                 <em class="jxr_comment">// off of the name and see if we lost some path information.</em>
+<a name="466" href="#466">466</a>                 <strong class="jxr_keyword">int</strong> indexOfSlash = name.indexOf('/');
+<a name="467" href="#467">467</a>                 
+<a name="468" href="#468">468</a>                 <strong class="jxr_keyword">if</strong> (indexOfSlash &lt; 0)
+<a name="469" href="#469">469</a>                         <em class="jxr_comment">// No more directories to remove from the path, so return null for no</em>
+<a name="470" href="#470">470</a>                         <em class="jxr_comment">// bitstream found.</em>
+<a name="471" href="#471">471</a>                         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">null</strong>;
+<a name="472" href="#472">472</a>                
+<a name="473" href="#473">473</a>                 name = name.substring(indexOfSlash+1);
+<a name="474" href="#474">474</a>                 
+<a name="475" href="#475">475</a>                 <em class="jxr_comment">// If this is our next to last time through the loop then</em>
+<a name="476" href="#476">476</a>                 <em class="jxr_comment">// trim everything and only use the trailing filename.</em>
+<a name="477" href="#477">477</a>                 <strong class="jxr_keyword">if</strong> (i == maxDepthPathSearch-1)
+<a name="478" href="#478">478</a>                 {
+<a name="479" href="#479">479</a>                         <strong class="jxr_keyword">int</strong> indexOfLastSlash = name.lastIndexOf('/');
+<a name="480" href="#480">480</a>                         <strong class="jxr_keyword">if</strong> (indexOfLastSlash &gt; -1)
+<a name="481" href="#481">481</a>                                 name = name.substring(indexOfLastSlash+1);
+<a name="482" href="#482">482</a>                 }
+<a name="483" href="#483">483</a>                 
+<a name="484" href="#484">484</a>         }
+<a name="485" href="#485">485</a>         
+<a name="486" href="#486">486</a>         <em class="jxr_comment">// The named bitstream was not found and we exausted our the maximum path depth that</em>
+<a name="487" href="#487">487</a>         <em class="jxr_comment">// we search.</em>
+<a name="488" href="#488">488</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">null</strong>;
+<a name="489" href="#489">489</a>     }
+<a name="490" href="#490">490</a>     
+<a name="491" href="#491">491</a>     
+<a name="492" href="#492">492</a>     <em class="jxr_javadoccomment">/**</em>
+<a name="493" href="#493">493</a> <em class="jxr_javadoccomment">         * Write the actual data out to the response.</em>
+<a name="494" href="#494">494</a> <em class="jxr_javadoccomment">         *</em>
+<a name="495" href="#495">495</a> <em class="jxr_javadoccomment">         * Some implementation notes,</em>
+<a name="496" href="#496">496</a> <em class="jxr_javadoccomment">         *</em>
+<a name="497" href="#497">497</a> <em class="jxr_javadoccomment">         * 1) We set a short expires time just in the hopes of preventing someone</em>
+<a name="498" href="#498">498</a> <em class="jxr_javadoccomment">         * from overloading the server by clicking reload a bunch of times. I</em>
+<a name="499" href="#499">499</a> <em class="jxr_javadoccomment">         * realize that this is nowhere near 100% effective but it may help in some</em>
+<a name="500" href="#500">500</a> <em class="jxr_javadoccomment">         * cases and shouldn't hurt anything.</em>
+<a name="501" href="#501">501</a> <em class="jxr_javadoccomment">         *</em>
+<a name="502" href="#502">502</a> <em class="jxr_javadoccomment">         * 2) We accept partial downloads, thus if you lose a connection half way</em>
+<a name="503" href="#503">503</a> <em class="jxr_javadoccomment">         * through most web browser will enable you to resume downloading the</em>
+<a name="504" href="#504">504</a> <em class="jxr_javadoccomment">         * bitstream.</em>
+<a name="505" href="#505">505</a> <em class="jxr_javadoccomment">         */</em>
+<a name="506" href="#506">506</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> generate() <strong class="jxr_keyword">throws</strong> IOException, SAXException,
+<a name="507" href="#507">507</a>             ProcessingException
+<a name="508" href="#508">508</a>     {
+<a name="509" href="#509">509</a>         <strong class="jxr_keyword">if</strong> (<strong class="jxr_keyword">this</strong>.bitstreamInputStream == <strong class="jxr_keyword">null</strong>)
+<a name="510" href="#510">510</a>                 <strong class="jxr_keyword">return</strong>;
+<a name="511" href="#511">511</a>         
+<a name="512" href="#512">512</a>         <em class="jxr_comment">// Only allow If-Modified-Since protocol if request is from a spider</em>
+<a name="513" href="#513">513</a>         <em class="jxr_comment">// since response headers would encourage a browser to cache results</em>
+<a name="514" href="#514">514</a>         <em class="jxr_comment">// that might change with different authentication..</em>
+<a name="515" href="#515">515</a>         <strong class="jxr_keyword">if</strong> (isSpider)
+<a name="516" href="#516">516</a>         {
+<a name="517" href="#517">517</a>             <em class="jxr_comment">// Check for if-modified-since header -- ONLY if not authenticated</em>
+<a name="518" href="#518">518</a>             <strong class="jxr_keyword">long</strong> modSince = request.getDateHeader(<span class="jxr_string">"If-Modified-Since"</span>);
+<a name="519" href="#519">519</a>             <strong class="jxr_keyword">if</strong> (modSince != -1 &amp;&amp; item != <strong class="jxr_keyword">null</strong> &amp;&amp; item.getLastModified().getTime() &lt; modSince)
+<a name="520" href="#520">520</a>             {
+<a name="521" href="#521">521</a>                 <em class="jxr_comment">// Item has not been modified since requested date,</em>
+<a name="522" href="#522">522</a>                 <em class="jxr_comment">// hence bitstream has not; return 304</em>
+<a name="523" href="#523">523</a>                 response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+<a name="524" href="#524">524</a>                 <strong class="jxr_keyword">return</strong>;
+<a name="525" href="#525">525</a>             }
+<a name="526" href="#526">526</a>         }
+<a name="527" href="#527">527</a> 
+<a name="528" href="#528">528</a>         <em class="jxr_comment">// Only set Last-Modified: header for spiders or anonymous</em>
+<a name="529" href="#529">529</a>         <em class="jxr_comment">// access, since it might encourage browse to cache the result</em>
+<a name="530" href="#530">530</a>         <em class="jxr_comment">// which might leave a result only available to authenticated</em>
+<a name="531" href="#531">531</a>         <em class="jxr_comment">// users in the cache for a response later to anonymous user.</em>
+<a name="532" href="#532">532</a>         <strong class="jxr_keyword">try</strong>
+<a name="533" href="#533">533</a>         {
+<a name="534" href="#534">534</a>             <strong class="jxr_keyword">if</strong> (item != <strong class="jxr_keyword">null</strong> &amp;&amp; (isSpider || ContextUtil.obtainContext(request).getCurrentUser() == <strong class="jxr_keyword">null</strong>))
+<a name="535" href="#535">535</a>             {
+<a name="536" href="#536">536</a>                 <em class="jxr_comment">// TODO:  Currently just borrow the date of the item, since</em>
+<a name="537" href="#537">537</a>                 <em class="jxr_comment">// we don't have last-mod dates for Bitstreams</em>
+<a name="538" href="#538">538</a>                 response.setDateHeader(<span class="jxr_string">"Last-Modified"</span>, item.getLastModified()
+<a name="539" href="#539">539</a>                         .getTime());
+<a name="540" href="#540">540</a>             }
+<a name="541" href="#541">541</a>         }
+<a name="542" href="#542">542</a>         <strong class="jxr_keyword">catch</strong> (SQLException e)
+<a name="543" href="#543">543</a>         {
+<a name="544" href="#544">544</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> ProcessingException(e);
+<a name="545" href="#545">545</a>         }
+<a name="546" href="#546">546</a> 
+<a name="547" href="#547">547</a>         byte[] buffer = <strong class="jxr_keyword">new</strong> byte[BUFFER_SIZE];
+<a name="548" href="#548">548</a>         <strong class="jxr_keyword">int</strong> length = -1;
+<a name="549" href="#549">549</a> 
+<a name="550" href="#550">550</a>         <em class="jxr_comment">// Only encourage caching if this is not a restricted resource, i.e.</em>
+<a name="551" href="#551">551</a>         <em class="jxr_comment">// if it is accessed anonymously or is readable by Anonymous:</em>
+<a name="552" href="#552">552</a>         <strong class="jxr_keyword">if</strong> (isAnonymouslyReadable)
+<a name="553" href="#553">553</a>             response.setDateHeader(<span class="jxr_string">"Expires"</span>, System.currentTimeMillis()
+<a name="554" href="#554">554</a>                     + expires);
+<a name="555" href="#555">555</a>         
+<a name="556" href="#556">556</a>         <em class="jxr_comment">// If this is a large bitstream then tell the browser it should treat it as a download.</em>
+<a name="557" href="#557">557</a>         <strong class="jxr_keyword">int</strong> threshold = ConfigurationManager.getIntProperty(<span class="jxr_string">"xmlui.content_disposition_threshold"</span>);
+<a name="558" href="#558">558</a>         <strong class="jxr_keyword">if</strong> (bitstreamSize &gt; threshold &amp;&amp; threshold != 0)
+<a name="559" href="#559">559</a>         {
+<a name="560" href="#560">560</a>                 String name  = bitstreamName;
+<a name="561" href="#561">561</a>                 
+<a name="562" href="#562">562</a>                 <em class="jxr_comment">// Try and make the download file name formated for each browser.</em>
+<a name="563" href="#563">563</a>                 <strong class="jxr_keyword">try</strong> {
+<a name="564" href="#564">564</a>                         String agent = request.getHeader(<span class="jxr_string">"USER-AGENT"</span>);
+<a name="565" href="#565">565</a>                         <strong class="jxr_keyword">if</strong> (agent != <strong class="jxr_keyword">null</strong> &amp;&amp; agent.contains(<span class="jxr_string">"MSIE"</span>))
+<a name="566" href="#566">566</a>                                 name = URLEncoder.encode(name,<span class="jxr_string">"UTF8"</span>);
+<a name="567" href="#567">567</a>                         <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (agent != <strong class="jxr_keyword">null</strong> &amp;&amp; agent.contains(<span class="jxr_string">"Mozilla"</span>))
+<a name="568" href="#568">568</a>                                 name = MimeUtility.encodeText(name, <span class="jxr_string">"UTF8"</span>, <span class="jxr_string">"B"</span>);
+<a name="569" href="#569">569</a>                 }
+<a name="570" href="#570">570</a>                 <strong class="jxr_keyword">catch</strong> (UnsupportedEncodingException see)
+<a name="571" href="#571">571</a>                 {
+<a name="572" href="#572">572</a>                         <em class="jxr_comment">// do nothing</em>
+<a name="573" href="#573">573</a>                 }
+<a name="574" href="#574">574</a>                 response.setHeader(<span class="jxr_string">"Content-Disposition"</span>, <span class="jxr_string">"attachment;filename="</span> + name);
+<a name="575" href="#575">575</a>         }
+<a name="576" href="#576">576</a> 
+<a name="577" href="#577">577</a>         <em class="jxr_comment">// Turn off partial downloads, they cause problems</em>
+<a name="578" href="#578">578</a>         <em class="jxr_comment">// and are only rarely used. Specifically some windows pdf</em>
+<a name="579" href="#579">579</a>         <em class="jxr_comment">// viewers are incapable of handling this request. By</em>
+<a name="580" href="#580">580</a>         <em class="jxr_comment">// uncommenting the following two lines you will turn this feature back on.</em>
+<a name="581" href="#581">581</a>         <em class="jxr_comment">// response.setHeader("Accept-Ranges", "bytes");</em>
+<a name="582" href="#582">582</a>         <em class="jxr_comment">// String ranges = request.getHeader("Range");</em>
+<a name="583" href="#583">583</a>         String ranges = <strong class="jxr_keyword">null</strong>;
+<a name="584" href="#584">584</a>         
+<a name="585" href="#585">585</a> 
+<a name="586" href="#586">586</a>         ByteRange byteRange = <strong class="jxr_keyword">null</strong>;
+<a name="587" href="#587">587</a>         <strong class="jxr_keyword">if</strong> (ranges != <strong class="jxr_keyword">null</strong>)
+<a name="588" href="#588">588</a>         {
+<a name="589" href="#589">589</a>             <strong class="jxr_keyword">try</strong>
+<a name="590" href="#590">590</a>             {
+<a name="591" href="#591">591</a>                 ranges = ranges.substring(ranges.indexOf('=') + 1);
+<a name="592" href="#592">592</a>                 byteRange = <strong class="jxr_keyword">new</strong> ByteRange(ranges);
+<a name="593" href="#593">593</a>             }
+<a name="594" href="#594">594</a>             <strong class="jxr_keyword">catch</strong> (NumberFormatException e)
+<a name="595" href="#595">595</a>             {
+<a name="596" href="#596">596</a>                 byteRange = <strong class="jxr_keyword">null</strong>;
+<a name="597" href="#597">597</a>                 <strong class="jxr_keyword">if</strong> (response instanceof HttpResponse)
+<a name="598" href="#598">598</a>                 {
+<a name="599" href="#599">599</a>                     <em class="jxr_comment">// Respond with status 416 (Request range not</em>
+<a name="600" href="#600">600</a>                     <em class="jxr_comment">// satisfiable)</em>
+<a name="601" href="#601">601</a>                     ((HttpResponse) response).setStatus(416);
+<a name="602" href="#602">602</a>                 }
+<a name="603" href="#603">603</a>             }
+<a name="604" href="#604">604</a>         }
+<a name="605" href="#605">605</a> 
+<a name="606" href="#606">606</a>         <strong class="jxr_keyword">if</strong> (byteRange != <strong class="jxr_keyword">null</strong>)
+<a name="607" href="#607">607</a>         {
+<a name="608" href="#608">608</a>             String entityLength;
+<a name="609" href="#609">609</a>             String entityRange;
+<a name="610" href="#610">610</a>             <strong class="jxr_keyword">if</strong> (<strong class="jxr_keyword">this</strong>.bitstreamSize != -1)
+<a name="611" href="#611">611</a>             {
+<a name="612" href="#612">612</a>                 entityLength = <span class="jxr_string">""</span> + <strong class="jxr_keyword">this</strong>.bitstreamSize;
+<a name="613" href="#613">613</a>                 entityRange = byteRange.intersection(
+<a name="614" href="#614">614</a>                         <strong class="jxr_keyword">new</strong> ByteRange(0, <strong class="jxr_keyword">this</strong>.bitstreamSize)).toString();
+<a name="615" href="#615">615</a>             }
+<a name="616" href="#616">616</a>             <strong class="jxr_keyword">else</strong>
+<a name="617" href="#617">617</a>             {
+<a name="618" href="#618">618</a>                 entityLength = <span class="jxr_string">"*"</span>;
+<a name="619" href="#619">619</a>                 entityRange = byteRange.toString();
+<a name="620" href="#620">620</a>             }
+<a name="621" href="#621">621</a> 
+<a name="622" href="#622">622</a>             response.setHeader(<span class="jxr_string">"Content-Range"</span>, entityRange + <span class="jxr_string">"/"</span>
+<a name="623" href="#623">623</a>                     + entityLength);
+<a name="624" href="#624">624</a>             <strong class="jxr_keyword">if</strong> (response instanceof HttpResponse)
+<a name="625" href="#625">625</a>             {
+<a name="626" href="#626">626</a>                 <em class="jxr_comment">// Response with status 206 (Partial content)</em>
+<a name="627" href="#627">627</a>                 ((HttpResponse) response).setStatus(206);
+<a name="628" href="#628">628</a>             }
+<a name="629" href="#629">629</a> 
+<a name="630" href="#630">630</a>             <strong class="jxr_keyword">int</strong> pos = 0;
+<a name="631" href="#631">631</a>             <strong class="jxr_keyword">int</strong> posEnd;
+<a name="632" href="#632">632</a>             <strong class="jxr_keyword">while</strong> ((length = <strong class="jxr_keyword">this</strong>.bitstreamInputStream.read(buffer)) &gt; -1)
+<a name="633" href="#633">633</a>             {
+<a name="634" href="#634">634</a>                 posEnd = pos + length - 1;
+<a name="635" href="#635">635</a>                 ByteRange intersection = byteRange
+<a name="636" href="#636">636</a>                         .intersection(<strong class="jxr_keyword">new</strong> ByteRange(pos, posEnd));
+<a name="637" href="#637">637</a>                 <strong class="jxr_keyword">if</strong> (intersection != <strong class="jxr_keyword">null</strong>)
+<a name="638" href="#638">638</a>                 {
+<a name="639" href="#639">639</a>                     out.write(buffer, (<strong class="jxr_keyword">int</strong>) intersection.getStart()
+<a name="640" href="#640">640</a>                             - pos, (<strong class="jxr_keyword">int</strong>) intersection.length());
+<a name="641" href="#641">641</a>                 }
+<a name="642" href="#642">642</a>                 pos += length;
+<a name="643" href="#643">643</a>             }
+<a name="644" href="#644">644</a>         }
+<a name="645" href="#645">645</a>         <strong class="jxr_keyword">else</strong>
+<a name="646" href="#646">646</a>         {
+<a name="647" href="#647">647</a>             response.setHeader(<span class="jxr_string">"Content-Length"</span>, String
+<a name="648" href="#648">648</a>                     .valueOf(<strong class="jxr_keyword">this</strong>.bitstreamSize));
+<a name="649" href="#649">649</a> 
+<a name="650" href="#650">650</a>             <strong class="jxr_keyword">while</strong> ((length = <strong class="jxr_keyword">this</strong>.bitstreamInputStream.read(buffer)) &gt; -1)
+<a name="651" href="#651">651</a>             {
+<a name="652" href="#652">652</a>                 out.write(buffer, 0, length);
+<a name="653" href="#653">653</a>             }
+<a name="654" href="#654">654</a>             out.flush();
+<a name="655" href="#655">655</a>         }
+<a name="656" href="#656">656</a>     }
+<a name="657" href="#657">657</a> 
+<a name="658" href="#658">658</a>     <em class="jxr_javadoccomment">/**</em>
+<a name="659" href="#659">659</a> <em class="jxr_javadoccomment">     * Returns the mime-type of the bitstream.</em>
+<a name="660" href="#660">660</a> <em class="jxr_javadoccomment">     */</em>
+<a name="661" href="#661">661</a>     <strong class="jxr_keyword">public</strong> String getMimeType()
+<a name="662" href="#662">662</a>     {
+<a name="663" href="#663">663</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>.bitstreamMimeType;
+<a name="664" href="#664">664</a>     }
+<a name="665" href="#665">665</a>     
+<a name="666" href="#666">666</a>     <em class="jxr_javadoccomment">/**</em>
+<a name="667" href="#667">667</a> <em class="jxr_javadoccomment">         * Recycle</em>
+<a name="668" href="#668">668</a> <em class="jxr_javadoccomment">         */</em>
+<a name="669" href="#669">669</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> recycle() {
+<a name="670" href="#670">670</a>         <strong class="jxr_keyword">this</strong>.response = <strong class="jxr_keyword">null</strong>;
+<a name="671" href="#671">671</a>         <strong class="jxr_keyword">this</strong>.request = <strong class="jxr_keyword">null</strong>;
+<a name="672" href="#672">672</a>         <strong class="jxr_keyword">this</strong>.bitstreamInputStream = <strong class="jxr_keyword">null</strong>;
+<a name="673" href="#673">673</a>         <strong class="jxr_keyword">this</strong>.bitstreamSize = 0;
+<a name="674" href="#674">674</a>         <strong class="jxr_keyword">this</strong>.bitstreamMimeType = <strong class="jxr_keyword">null</strong>;
+<a name="675" href="#675">675</a>     }
+<a name="676" href="#676">676</a> 
+<a name="677" href="#677">677</a> 
+<a name="678" href="#678">678</a> }
+</pre>
+<hr/><div id="footer">This page was automatically generated by <a href="http://maven.apache.org/">Maven</a></div></body>
+</html>
+

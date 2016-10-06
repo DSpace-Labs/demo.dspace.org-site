@@ -1,0 +1,10 @@
+org.dspace.servicemanager
+org.dspace.servicemanager.config
+org.dspace.servicemanager.fakeservices
+org.dspace.servicemanager.servlet
+org.dspace.servicemanager.spring
+org.dspace.services.caching
+org.dspace.services.events
+org.dspace.services.session
+org.dspace.test
+org.dspace.utils.servicemanager

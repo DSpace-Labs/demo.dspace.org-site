@@ -1,0 +1,703 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1" />
+<title>SubmissionConfigReader xref</title>
+<link type="text/css" rel="stylesheet" href="../../../../stylesheet.css" />
+</head>
+<body>
+<div id="overview"><a href="../../../../../apidocs/org/dspace/app/util/SubmissionConfigReader.html">View Javadoc</a></div><pre>
+
+<a name="1" href="#1">1</a>   <em class="jxr_comment">/*</em>
+<a name="2" href="#2">2</a>   <em class="jxr_comment"> * SubmissionConfigReader.java</em>
+<a name="3" href="#3">3</a>   <em class="jxr_comment"> *</em>
+<a name="4" href="#4">4</a>   <em class="jxr_comment"> * Version: $Revision: 3734 $</em>
+<a name="5" href="#5">5</a>   <em class="jxr_comment"> *</em>
+<a name="6" href="#6">6</a>   <em class="jxr_comment"> * Date: $Date: 2009-04-23 21:00:19 -0700 (Thu, 23 Apr 2009) $</em>
+<a name="7" href="#7">7</a>   <em class="jxr_comment"> *</em>
+<a name="8" href="#8">8</a>   <em class="jxr_comment"> * Copyright (c) 2002-2009, The DSpace Foundation.  All rights reserved.</em>
+<a name="9" href="#9">9</a>   <em class="jxr_comment"> *</em>
+<a name="10" href="#10">10</a>  <em class="jxr_comment"> * Redistribution and use in source and binary forms, with or without</em>
+<a name="11" href="#11">11</a>  <em class="jxr_comment"> * modification, are permitted provided that the following conditions are</em>
+<a name="12" href="#12">12</a>  <em class="jxr_comment"> * met:</em>
+<a name="13" href="#13">13</a>  <em class="jxr_comment"> *</em>
+<a name="14" href="#14">14</a>  <em class="jxr_comment"> * - Redistributions of source code must retain the above copyright</em>
+<a name="15" href="#15">15</a>  <em class="jxr_comment"> * notice, this list of conditions and the following disclaimer.</em>
+<a name="16" href="#16">16</a>  <em class="jxr_comment"> *</em>
+<a name="17" href="#17">17</a>  <em class="jxr_comment"> * - Redistributions in binary form must reproduce the above copyright</em>
+<a name="18" href="#18">18</a>  <em class="jxr_comment"> * notice, this list of conditions and the following disclaimer in the</em>
+<a name="19" href="#19">19</a>  <em class="jxr_comment"> * documentation and/or other materials provided with the distribution.</em>
+<a name="20" href="#20">20</a>  <em class="jxr_comment"> *</em>
+<a name="21" href="#21">21</a>  <em class="jxr_comment"> * - Neither the name of the DSpace Foundation nor the names of its</em>
+<a name="22" href="#22">22</a>  <em class="jxr_comment"> * contributors may be used to endorse or promote products derived from</em>
+<a name="23" href="#23">23</a>  <em class="jxr_comment"> * this software without specific prior written permission.</em>
+<a name="24" href="#24">24</a>  <em class="jxr_comment"> *</em>
+<a name="25" href="#25">25</a>  <em class="jxr_comment"> * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS</em>
+<a name="26" href="#26">26</a>  <em class="jxr_comment"> * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT</em>
+<a name="27" href="#27">27</a>  <em class="jxr_comment"> * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR</em>
+<a name="28" href="#28">28</a>  <em class="jxr_comment"> * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT</em>
+<a name="29" href="#29">29</a>  <em class="jxr_comment"> * HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,</em>
+<a name="30" href="#30">30</a>  <em class="jxr_comment"> * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,</em>
+<a name="31" href="#31">31</a>  <em class="jxr_comment"> * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS</em>
+<a name="32" href="#32">32</a>  <em class="jxr_comment"> * OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND</em>
+<a name="33" href="#33">33</a>  <em class="jxr_comment"> * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR</em>
+<a name="34" href="#34">34</a>  <em class="jxr_comment"> * TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE</em>
+<a name="35" href="#35">35</a>  <em class="jxr_comment"> * USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH</em>
+<a name="36" href="#36">36</a>  <em class="jxr_comment"> * DAMAGE.</em>
+<a name="37" href="#37">37</a>  <em class="jxr_comment"> */</em>
+<a name="38" href="#38">38</a>  
+<a name="39" href="#39">39</a>  <strong class="jxr_keyword">package</strong> org.dspace.app.util;
+<a name="40" href="#40">40</a>  
+<a name="41" href="#41">41</a>  <strong class="jxr_keyword">import</strong> java.io.File;
+<a name="42" href="#42">42</a>  <strong class="jxr_keyword">import</strong> java.util.Vector;
+<a name="43" href="#43">43</a>  <strong class="jxr_keyword">import</strong> java.util.HashMap;
+<a name="44" href="#44">44</a>  <strong class="jxr_keyword">import</strong> java.util.Map;
+<a name="45" href="#45">45</a>  <strong class="jxr_keyword">import</strong> java.lang.Exception;
+<a name="46" href="#46">46</a>  <strong class="jxr_keyword">import</strong> javax.servlet.ServletException;
+<a name="47" href="#47">47</a>  <strong class="jxr_keyword">import</strong> org.xml.sax.SAXException;
+<a name="48" href="#48">48</a>  <strong class="jxr_keyword">import</strong> org.w3c.dom.*;
+<a name="49" href="#49">49</a>  <strong class="jxr_keyword">import</strong> javax.xml.parsers.*;
+<a name="50" href="#50">50</a>  
+<a name="51" href="#51">51</a>  <strong class="jxr_keyword">import</strong> org.apache.log4j.Logger;
+<a name="52" href="#52">52</a>  
+<a name="53" href="#53">53</a>  <strong class="jxr_keyword">import</strong> org.dspace.core.ConfigurationManager;
+<a name="54" href="#54">54</a>  
+<a name="55" href="#55">55</a>  <em class="jxr_javadoccomment">/**</em>
+<a name="56" href="#56">56</a>  <em class="jxr_javadoccomment"> * Item Submission configuration generator for DSpace. Reads and parses the</em>
+<a name="57" href="#57">57</a>  <em class="jxr_javadoccomment"> * installed submission process configuration file, item-submission.xml, from</em>
+<a name="58" href="#58">58</a>  <em class="jxr_javadoccomment"> * the configuration directory. This submission process definiton details the</em>
+<a name="59" href="#59">59</a>  <em class="jxr_javadoccomment"> * ordering of the steps (and number of steps) that occur during the Item</em>
+<a name="60" href="#60">60</a>  <em class="jxr_javadoccomment"> * Submission Process. There may be multiple Item Submission processes defined,</em>
+<a name="61" href="#61">61</a>  <em class="jxr_javadoccomment"> * where each definition is assigned a unique name.</em>
+<a name="62" href="#62">62</a>  <em class="jxr_javadoccomment"> * </em>
+<a name="63" href="#63">63</a>  <em class="jxr_javadoccomment"> * The file also specifies which collections use which Item Submission process.</em>
+<a name="64" href="#64">64</a>  <em class="jxr_javadoccomment"> * At a minimum, the definitions file must define a default mapping from the</em>
+<a name="65" href="#65">65</a>  <em class="jxr_javadoccomment"> * placeholder collection # to the distinguished submission process 'default'.</em>
+<a name="66" href="#66">66</a>  <em class="jxr_javadoccomment"> * Any collections that use a custom submission process are listed paired with</em>
+<a name="67" href="#67">67</a>  <em class="jxr_javadoccomment"> * the name of the item submission process they use.</em>
+<a name="68" href="#68">68</a>  <em class="jxr_javadoccomment"> * </em>
+<a name="69" href="#69">69</a>  <em class="jxr_javadoccomment"> * @see org.dspace.app.util.SubmissionConfig</em>
+<a name="70" href="#70">70</a>  <em class="jxr_javadoccomment"> * @see org.dspace.app.util.SubmissionStepConfig</em>
+<a name="71" href="#71">71</a>  <em class="jxr_javadoccomment"> * </em>
+<a name="72" href="#72">72</a>  <em class="jxr_javadoccomment"> * @author Tim Donohue based on DCInputsReader by Brian S. Hughes</em>
+<a name="73" href="#73">73</a>  <em class="jxr_javadoccomment"> * @version $Revision: 3734 $</em>
+<a name="74" href="#74">74</a>  <em class="jxr_javadoccomment"> */</em>
+<a name="75" href="#75">75</a>  
+<a name="76" href="#76">76</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../org/dspace/app/util/SubmissionConfigReader.html">SubmissionConfigReader</a>
+<a name="77" href="#77">77</a>  {
+<a name="78" href="#78">78</a>      <em class="jxr_javadoccomment">/**</em>
+<a name="79" href="#79">79</a>  <em class="jxr_javadoccomment">     * The ID of the default collection. Will never be the ID of a named</em>
+<a name="80" href="#80">80</a>  <em class="jxr_javadoccomment">     * collection</em>
+<a name="81" href="#81">81</a>  <em class="jxr_javadoccomment">     */</em>
+<a name="82" href="#82">82</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String DEFAULT_COLLECTION = <span class="jxr_string">"default"</span>;
+<a name="83" href="#83">83</a>  
+<a name="84" href="#84">84</a>      <em class="jxr_javadoccomment">/**</em><em class="jxr_javadoccomment"> Prefix of the item submission definition XML file */</em>
+<a name="85" href="#85">85</a>      <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String SUBMIT_DEF_FILE_PREFIX = <span class="jxr_string">"item-submission"</span>;
+<a name="86" href="#86">86</a>      
+<a name="87" href="#87">87</a>      <em class="jxr_javadoccomment">/**</em><em class="jxr_javadoccomment"> Suffix of the item submission definition XML file */</em>
+<a name="88" href="#88">88</a>      <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String SUBMIT_DEF_FILE_SUFFIX = <span class="jxr_string">".xml"</span>;
+<a name="89" href="#89">89</a>  
+<a name="90" href="#90">90</a>      <em class="jxr_javadoccomment">/**</em><em class="jxr_javadoccomment"> log4j logger */</em>
+<a name="91" href="#91">91</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> Logger log = Logger.getLogger(SubmissionConfigReader.<strong class="jxr_keyword">class</strong>);
+<a name="92" href="#92">92</a>  
+<a name="93" href="#93">93</a>  	<em class="jxr_javadoccomment">/**</em><em class="jxr_javadoccomment"> The fully qualified pathname of the directory containing the Item Submission Configuration file */</em>
+<a name="94" href="#94">94</a>      <strong class="jxr_keyword">private</strong> String configDir = ConfigurationManager.getProperty(<span class="jxr_string">"dspace.dir"</span>)
+<a name="95" href="#95">95</a>              + File.separator + <span class="jxr_string">"config"</span> + File.separator;
+<a name="96" href="#96">96</a>              
+<a name="97" href="#97">97</a>      <em class="jxr_javadoccomment">/**</em>
+<a name="98" href="#98">98</a>  <em class="jxr_javadoccomment">     * Hashmap which stores which submission process configuration is used by</em>
+<a name="99" href="#99">99</a>  <em class="jxr_javadoccomment">     * which collection, computed from the item submission config file</em>
+<a name="100" href="#100">100</a> <em class="jxr_javadoccomment">     * (specifically, the 'submission-map' tag)</em>
+<a name="101" href="#101">101</a> <em class="jxr_javadoccomment">     */</em>
+<a name="102" href="#102">102</a>     <strong class="jxr_keyword">private</strong> HashMap collectionToSubmissionConfig = <strong class="jxr_keyword">null</strong>;
+<a name="103" href="#103">103</a> 
+<a name="104" href="#104">104</a>     <em class="jxr_javadoccomment">/**</em>
+<a name="105" href="#105">105</a> <em class="jxr_javadoccomment">     * Reference to the global submission step definitions defined in the</em>
+<a name="106" href="#106">106</a> <em class="jxr_javadoccomment">     * "step-definitions" section</em>
+<a name="107" href="#107">107</a> <em class="jxr_javadoccomment">     */</em>
+<a name="108" href="#108">108</a>     <strong class="jxr_keyword">private</strong> HashMap stepDefns = <strong class="jxr_keyword">null</strong>;
+<a name="109" href="#109">109</a> 
+<a name="110" href="#110">110</a>     <em class="jxr_javadoccomment">/**</em>
+<a name="111" href="#111">111</a> <em class="jxr_javadoccomment">     * Reference to the item submission definitions defined in the</em>
+<a name="112" href="#112">112</a> <em class="jxr_javadoccomment">     * "submission-definitions" section</em>
+<a name="113" href="#113">113</a> <em class="jxr_javadoccomment">     */</em>
+<a name="114" href="#114">114</a>     <strong class="jxr_keyword">private</strong> HashMap submitDefns = <strong class="jxr_keyword">null</strong>;
+<a name="115" href="#115">115</a> 
+<a name="116" href="#116">116</a>     <em class="jxr_javadoccomment">/**</em>
+<a name="117" href="#117">117</a> <em class="jxr_javadoccomment">     * Mini-cache of last SubmissionConfig object requested (so that we don't</em>
+<a name="118" href="#118">118</a> <em class="jxr_javadoccomment">     * always reload from scratch)</em>
+<a name="119" href="#119">119</a> <em class="jxr_javadoccomment">     */</em>
+<a name="120" href="#120">120</a>     <strong class="jxr_keyword">private</strong> <a href="../../../../org/dspace/app/util/SubmissionConfig.html">SubmissionConfig</a> lastSubmissionConfig = <strong class="jxr_keyword">null</strong>;
+<a name="121" href="#121">121</a> 
+<a name="122" href="#122">122</a>     <em class="jxr_javadoccomment">/**</em>
+<a name="123" href="#123">123</a> <em class="jxr_javadoccomment">     * Load Submission Configuration from the</em>
+<a name="124" href="#124">124</a> <em class="jxr_javadoccomment">     * item-submission.xml configuration file </em>
+<a name="125" href="#125">125</a> <em class="jxr_javadoccomment">     */</em>
+<a name="126" href="#126">126</a>     <strong class="jxr_keyword">public</strong> <a href="../../../../org/dspace/app/util/SubmissionConfigReader.html">SubmissionConfigReader</a>() <strong class="jxr_keyword">throws</strong> ServletException
+<a name="127" href="#127">127</a>     {
+<a name="128" href="#128">128</a>         buildInputs(configDir + SUBMIT_DEF_FILE_PREFIX + SUBMIT_DEF_FILE_SUFFIX);
+<a name="129" href="#129">129</a>     }
+<a name="130" href="#130">130</a> 
+<a name="131" href="#131">131</a>     <em class="jxr_javadoccomment">/**</em>
+<a name="132" href="#132">132</a> <em class="jxr_javadoccomment">     * Parse an XML encoded item submission configuration file.</em>
+<a name="133" href="#133">133</a> <em class="jxr_javadoccomment">     * &lt;P&gt;</em>
+<a name="134" href="#134">134</a> <em class="jxr_javadoccomment">     * Creates two main hashmaps:</em>
+<a name="135" href="#135">135</a> <em class="jxr_javadoccomment">     * &lt;ul&gt;</em>
+<a name="136" href="#136">136</a> <em class="jxr_javadoccomment">     * &lt;li&gt;Hashmap of Collection to Submission definition mappings -</em>
+<a name="137" href="#137">137</a> <em class="jxr_javadoccomment">     * defines which Submission process a particular collection uses</em>
+<a name="138" href="#138">138</a> <em class="jxr_javadoccomment">     * &lt;li&gt;Hashmap of all Submission definitions.  List of all valid</em>
+<a name="139" href="#139">139</a> <em class="jxr_javadoccomment">     * Submision Processes by name.</em>
+<a name="140" href="#140">140</a> <em class="jxr_javadoccomment">     * &lt;/ul&gt;</em>
+<a name="141" href="#141">141</a> <em class="jxr_javadoccomment">     */</em>
+<a name="142" href="#142">142</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> buildInputs(String fileName) <strong class="jxr_keyword">throws</strong> ServletException
+<a name="143" href="#143">143</a>     {
+<a name="144" href="#144">144</a>         collectionToSubmissionConfig = <strong class="jxr_keyword">new</strong> HashMap();
+<a name="145" href="#145">145</a>         submitDefns = <strong class="jxr_keyword">new</strong> HashMap();
+<a name="146" href="#146">146</a> 
+<a name="147" href="#147">147</a>         String uri = <span class="jxr_string">"file:"</span> + <strong class="jxr_keyword">new</strong> File(fileName).getAbsolutePath();
+<a name="148" href="#148">148</a> 
+<a name="149" href="#149">149</a>         <strong class="jxr_keyword">try</strong>
+<a name="150" href="#150">150</a>         {
+<a name="151" href="#151">151</a>             DocumentBuilderFactory factory = DocumentBuilderFactory
+<a name="152" href="#152">152</a>                     .newInstance();
+<a name="153" href="#153">153</a>             factory.setValidating(false);
+<a name="154" href="#154">154</a>             factory.setIgnoringComments(<strong class="jxr_keyword">true</strong>);
+<a name="155" href="#155">155</a>             factory.setIgnoringElementContentWhitespace(<strong class="jxr_keyword">true</strong>);
+<a name="156" href="#156">156</a> 
+<a name="157" href="#157">157</a>             DocumentBuilder db = factory.newDocumentBuilder();
+<a name="158" href="#158">158</a>             Document doc = db.parse(uri);
+<a name="159" href="#159">159</a>             doNodes(doc);
+<a name="160" href="#160">160</a>         }
+<a name="161" href="#161">161</a>         <strong class="jxr_keyword">catch</strong> (FactoryConfigurationError fe)
+<a name="162" href="#162">162</a>         {
+<a name="163" href="#163">163</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> ServletException(
+<a name="164" href="#164">164</a>                     <span class="jxr_string">"Cannot create Item Submission Configuration parser"</span>, fe);
+<a name="165" href="#165">165</a>         }
+<a name="166" href="#166">166</a>         <strong class="jxr_keyword">catch</strong> (Exception e)
+<a name="167" href="#167">167</a>         {
+<a name="168" href="#168">168</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> ServletException(
+<a name="169" href="#169">169</a>                     <span class="jxr_string">"Error creating Item Submission Configuration: "</span> + e);
+<a name="170" href="#170">170</a>         }
+<a name="171" href="#171">171</a>     }
+<a name="172" href="#172">172</a> 
+<a name="173" href="#173">173</a>     <em class="jxr_javadoccomment">/**</em>
+<a name="174" href="#174">174</a> <em class="jxr_javadoccomment">     * Returns the Item Submission process config used for a particular</em>
+<a name="175" href="#175">175</a> <em class="jxr_javadoccomment">     * collection, or the default if none is defined for the collection</em>
+<a name="176" href="#176">176</a> <em class="jxr_javadoccomment">     * </em>
+<a name="177" href="#177">177</a> <em class="jxr_javadoccomment">     * @param collectionHandle</em>
+<a name="178" href="#178">178</a> <em class="jxr_javadoccomment">     *            collection's unique Handle</em>
+<a name="179" href="#179">179</a> <em class="jxr_javadoccomment">     * @param isWorkflow</em>
+<a name="180" href="#180">180</a> <em class="jxr_javadoccomment">     *            whether or not we are loading the submission process for a</em>
+<a name="181" href="#181">181</a> <em class="jxr_javadoccomment">     *            workflow</em>
+<a name="182" href="#182">182</a> <em class="jxr_javadoccomment">     * @return the SubmissionConfig representing the item submission config</em>
+<a name="183" href="#183">183</a> <em class="jxr_javadoccomment">     * </em>
+<a name="184" href="#184">184</a> <em class="jxr_javadoccomment">     * @throws ServletException</em>
+<a name="185" href="#185">185</a> <em class="jxr_javadoccomment">     *             if no default submission process configuration defined</em>
+<a name="186" href="#186">186</a> <em class="jxr_javadoccomment">     */</em>
+<a name="187" href="#187">187</a>     <strong class="jxr_keyword">public</strong> <a href="../../../../org/dspace/app/util/SubmissionConfig.html">SubmissionConfig</a> getSubmissionConfig(String collectionHandle,
+<a name="188" href="#188">188</a>             <strong class="jxr_keyword">boolean</strong> isWorkflow) <strong class="jxr_keyword">throws</strong> ServletException
+<a name="189" href="#189">189</a>     {
+<a name="190" href="#190">190</a>         <em class="jxr_comment">// get the name of the submission process config for this collection</em>
+<a name="191" href="#191">191</a>         String submitName = (String) collectionToSubmissionConfig
+<a name="192" href="#192">192</a>                 .get(collectionHandle);
+<a name="193" href="#193">193</a>         <strong class="jxr_keyword">if</strong> (submitName == <strong class="jxr_keyword">null</strong>)
+<a name="194" href="#194">194</a>         {
+<a name="195" href="#195">195</a>             submitName = (String) collectionToSubmissionConfig
+<a name="196" href="#196">196</a>                     .get(DEFAULT_COLLECTION);
+<a name="197" href="#197">197</a>         }
+<a name="198" href="#198">198</a>         <strong class="jxr_keyword">if</strong> (submitName == <strong class="jxr_keyword">null</strong>)
+<a name="199" href="#199">199</a>         {
+<a name="200" href="#200">200</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> ServletException(
+<a name="201" href="#201">201</a>                     <span class="jxr_string">"No item submission process configuration designated as 'default' in 'submission-map' section of 'item-submission.xml'."</span>);
+<a name="202" href="#202">202</a>         }
+<a name="203" href="#203">203</a> 
+<a name="204" href="#204">204</a>         log.debug(<span class="jxr_string">"Loading submission process config named '"</span> + submitName
+<a name="205" href="#205">205</a>                 + <span class="jxr_string">"'"</span>);
+<a name="206" href="#206">206</a> 
+<a name="207" href="#207">207</a>         <em class="jxr_comment">// check mini-cache, and return if match</em>
+<a name="208" href="#208">208</a>         <strong class="jxr_keyword">if</strong> (lastSubmissionConfig != <strong class="jxr_keyword">null</strong>
+<a name="209" href="#209">209</a>                 &amp;&amp; lastSubmissionConfig.getSubmissionName().equals(submitName)
+<a name="210" href="#210">210</a>                 &amp;&amp; lastSubmissionConfig.isWorkflow() == isWorkflow)
+<a name="211" href="#211">211</a>         {
+<a name="212" href="#212">212</a>             log.debug(<span class="jxr_string">"Found submission process config '"</span> + submitName
+<a name="213" href="#213">213</a>                     + <span class="jxr_string">"' in cache."</span>);
+<a name="214" href="#214">214</a> 
+<a name="215" href="#215">215</a>             <strong class="jxr_keyword">return</strong> lastSubmissionConfig;
+<a name="216" href="#216">216</a>         }
+<a name="217" href="#217">217</a> 
+<a name="218" href="#218">218</a>         <em class="jxr_comment">// cache miss - construct new SubmissionConfig</em>
+<a name="219" href="#219">219</a>         Vector steps = (Vector) submitDefns.get(submitName);
+<a name="220" href="#220">220</a> 
+<a name="221" href="#221">221</a>         <strong class="jxr_keyword">if</strong> (steps == <strong class="jxr_keyword">null</strong>)
+<a name="222" href="#222">222</a>         {
+<a name="223" href="#223">223</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> ServletException(
+<a name="224" href="#224">224</a>                     <span class="jxr_string">"Missing the Item Submission process config '"</span> + submitName
+<a name="225" href="#225">225</a>                             + <span class="jxr_string">"' (or unable to load) from 'item-submission.xml'."</span>);
+<a name="226" href="#226">226</a>         }
+<a name="227" href="#227">227</a> 
+<a name="228" href="#228">228</a>         log.debug(<span class="jxr_string">"Submission process config '"</span> + submitName
+<a name="229" href="#229">229</a>                 + <span class="jxr_string">"' not in cache. Reloading from scratch."</span>);
+<a name="230" href="#230">230</a> 
+<a name="231" href="#231">231</a>         lastSubmissionConfig = <strong class="jxr_keyword">new</strong> <a href="../../../../org/dspace/app/util/SubmissionConfig.html">SubmissionConfig</a>(submitName, steps,
+<a name="232" href="#232">232</a>                 isWorkflow);
+<a name="233" href="#233">233</a> 
+<a name="234" href="#234">234</a>         log.debug(<span class="jxr_string">"Submission process config has "</span>
+<a name="235" href="#235">235</a>                 + lastSubmissionConfig.getNumberOfSteps() + <span class="jxr_string">" steps listed."</span>);
+<a name="236" href="#236">236</a> 
+<a name="237" href="#237">237</a>         <strong class="jxr_keyword">return</strong> lastSubmissionConfig;
+<a name="238" href="#238">238</a>     }
+<a name="239" href="#239">239</a> 
+<a name="240" href="#240">240</a>     <em class="jxr_javadoccomment">/**</em>
+<a name="241" href="#241">241</a> <em class="jxr_javadoccomment">     * Returns a particular global step definition based on its ID.</em>
+<a name="242" href="#242">242</a> <em class="jxr_javadoccomment">     * &lt;P&gt;</em>
+<a name="243" href="#243">243</a> <em class="jxr_javadoccomment">     * Global step definitions are those defined in the &lt;step-definitions&gt;</em>
+<a name="244" href="#244">244</a> <em class="jxr_javadoccomment">     * section of the configuration file.</em>
+<a name="245" href="#245">245</a> <em class="jxr_javadoccomment">     * </em>
+<a name="246" href="#246">246</a> <em class="jxr_javadoccomment">     * @param stepID</em>
+<a name="247" href="#247">247</a> <em class="jxr_javadoccomment">     *            step's identifier</em>
+<a name="248" href="#248">248</a> <em class="jxr_javadoccomment">     * </em>
+<a name="249" href="#249">249</a> <em class="jxr_javadoccomment">     * @return the SubmissionStepConfig representing the step</em>
+<a name="250" href="#250">250</a> <em class="jxr_javadoccomment">     * </em>
+<a name="251" href="#251">251</a> <em class="jxr_javadoccomment">     * @throws ServletException</em>
+<a name="252" href="#252">252</a> <em class="jxr_javadoccomment">     *             if no default submission process configuration defined</em>
+<a name="253" href="#253">253</a> <em class="jxr_javadoccomment">     */</em>
+<a name="254" href="#254">254</a>     <strong class="jxr_keyword">public</strong> <a href="../../../../org/dspace/app/util/SubmissionStepConfig.html">SubmissionStepConfig</a> getStepConfig(String stepID)
+<a name="255" href="#255">255</a>             <strong class="jxr_keyword">throws</strong> ServletException
+<a name="256" href="#256">256</a>     {
+<a name="257" href="#257">257</a>         <em class="jxr_comment">// We should already have the step definitions loaded</em>
+<a name="258" href="#258">258</a>         <strong class="jxr_keyword">if</strong> (stepDefns != <strong class="jxr_keyword">null</strong>)
+<a name="259" href="#259">259</a>         {
+<a name="260" href="#260">260</a>             <em class="jxr_comment">// retreive step info</em>
+<a name="261" href="#261">261</a>             Map stepInfo = (Map) stepDefns.get(stepID);
+<a name="262" href="#262">262</a> 
+<a name="263" href="#263">263</a>             <strong class="jxr_keyword">if</strong> (stepInfo != <strong class="jxr_keyword">null</strong>)
+<a name="264" href="#264">264</a>                 <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> <a href="../../../../org/dspace/app/util/SubmissionStepConfig.html">SubmissionStepConfig</a>(stepInfo);
+<a name="265" href="#265">265</a>         }
+<a name="266" href="#266">266</a> 
+<a name="267" href="#267">267</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">null</strong>;
+<a name="268" href="#268">268</a>     }
+<a name="269" href="#269">269</a> 
+<a name="270" href="#270">270</a>     <em class="jxr_javadoccomment">/**</em>
+<a name="271" href="#271">271</a> <em class="jxr_javadoccomment">     * Process the top level child nodes in the passed top-level node. These</em>
+<a name="272" href="#272">272</a> <em class="jxr_javadoccomment">     * should correspond to the collection-form maps, the form definitions, and</em>
+<a name="273" href="#273">273</a> <em class="jxr_javadoccomment">     * the display/storage word pairs.</em>
+<a name="274" href="#274">274</a> <em class="jxr_javadoccomment">     */</em>
+<a name="275" href="#275">275</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> doNodes(Node n) <strong class="jxr_keyword">throws</strong> SAXException, ServletException
+<a name="276" href="#276">276</a>     {
+<a name="277" href="#277">277</a>         <strong class="jxr_keyword">if</strong> (n == <strong class="jxr_keyword">null</strong>)
+<a name="278" href="#278">278</a>         {
+<a name="279" href="#279">279</a>             <strong class="jxr_keyword">return</strong>;
+<a name="280" href="#280">280</a>         }
+<a name="281" href="#281">281</a>         Node e = getElement(n);
+<a name="282" href="#282">282</a>         NodeList nl = e.getChildNodes();
+<a name="283" href="#283">283</a>         <strong class="jxr_keyword">int</strong> len = nl.getLength();
+<a name="284" href="#284">284</a>         <strong class="jxr_keyword">boolean</strong> foundMap = false;
+<a name="285" href="#285">285</a>         <strong class="jxr_keyword">boolean</strong> foundStepDefs = false;
+<a name="286" href="#286">286</a>         <strong class="jxr_keyword">boolean</strong> foundSubmitDefs = false;
+<a name="287" href="#287">287</a>         <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">int</strong> i = 0; i &lt; len; i++)
+<a name="288" href="#288">288</a>         {
+<a name="289" href="#289">289</a>             Node nd = nl.item(i);
+<a name="290" href="#290">290</a>             <strong class="jxr_keyword">if</strong> ((nd == <strong class="jxr_keyword">null</strong>) || isEmptyTextNode(nd))
+<a name="291" href="#291">291</a>             {
+<a name="292" href="#292">292</a>                 <strong class="jxr_keyword">continue</strong>;
+<a name="293" href="#293">293</a>             }
+<a name="294" href="#294">294</a>             String tagName = nd.getNodeName();
+<a name="295" href="#295">295</a>             <strong class="jxr_keyword">if</strong> (tagName.equals(<span class="jxr_string">"submission-map"</span>))
+<a name="296" href="#296">296</a>             {
+<a name="297" href="#297">297</a>                 processMap(nd);
+<a name="298" href="#298">298</a>                 foundMap = <strong class="jxr_keyword">true</strong>;
+<a name="299" href="#299">299</a>             }
+<a name="300" href="#300">300</a>             <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (tagName.equals(<span class="jxr_string">"step-definitions"</span>))
+<a name="301" href="#301">301</a>             {
+<a name="302" href="#302">302</a>                 processStepDefinition(nd);
+<a name="303" href="#303">303</a>                 foundStepDefs = <strong class="jxr_keyword">true</strong>;
+<a name="304" href="#304">304</a>             }
+<a name="305" href="#305">305</a>             <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (tagName.equals(<span class="jxr_string">"submission-definitions"</span>))
+<a name="306" href="#306">306</a>             {
+<a name="307" href="#307">307</a>                 processSubmissionDefinition(nd);
+<a name="308" href="#308">308</a>                 foundSubmitDefs = <strong class="jxr_keyword">true</strong>;
+<a name="309" href="#309">309</a>             }
+<a name="310" href="#310">310</a>             <em class="jxr_comment">// Ignore unknown nodes</em>
+<a name="311" href="#311">311</a>         }
+<a name="312" href="#312">312</a>         <strong class="jxr_keyword">if</strong> (!foundMap)
+<a name="313" href="#313">313</a>         {
+<a name="314" href="#314">314</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> ServletException(
+<a name="315" href="#315">315</a>                     <span class="jxr_string">"No collection to item submission map ('submission-map') found in 'item-submission.xml'"</span>);
+<a name="316" href="#316">316</a>         }
+<a name="317" href="#317">317</a>         <strong class="jxr_keyword">if</strong> (!foundStepDefs)
+<a name="318" href="#318">318</a>         {
+<a name="319" href="#319">319</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> ServletException(<span class="jxr_string">"No 'step-definitions' section found in 'item-submission.xml'"</span>);
+<a name="320" href="#320">320</a>         }
+<a name="321" href="#321">321</a>         <strong class="jxr_keyword">if</strong> (!foundSubmitDefs)
+<a name="322" href="#322">322</a>         {
+<a name="323" href="#323">323</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> ServletException(
+<a name="324" href="#324">324</a>                     <span class="jxr_string">"No 'submission-definitions' section found in 'item-submission.xml'"</span>);
+<a name="325" href="#325">325</a>         }
+<a name="326" href="#326">326</a>     }
+<a name="327" href="#327">327</a> 
+<a name="328" href="#328">328</a>     <em class="jxr_javadoccomment">/**</em>
+<a name="329" href="#329">329</a> <em class="jxr_javadoccomment">     * Process the submission-map section of the XML file. Each element looks</em>
+<a name="330" href="#330">330</a> <em class="jxr_javadoccomment">     * like: &lt;name-map collection-handle="hdl" submission-name="name" /&gt; Extract</em>
+<a name="331" href="#331">331</a> <em class="jxr_javadoccomment">     * the collection handle and item submission name, put name in hashmap keyed</em>
+<a name="332" href="#332">332</a> <em class="jxr_javadoccomment">     * by the collection handle.</em>
+<a name="333" href="#333">333</a> <em class="jxr_javadoccomment">     */</em>
+<a name="334" href="#334">334</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> processMap(Node e) <strong class="jxr_keyword">throws</strong> SAXException
+<a name="335" href="#335">335</a>     {
+<a name="336" href="#336">336</a>         NodeList nl = e.getChildNodes();
+<a name="337" href="#337">337</a>         <strong class="jxr_keyword">int</strong> len = nl.getLength();
+<a name="338" href="#338">338</a>         <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">int</strong> i = 0; i &lt; len; i++)
+<a name="339" href="#339">339</a>         {
+<a name="340" href="#340">340</a>             Node nd = nl.item(i);
+<a name="341" href="#341">341</a>             <strong class="jxr_keyword">if</strong> (nd.getNodeName().equals(<span class="jxr_string">"name-map"</span>))
+<a name="342" href="#342">342</a>             {
+<a name="343" href="#343">343</a>                 String id = getAttribute(nd, <span class="jxr_string">"collection-handle"</span>);
+<a name="344" href="#344">344</a>                 String value = getAttribute(nd, <span class="jxr_string">"submission-name"</span>);
+<a name="345" href="#345">345</a>                 String content = getValue(nd);
+<a name="346" href="#346">346</a>                 <strong class="jxr_keyword">if</strong> (id == <strong class="jxr_keyword">null</strong>)
+<a name="347" href="#347">347</a>                 {
+<a name="348" href="#348">348</a>                     <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> SAXException(
+<a name="349" href="#349">349</a>                             <span class="jxr_string">"name-map element is missing collection-handle attribute in 'item-submission.xml'"</span>);
+<a name="350" href="#350">350</a>                 }
+<a name="351" href="#351">351</a>                 <strong class="jxr_keyword">if</strong> (value == <strong class="jxr_keyword">null</strong>)
+<a name="352" href="#352">352</a>                 {
+<a name="353" href="#353">353</a>                     <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> SAXException(
+<a name="354" href="#354">354</a>                             <span class="jxr_string">"name-map element is missing submission-name attribute in 'item-submission.xml'"</span>);
+<a name="355" href="#355">355</a>                 }
+<a name="356" href="#356">356</a>                 <strong class="jxr_keyword">if</strong> (content != <strong class="jxr_keyword">null</strong> &amp;&amp; content.length() &gt; 0)
+<a name="357" href="#357">357</a>                 {
+<a name="358" href="#358">358</a>                     <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> SAXException(
+<a name="359" href="#359">359</a>                             <span class="jxr_string">"name-map element has content in 'item-submission.xml', it should be empty."</span>);
+<a name="360" href="#360">360</a>                 }
+<a name="361" href="#361">361</a>                 collectionToSubmissionConfig.put(id, value);
+<a name="362" href="#362">362</a>             } <em class="jxr_comment">// ignore any child node that isn't a "name-map"</em>
+<a name="363" href="#363">363</a>         }
+<a name="364" href="#364">364</a>     }
+<a name="365" href="#365">365</a> 
+<a name="366" href="#366">366</a>     <em class="jxr_javadoccomment">/**</em>
+<a name="367" href="#367">367</a> <em class="jxr_javadoccomment">     * Process the "step-definition" section of the XML file. Each element is</em>
+<a name="368" href="#368">368</a> <em class="jxr_javadoccomment">     * formed thusly: &lt;step id="unique-id"&gt; ...step_fields... &lt;/step&gt; The valid</em>
+<a name="369" href="#369">369</a> <em class="jxr_javadoccomment">     * step_fields are: heading, processing-servlet.</em>
+<a name="370" href="#370">370</a> <em class="jxr_javadoccomment">     * &lt;P&gt;</em>
+<a name="371" href="#371">371</a> <em class="jxr_javadoccomment">     * Extract the step information (from the step_fields) and place in a</em>
+<a name="372" href="#372">372</a> <em class="jxr_javadoccomment">     * HashMap whose key is the step's unique id.</em>
+<a name="373" href="#373">373</a> <em class="jxr_javadoccomment">     */</em>
+<a name="374" href="#374">374</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> processStepDefinition(Node e) <strong class="jxr_keyword">throws</strong> SAXException,
+<a name="375" href="#375">375</a>             ServletException
+<a name="376" href="#376">376</a>     {
+<a name="377" href="#377">377</a>         <strong class="jxr_keyword">int</strong> numStepDefns = 0;
+<a name="378" href="#378">378</a>         stepDefns = <strong class="jxr_keyword">new</strong> HashMap();
+<a name="379" href="#379">379</a> 
+<a name="380" href="#380">380</a>         NodeList nl = e.getChildNodes();
+<a name="381" href="#381">381</a>         <strong class="jxr_keyword">int</strong> len = nl.getLength();
+<a name="382" href="#382">382</a>         <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">int</strong> i = 0; i &lt; len; i++)
+<a name="383" href="#383">383</a>         {
+<a name="384" href="#384">384</a>             Node nd = nl.item(i);
+<a name="385" href="#385">385</a>             <em class="jxr_comment">// process each step definition</em>
+<a name="386" href="#386">386</a>             <strong class="jxr_keyword">if</strong> (nd.getNodeName().equals(<span class="jxr_string">"step"</span>))
+<a name="387" href="#387">387</a>             {
+<a name="388" href="#388">388</a>                 numStepDefns++;
+<a name="389" href="#389">389</a>                 String stepID = getAttribute(nd, <span class="jxr_string">"id"</span>);
+<a name="390" href="#390">390</a>                 <strong class="jxr_keyword">if</strong> (stepID == <strong class="jxr_keyword">null</strong>)
+<a name="391" href="#391">391</a>                 {
+<a name="392" href="#392">392</a>                     <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> SAXException(
+<a name="393" href="#393">393</a>                             <span class="jxr_string">"step element has no 'id' attribute in 'item-submission.xml', which is required in the 'step-definitions' section"</span>);
+<a name="394" href="#394">394</a>                 }
+<a name="395" href="#395">395</a>                 <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (stepDefns.containsKey(stepID))
+<a name="396" href="#396">396</a>                 {
+<a name="397" href="#397">397</a>                     <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> SAXException(
+<a name="398" href="#398">398</a>                             <span class="jxr_string">"There are two step elements with the id '"</span> + stepID + <span class="jxr_string">"' in 'item-submission.xml'"</span>);
+<a name="399" href="#399">399</a>                 }
+<a name="400" href="#400">400</a> 
+<a name="401" href="#401">401</a>                 HashMap stepInfo = processStepChildNodes(<span class="jxr_string">"step-definition"</span>, nd);
+<a name="402" href="#402">402</a> 
+<a name="403" href="#403">403</a>                 stepDefns.put(stepID, stepInfo);
+<a name="404" href="#404">404</a>             } <em class="jxr_comment">// ignore any child that is not a 'step'</em>
+<a name="405" href="#405">405</a>         }
+<a name="406" href="#406">406</a> 
+<a name="407" href="#407">407</a>         <em class="jxr_comment">// Sanity check number of step definitions</em>
+<a name="408" href="#408">408</a>         <strong class="jxr_keyword">if</strong> (stepDefns.size() &lt; 1)
+<a name="409" href="#409">409</a>         {
+<a name="410" href="#410">410</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> ServletException(
+<a name="411" href="#411">411</a>                     <span class="jxr_string">"step-definition section has no steps! A step with id='collection' is required in 'item-submission.xml'!"</span>);
+<a name="412" href="#412">412</a>         }
+<a name="413" href="#413">413</a> 
+<a name="414" href="#414">414</a>         <em class="jxr_comment">// Sanity check to see that the required "collection" step is defined</em>
+<a name="415" href="#415">415</a>         <strong class="jxr_keyword">if</strong> (!stepDefns.containsKey(SubmissionStepConfig.SELECT_COLLECTION_STEP))
+<a name="416" href="#416">416</a>         {
+<a name="417" href="#417">417</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> ServletException(
+<a name="418" href="#418">418</a>                     <span class="jxr_string">"The step-definition section is REQUIRED to have a step with id='"</span>
+<a name="419" href="#419">419</a>                             + SubmissionStepConfig.SELECT_COLLECTION_STEP
+<a name="420" href="#420">420</a>                             + <span class="jxr_string">"' in 'item-submission.xml'!  This step is used to ensure that a new item submission is assigned to a collection."</span>);
+<a name="421" href="#421">421</a>         }
+<a name="422" href="#422">422</a> 
+<a name="423" href="#423">423</a>         <em class="jxr_comment">// Sanity check to see that the required "complete" step is defined</em>
+<a name="424" href="#424">424</a>         <strong class="jxr_keyword">if</strong> (!stepDefns.containsKey(SubmissionStepConfig.COMPLETE_STEP))
+<a name="425" href="#425">425</a>         {
+<a name="426" href="#426">426</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> ServletException(
+<a name="427" href="#427">427</a>                     <span class="jxr_string">"The step-definition section is REQUIRED to have a step with id='"</span>
+<a name="428" href="#428">428</a>                             + SubmissionStepConfig.COMPLETE_STEP
+<a name="429" href="#429">429</a>                             + <span class="jxr_string">"' in 'item-submission.xml'!  This step is used to perform all processing necessary at the completion of the submission (e.g. starting workflow)."</span>);
+<a name="430" href="#430">430</a>         }
+<a name="431" href="#431">431</a>     }
+<a name="432" href="#432">432</a> 
+<a name="433" href="#433">433</a>     <em class="jxr_javadoccomment">/**</em>
+<a name="434" href="#434">434</a> <em class="jxr_javadoccomment">     * Process the "submission-definition" section of the XML file. Each element</em>
+<a name="435" href="#435">435</a> <em class="jxr_javadoccomment">     * is formed thusly: &lt;submission-process name="submitName"&gt;...steps...&lt;/submit-process&gt;</em>
+<a name="436" href="#436">436</a> <em class="jxr_javadoccomment">     * Each step subsection is formed: &lt;step&gt; ...step_fields... &lt;/step&gt; (with</em>
+<a name="437" href="#437">437</a> <em class="jxr_javadoccomment">     * optional "id" attribute, to reference a step from the &lt;step-definition&gt;</em>
+<a name="438" href="#438">438</a> <em class="jxr_javadoccomment">     * section). The valid step_fields are: heading, class-name.</em>
+<a name="439" href="#439">439</a> <em class="jxr_javadoccomment">     * &lt;P&gt;</em>
+<a name="440" href="#440">440</a> <em class="jxr_javadoccomment">     * Extract the submission-process name and steps and place in a HashMap</em>
+<a name="441" href="#441">441</a> <em class="jxr_javadoccomment">     * whose key is the submission-process's unique name.</em>
+<a name="442" href="#442">442</a> <em class="jxr_javadoccomment">     */</em>
+<a name="443" href="#443">443</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> processSubmissionDefinition(Node e) <strong class="jxr_keyword">throws</strong> SAXException,
+<a name="444" href="#444">444</a>             ServletException
+<a name="445" href="#445">445</a>     {
+<a name="446" href="#446">446</a>         <strong class="jxr_keyword">int</strong> numSubmitProcesses = 0;
+<a name="447" href="#447">447</a>         Vector submitNames = <strong class="jxr_keyword">new</strong> Vector();
+<a name="448" href="#448">448</a> 
+<a name="449" href="#449">449</a>         <em class="jxr_comment">// find all child nodes of the 'submission-definition' node and loop</em>
+<a name="450" href="#450">450</a>         <em class="jxr_comment">// through</em>
+<a name="451" href="#451">451</a>         NodeList nl = e.getChildNodes();
+<a name="452" href="#452">452</a>         <strong class="jxr_keyword">int</strong> len = nl.getLength();
+<a name="453" href="#453">453</a>         <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">int</strong> i = 0; i &lt; len; i++)
+<a name="454" href="#454">454</a>         {
+<a name="455" href="#455">455</a>             Node nd = nl.item(i);
+<a name="456" href="#456">456</a> 
+<a name="457" href="#457">457</a>             <em class="jxr_comment">// process each 'submission-process' node</em>
+<a name="458" href="#458">458</a>             <strong class="jxr_keyword">if</strong> (nd.getNodeName().equals(<span class="jxr_string">"submission-process"</span>))
+<a name="459" href="#459">459</a>             {
+<a name="460" href="#460">460</a>                 numSubmitProcesses++;
+<a name="461" href="#461">461</a>                 String submitName = getAttribute(nd, <span class="jxr_string">"name"</span>);
+<a name="462" href="#462">462</a>                 <strong class="jxr_keyword">if</strong> (submitName == <strong class="jxr_keyword">null</strong>)
+<a name="463" href="#463">463</a>                 {
+<a name="464" href="#464">464</a>                     <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> SAXException(
+<a name="465" href="#465">465</a>                             <span class="jxr_string">"'submission-process' element has no 'name' attribute in 'item-submission.xml'"</span>);
+<a name="466" href="#466">466</a>                 }
+<a name="467" href="#467">467</a>                 <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (submitNames.contains(submitName))
+<a name="468" href="#468">468</a>                 {
+<a name="469" href="#469">469</a>                     <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> SAXException(
+<a name="470" href="#470">470</a>                             <span class="jxr_string">"There are two 'submission-process' elements with the name '"</span>
+<a name="471" href="#471">471</a>                                     + submitName + <span class="jxr_string">"' in 'item-submission.xml'."</span>);
+<a name="472" href="#472">472</a>                 }
+<a name="473" href="#473">473</a>                 submitNames.add(submitName);
+<a name="474" href="#474">474</a> 
+<a name="475" href="#475">475</a>                 <em class="jxr_comment">// the 'submission-process' definition contains steps</em>
+<a name="476" href="#476">476</a>                 Vector steps = <strong class="jxr_keyword">new</strong> Vector();
+<a name="477" href="#477">477</a>                 submitDefns.put(submitName, steps);
+<a name="478" href="#478">478</a> 
+<a name="479" href="#479">479</a>                 <em class="jxr_comment">// loop through all the 'step' nodes of the 'submission-process'</em>
+<a name="480" href="#480">480</a>                 <strong class="jxr_keyword">int</strong> stepNum = 0;
+<a name="481" href="#481">481</a>                 NodeList pl = nd.getChildNodes();
+<a name="482" href="#482">482</a>                 <strong class="jxr_keyword">int</strong> lenStep = pl.getLength();
+<a name="483" href="#483">483</a>                 <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">int</strong> j = 0; j &lt; lenStep; j++)
+<a name="484" href="#484">484</a>                 {
+<a name="485" href="#485">485</a>                     Node nStep = pl.item(j);
+<a name="486" href="#486">486</a>                     stepNum++;
+<a name="487" href="#487">487</a> 
+<a name="488" href="#488">488</a>                     <em class="jxr_comment">// process each 'step' definition</em>
+<a name="489" href="#489">489</a>                     <strong class="jxr_keyword">if</strong> (nStep.getNodeName().equals(<span class="jxr_string">"step"</span>))
+<a name="490" href="#490">490</a>                     {
+<a name="491" href="#491">491</a>                         <em class="jxr_comment">// check for an 'id' attribute</em>
+<a name="492" href="#492">492</a>                         String stepID = getAttribute(nStep, <span class="jxr_string">"id"</span>);
+<a name="493" href="#493">493</a> 
+<a name="494" href="#494">494</a>                         HashMap stepInfo;
+<a name="495" href="#495">495</a> 
+<a name="496" href="#496">496</a>                         <em class="jxr_comment">// if this step has an id, load its information from the</em>
+<a name="497" href="#497">497</a>                         <em class="jxr_comment">// step-definition section</em>
+<a name="498" href="#498">498</a>                         <strong class="jxr_keyword">if</strong> ((stepID != <strong class="jxr_keyword">null</strong>) &amp;&amp; (stepID.length() &gt; 0))
+<a name="499" href="#499">499</a>                         {
+<a name="500" href="#500">500</a>                             <strong class="jxr_keyword">if</strong> (stepDefns.containsKey(stepID))
+<a name="501" href="#501">501</a>                             {
+<a name="502" href="#502">502</a>                                 <em class="jxr_comment">// load the step information from the</em>
+<a name="503" href="#503">503</a>                                 <em class="jxr_comment">// step-definition</em>
+<a name="504" href="#504">504</a>                                 stepInfo = (HashMap) stepDefns.get(stepID);
+<a name="505" href="#505">505</a>                             }
+<a name="506" href="#506">506</a>                             <strong class="jxr_keyword">else</strong>
+<a name="507" href="#507">507</a>                             {
+<a name="508" href="#508">508</a>                                 <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> SAXException(
+<a name="509" href="#509">509</a>                                         <span class="jxr_string">"The Submission process config named "</span>
+<a name="510" href="#510">510</a>                                                 + submitName
+<a name="511" href="#511">511</a>                                                 + <span class="jxr_string">" contains a step with id="</span>
+<a name="512" href="#512">512</a>                                                 + stepID
+<a name="513" href="#513">513</a>                                                 + <span class="jxr_string">".  There is no step with this 'id' defined in the 'step-definition' section of 'item-submission.xml'."</span>);
+<a name="514" href="#514">514</a>                             }
+<a name="515" href="#515">515</a> 
+<a name="516" href="#516">516</a>                             <em class="jxr_comment">// Ignore all children of a step element with an</em>
+<a name="517" href="#517">517</a>                             <em class="jxr_comment">// "id"</em>
+<a name="518" href="#518">518</a>                         }
+<a name="519" href="#519">519</a>                         <strong class="jxr_keyword">else</strong>
+<a name="520" href="#520">520</a>                         {
+<a name="521" href="#521">521</a>                             <em class="jxr_comment">// get information about step from its children</em>
+<a name="522" href="#522">522</a>                             <em class="jxr_comment">// nodes</em>
+<a name="523" href="#523">523</a>                             stepInfo = processStepChildNodes(
+<a name="524" href="#524">524</a>                                     <span class="jxr_string">"submission-process"</span>, nStep);
+<a name="525" href="#525">525</a>                         }
+<a name="526" href="#526">526</a> 
+<a name="527" href="#527">527</a>                         steps.add(stepInfo);
+<a name="528" href="#528">528</a> 
+<a name="529" href="#529">529</a>                     } <em class="jxr_comment">// ignore any child that is not a 'step'</em>
+<a name="530" href="#530">530</a>                 }
+<a name="531" href="#531">531</a> 
+<a name="532" href="#532">532</a>                 <em class="jxr_comment">// sanity check number of steps</em>
+<a name="533" href="#533">533</a>                 <strong class="jxr_keyword">if</strong> (steps.size() &lt; 1)
+<a name="534" href="#534">534</a>                 {
+<a name="535" href="#535">535</a>                     <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> ServletException(
+<a name="536" href="#536">536</a>                             <span class="jxr_string">"Item Submission process config named "</span>
+<a name="537" href="#537">537</a>                                     + submitName + <span class="jxr_string">" has no steps defined in 'item-submission.xml'"</span>);
+<a name="538" href="#538">538</a>                 }
+<a name="539" href="#539">539</a> 
+<a name="540" href="#540">540</a>                 <em class="jxr_comment">// ALL Item Submission processes MUST BEGIN with selecting a</em>
+<a name="541" href="#541">541</a>                 <em class="jxr_comment">// Collection. So, automatically insert in the "collection" step</em>
+<a name="542" href="#542">542</a>                 <em class="jxr_comment">// (from the 'step-definition' section)</em>
+<a name="543" href="#543">543</a>                 <em class="jxr_comment">// Note: we already did a sanity check that this "collection"</em>
+<a name="544" href="#544">544</a>                 <em class="jxr_comment">// step exists.</em>
+<a name="545" href="#545">545</a>                 steps.add(0, (HashMap) stepDefns
+<a name="546" href="#546">546</a>                         .get(SubmissionStepConfig.SELECT_COLLECTION_STEP));
+<a name="547" href="#547">547</a> 
+<a name="548" href="#548">548</a>                 <em class="jxr_comment">// ALL Item Submission processes MUST END with the</em>
+<a name="549" href="#549">549</a>                 <em class="jxr_comment">// "Complete" processing step.</em>
+<a name="550" href="#550">550</a>                 <em class="jxr_comment">// So, automatically append in the "complete" step</em>
+<a name="551" href="#551">551</a>                 <em class="jxr_comment">// (from the 'step-definition' section)</em>
+<a name="552" href="#552">552</a>                 <em class="jxr_comment">// Note: we already did a sanity check that this "complete"</em>
+<a name="553" href="#553">553</a>                 <em class="jxr_comment">// step exists.</em>
+<a name="554" href="#554">554</a>                 steps.add((HashMap) stepDefns
+<a name="555" href="#555">555</a>                         .get(SubmissionStepConfig.COMPLETE_STEP));
+<a name="556" href="#556">556</a> 
+<a name="557" href="#557">557</a>             }
+<a name="558" href="#558">558</a>         }
+<a name="559" href="#559">559</a>         <strong class="jxr_keyword">if</strong> (numSubmitProcesses == 0)
+<a name="560" href="#560">560</a>         {
+<a name="561" href="#561">561</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> ServletException(
+<a name="562" href="#562">562</a>                     <span class="jxr_string">"No 'submission-process' elements/definitions found in 'item-submission.xml'"</span>);
+<a name="563" href="#563">563</a>         }
+<a name="564" href="#564">564</a>     }
+<a name="565" href="#565">565</a> 
+<a name="566" href="#566">566</a>     <em class="jxr_javadoccomment">/**</em>
+<a name="567" href="#567">567</a> <em class="jxr_javadoccomment">     * Process the children of the "step" tag of the XML file. Returns a HashMap</em>
+<a name="568" href="#568">568</a> <em class="jxr_javadoccomment">     * of all the fields under that "step" tag, where the key is the field name,</em>
+<a name="569" href="#569">569</a> <em class="jxr_javadoccomment">     * and the value is the field value.</em>
+<a name="570" href="#570">570</a> <em class="jxr_javadoccomment">     * </em>
+<a name="571" href="#571">571</a> <em class="jxr_javadoccomment">     */</em>
+<a name="572" href="#572">572</a>     <strong class="jxr_keyword">private</strong> HashMap processStepChildNodes(String configSection, Node nStep)
+<a name="573" href="#573">573</a>             <strong class="jxr_keyword">throws</strong> SAXException, ServletException
+<a name="574" href="#574">574</a>     {
+<a name="575" href="#575">575</a>         <em class="jxr_comment">// initialize the HashMap of step Info</em>
+<a name="576" href="#576">576</a>         HashMap stepInfo = <strong class="jxr_keyword">new</strong> HashMap();
+<a name="577" href="#577">577</a> 
+<a name="578" href="#578">578</a>         NodeList flds = nStep.getChildNodes();
+<a name="579" href="#579">579</a>         <strong class="jxr_keyword">int</strong> lenflds = flds.getLength();
+<a name="580" href="#580">580</a>         <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">int</strong> k = 0; k &lt; lenflds; k++)
+<a name="581" href="#581">581</a>         {
+<a name="582" href="#582">582</a>             <em class="jxr_comment">// process each child node of a &lt;step&gt; tag</em>
+<a name="583" href="#583">583</a>             Node nfld = flds.item(k);
+<a name="584" href="#584">584</a> 
+<a name="585" href="#585">585</a>             <strong class="jxr_keyword">if</strong> (!isEmptyTextNode(nfld))
+<a name="586" href="#586">586</a>             {
+<a name="587" href="#587">587</a>                 String tagName = nfld.getNodeName();
+<a name="588" href="#588">588</a>                 String value = getValue(nfld);
+<a name="589" href="#589">589</a>                 stepInfo.put(tagName, value);
+<a name="590" href="#590">590</a>             }
+<a name="591" href="#591">591</a>         }<em class="jxr_comment">// end for each field</em>
+<a name="592" href="#592">592</a> 
+<a name="593" href="#593">593</a>         <em class="jxr_comment">// check for ID attribute &amp; save to step info</em>
+<a name="594" href="#594">594</a>         String stepID = getAttribute(nStep, <span class="jxr_string">"id"</span>);
+<a name="595" href="#595">595</a>         <strong class="jxr_keyword">if</strong> (stepID != <strong class="jxr_keyword">null</strong> &amp;&amp; stepID.length() &gt; 0)
+<a name="596" href="#596">596</a>         {
+<a name="597" href="#597">597</a>             stepInfo.put(<span class="jxr_string">"id"</span>, stepID);
+<a name="598" href="#598">598</a>         }
+<a name="599" href="#599">599</a> 
+<a name="600" href="#600">600</a>         <em class="jxr_comment">// look for REQUIRED 'step' information</em>
+<a name="601" href="#601">601</a>         String missing = <strong class="jxr_keyword">null</strong>;
+<a name="602" href="#602">602</a>         <strong class="jxr_keyword">if</strong> (stepInfo.get(<span class="jxr_string">"processing-class"</span>) == <strong class="jxr_keyword">null</strong>)
+<a name="603" href="#603">603</a>         {
+<a name="604" href="#604">604</a>             missing = <span class="jxr_string">"'processing-class'"</span>;
+<a name="605" href="#605">605</a>         }
+<a name="606" href="#606">606</a>         <strong class="jxr_keyword">if</strong> (missing != <strong class="jxr_keyword">null</strong>)
+<a name="607" href="#607">607</a>         {
+<a name="608" href="#608">608</a>             String msg = <span class="jxr_string">"Required field "</span> + missing
+<a name="609" href="#609">609</a>                     + <span class="jxr_string">" missing in a 'step' in the "</span> + configSection
+<a name="610" href="#610">610</a>                     + <span class="jxr_string">" of the item submission configuration file ('item-submission.xml')"</span>;
+<a name="611" href="#611">611</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> SAXException(msg);
+<a name="612" href="#612">612</a>         }
+<a name="613" href="#613">613</a> 
+<a name="614" href="#614">614</a>         <strong class="jxr_keyword">return</strong> stepInfo;
+<a name="615" href="#615">615</a>     }
+<a name="616" href="#616">616</a> 
+<a name="617" href="#617">617</a>     <strong class="jxr_keyword">private</strong> Node getElement(Node nd)
+<a name="618" href="#618">618</a>     {
+<a name="619" href="#619">619</a>         NodeList nl = nd.getChildNodes();
+<a name="620" href="#620">620</a>         <strong class="jxr_keyword">int</strong> len = nl.getLength();
+<a name="621" href="#621">621</a>         <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">int</strong> i = 0; i &lt; len; i++)
+<a name="622" href="#622">622</a>         {
+<a name="623" href="#623">623</a>             Node n = nl.item(i);
+<a name="624" href="#624">624</a>             <strong class="jxr_keyword">if</strong> (n.getNodeType() == Node.ELEMENT_NODE)
+<a name="625" href="#625">625</a>             {
+<a name="626" href="#626">626</a>                 <strong class="jxr_keyword">return</strong> n;
+<a name="627" href="#627">627</a>             }
+<a name="628" href="#628">628</a>         }
+<a name="629" href="#629">629</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">null</strong>;
+<a name="630" href="#630">630</a>     }
+<a name="631" href="#631">631</a> 
+<a name="632" href="#632">632</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">boolean</strong> isEmptyTextNode(Node nd)
+<a name="633" href="#633">633</a>     {
+<a name="634" href="#634">634</a>         <strong class="jxr_keyword">boolean</strong> isEmpty = false;
+<a name="635" href="#635">635</a>         <strong class="jxr_keyword">if</strong> (nd.getNodeType() == Node.TEXT_NODE)
+<a name="636" href="#636">636</a>         {
+<a name="637" href="#637">637</a>             String text = nd.getNodeValue().trim();
+<a name="638" href="#638">638</a>             <strong class="jxr_keyword">if</strong> (text.length() == 0)
+<a name="639" href="#639">639</a>             {
+<a name="640" href="#640">640</a>                 isEmpty = <strong class="jxr_keyword">true</strong>;
+<a name="641" href="#641">641</a>             }
+<a name="642" href="#642">642</a>         }
+<a name="643" href="#643">643</a>         <strong class="jxr_keyword">return</strong> isEmpty;
+<a name="644" href="#644">644</a>     }
+<a name="645" href="#645">645</a> 
+<a name="646" href="#646">646</a>     <em class="jxr_javadoccomment">/**</em>
+<a name="647" href="#647">647</a> <em class="jxr_javadoccomment">     * Returns the value of the node's attribute named &lt;name&gt;</em>
+<a name="648" href="#648">648</a> <em class="jxr_javadoccomment">     */</em>
+<a name="649" href="#649">649</a>     <strong class="jxr_keyword">private</strong> String getAttribute(Node e, String name)
+<a name="650" href="#650">650</a>     {
+<a name="651" href="#651">651</a>         NamedNodeMap attrs = e.getAttributes();
+<a name="652" href="#652">652</a>         <strong class="jxr_keyword">int</strong> len = attrs.getLength();
+<a name="653" href="#653">653</a>         <strong class="jxr_keyword">if</strong> (len &gt; 0)
+<a name="654" href="#654">654</a>         {
+<a name="655" href="#655">655</a>             <strong class="jxr_keyword">int</strong> i;
+<a name="656" href="#656">656</a>             <strong class="jxr_keyword">for</strong> (i = 0; i &lt; len; i++)
+<a name="657" href="#657">657</a>             {
+<a name="658" href="#658">658</a>                 Node attr = attrs.item(i);
+<a name="659" href="#659">659</a>                 <strong class="jxr_keyword">if</strong> (name.equals(attr.getNodeName()))
+<a name="660" href="#660">660</a>                 {
+<a name="661" href="#661">661</a>                     <strong class="jxr_keyword">return</strong> attr.getNodeValue().trim();
+<a name="662" href="#662">662</a>                 }
+<a name="663" href="#663">663</a>             }
+<a name="664" href="#664">664</a>         }
+<a name="665" href="#665">665</a>         <em class="jxr_comment">// no such attribute</em>
+<a name="666" href="#666">666</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">null</strong>;
+<a name="667" href="#667">667</a>     }
+<a name="668" href="#668">668</a> 
+<a name="669" href="#669">669</a>     <em class="jxr_javadoccomment">/**</em>
+<a name="670" href="#670">670</a> <em class="jxr_javadoccomment">     * Returns the value found in the Text node (if any) in the node list that's</em>
+<a name="671" href="#671">671</a> <em class="jxr_javadoccomment">     * passed in.</em>
+<a name="672" href="#672">672</a> <em class="jxr_javadoccomment">     */</em>
+<a name="673" href="#673">673</a>     <strong class="jxr_keyword">private</strong> String getValue(Node nd)
+<a name="674" href="#674">674</a>     {
+<a name="675" href="#675">675</a>         NodeList nl = nd.getChildNodes();
+<a name="676" href="#676">676</a>         <strong class="jxr_keyword">int</strong> len = nl.getLength();
+<a name="677" href="#677">677</a>         <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">int</strong> i = 0; i &lt; len; i++)
+<a name="678" href="#678">678</a>         {
+<a name="679" href="#679">679</a>             Node n = nl.item(i);
+<a name="680" href="#680">680</a>             <strong class="jxr_keyword">short</strong> type = n.getNodeType();
+<a name="681" href="#681">681</a>             <strong class="jxr_keyword">if</strong> (type == Node.TEXT_NODE)
+<a name="682" href="#682">682</a>             {
+<a name="683" href="#683">683</a>                 <strong class="jxr_keyword">return</strong> n.getNodeValue().trim();
+<a name="684" href="#684">684</a>             }
+<a name="685" href="#685">685</a>         }
+<a name="686" href="#686">686</a>         <em class="jxr_comment">// Didn't find a text node</em>
+<a name="687" href="#687">687</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">null</strong>;
+<a name="688" href="#688">688</a>     }
+<a name="689" href="#689">689</a> }
+</pre>
+<hr/><div id="footer">This page was automatically generated by <a href="http://maven.apache.org/">Maven</a></div></body>
+</html>
+

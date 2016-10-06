@@ -1,0 +1,502 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1" /><title>DSpaceServiceManager xref</title>
+<link type="text/css" rel="stylesheet" href="../../../stylesheet.css" />
+</head>
+<body>
+<div id="overview"><a href="../../../../../../../../apidocs/org/dspace/servicemanager/DSpaceServiceManager.html">View Javadoc</a></div><pre>
+
+<a name="1" href="#1">1</a>   <em>/**<em>*</em></em>
+<a name="2" href="#2">2</a>   <em> * The contents of this file are subject to the license and copyright</em>
+<a name="3" href="#3">3</a>   <em> * detailed in the LICENSE and NOTICE files at the root of the source</em>
+<a name="4" href="#4">4</a>   <em> * tree and available online at</em>
+<a name="5" href="#5">5</a>   <em> *</em>
+<a name="6" href="#6">6</a>   <em> * <a href="http://www.dspace.org/license/" target="alexandria_uri">http://www.dspace.org/license/</a></em>
+<a name="7" href="#7">7</a>   <em> */</em>
+<a name="8" href="#8">8</a>   <strong>package</strong> org.dspace.servicemanager;
+<a name="9" href="#9">9</a>   
+<a name="10" href="#10">10</a>  <strong>import</strong> java.util.*;
+<a name="11" href="#11">11</a>  <strong>import</strong> java.util.Map.Entry;
+<a name="12" href="#12">12</a>  
+<a name="13" href="#13">13</a>  <strong>import</strong> org.apache.commons.lang.ArrayUtils;
+<a name="14" href="#14">14</a>  <strong>import</strong> org.dspace.kernel.Activator;
+<a name="15" href="#15">15</a>  <strong>import</strong> org.dspace.kernel.mixins.ConfigChangeListener;
+<a name="16" href="#16">16</a>  <strong>import</strong> org.dspace.kernel.mixins.InitializedService;
+<a name="17" href="#17">17</a>  <strong>import</strong> org.dspace.kernel.mixins.ServiceChangeListener;
+<a name="18" href="#18">18</a>  <strong>import</strong> org.dspace.kernel.mixins.ServiceManagerReadyAware;
+<a name="19" href="#19">19</a>  <strong>import</strong> org.dspace.kernel.mixins.ShutdownService;
+<a name="20" href="#20">20</a>  <strong>import</strong> org.dspace.servicemanager.config.DSpaceConfig;
+<a name="21" href="#21">21</a>  <strong>import</strong> org.dspace.servicemanager.config.DSpaceConfigurationService;
+<a name="22" href="#22">22</a>  <strong>import</strong> org.dspace.servicemanager.spring.SpringServiceManager;
+<a name="23" href="#23">23</a>  <strong>import</strong> org.slf4j.Logger;
+<a name="24" href="#24">24</a>  <strong>import</strong> org.slf4j.LoggerFactory;
+<a name="25" href="#25">25</a>  <strong>import</strong> org.springframework.beans.BeanWrapper;
+<a name="26" href="#26">26</a>  <strong>import</strong> org.springframework.beans.PropertyAccessorFactory;
+<a name="27" href="#27">27</a>  
+<a name="28" href="#28">28</a>  <em>/**<em>*</em></em>
+<a name="29" href="#29">29</a>  <em> * This is the core service manager which ties together the other</em>
+<a name="30" href="#30">30</a>  <em> * service managers and generally handles any edge cases in the various </em>
+<a name="31" href="#31">31</a>  <em> * systems.</em>
+<a name="32" href="#32">32</a>  <em> * </em>
+<a name="33" href="#33">33</a>  <em> * @author Aaron Zeckoski (azeckoski @ gmail.com)</em>
+<a name="34" href="#34">34</a>  <em> */</em>
+<a name="35" href="#35">35</a>  <strong>public</strong> <strong>final</strong> <strong>class</strong> <a href="../../../org/dspace/servicemanager/DSpaceServiceManager.html">DSpaceServiceManager</a> implements <a href="../../../org/dspace/servicemanager/ServiceManagerSystem.html">ServiceManagerSystem</a> {
+<a name="36" href="#36">36</a>  
+<a name="37" href="#37">37</a>      <strong>private</strong> <strong>static</strong> Logger log = LoggerFactory.getLogger(DSpaceServiceManager.<strong>class</strong>);
+<a name="38" href="#38">38</a>  
+<a name="39" href="#39">39</a>      <strong>private</strong> <strong>final</strong> <a href="../../../org/dspace/servicemanager/config/DSpaceConfigurationService.html">DSpaceConfigurationService</a> configurationService;
+<a name="40" href="#40">40</a>  
+<a name="41" href="#41">41</a>      <strong>protected</strong> <strong>boolean</strong> running = false;
+<a name="42" href="#42">42</a>      <em>/**<em>*</em></em>
+<a name="43" href="#43">43</a>  <em>     * @return true if the service manager is running</em>
+<a name="44" href="#44">44</a>  <em>     */</em>
+<a name="45" href="#45">45</a>      <strong>public</strong> <strong>boolean</strong> isRunning() {
+<a name="46" href="#46">46</a>          <strong>return</strong> running;
+<a name="47" href="#47">47</a>      }
+<a name="48" href="#48">48</a>      <em>/**<em>*</em></em>
+<a name="49" href="#49">49</a>  <em>     * Checks to see if the service manager is running, if not throws an exception</em>
+<a name="50" href="#50">50</a>  <em>     * @throws IllegalStateException if not running</em>
+<a name="51" href="#51">51</a>  <em>     */</em>
+<a name="52" href="#52">52</a>      <strong>private</strong> <strong>void</strong> checkRunning() {
+<a name="53" href="#53">53</a>          <strong>if</strong> (! isRunning()) {
+<a name="54" href="#54">54</a>              <strong>throw</strong> <strong>new</strong> IllegalStateException(<span class="string">"Cannot perform operations on a service manager that is not running"</span>);
+<a name="55" href="#55">55</a>          }
+<a name="56" href="#56">56</a>      }
+<a name="57" href="#57">57</a>  
+<a name="58" href="#58">58</a>      <strong>private</strong> List&lt;ServiceManagerSystem> serviceManagers = Collections.synchronizedList(<strong>new</strong> ArrayList&lt;ServiceManagerSystem>());
+<a name="59" href="#59">59</a>      <strong>private</strong> <a href="../../../org/dspace/servicemanager/spring/SpringServiceManager.html">SpringServiceManager</a> primaryServiceManager = <strong>null</strong>;
+<a name="60" href="#60">60</a>      <em>/**<em>*</em></em>
+<a name="61" href="#61">61</a>  <em>     * This holds the stack of activators.  It is randomly ordered.</em>
+<a name="62" href="#62">62</a>  <em>     */</em>
+<a name="63" href="#63">63</a>      <strong>private</strong> List&lt;Activator> activators = Collections.synchronizedList(<strong>new</strong> ArrayList&lt;Activator>());
+<a name="64" href="#64">64</a>  
+<a name="65" href="#65">65</a>      <strong>protected</strong> <strong>boolean</strong> developing = false;
+<a name="66" href="#66">66</a>      <em>/**<em>*</em></em>
+<a name="67" href="#67">67</a>  <em>     * Standard constructor.</em>
+<a name="68" href="#68">68</a>  <em>     */</em>
+<a name="69" href="#69">69</a>      <strong>public</strong> <a href="../../../org/dspace/servicemanager/DSpaceServiceManager.html">DSpaceServiceManager</a>(<a href="../../../org/dspace/servicemanager/config/DSpaceConfigurationService.html">DSpaceConfigurationService</a> configurationService) {
+<a name="70" href="#70">70</a>          <strong>if</strong> (configurationService == <strong>null</strong>) {
+<a name="71" href="#71">71</a>              <strong>throw</strong> <strong>new</strong> IllegalArgumentException(<span class="string">"Failure creating service manager, configuration service is null"</span>);
+<a name="72" href="#72">72</a>          }
+<a name="73" href="#73">73</a>          <strong>this</strong>.configurationService = configurationService;
+<a name="74" href="#74">74</a>          <strong>this</strong>.developing = configurationService.getPropertyAsType(<span class="string">"service.manager.developing"</span>, <strong>boolean</strong>.<strong>class</strong>);
+<a name="75" href="#75">75</a>      }
+<a name="76" href="#76">76</a>  
+<a name="77" href="#77">77</a>      <strong>protected</strong> <strong>boolean</strong> testing = false;
+<a name="78" href="#78">78</a>      <strong>protected</strong> String[] springXmlConfigFiles = <strong>null</strong>;
+<a name="79" href="#79">79</a>      <em>/**<em>*</em></em>
+<a name="80" href="#80">80</a>  <em>     * TESTING - This is for testing only.</em>
+<a name="81" href="#81">81</a>  <em>     * @param springXmlConfigFiles</em>
+<a name="82" href="#82">82</a>  <em>     */</em>
+<a name="83" href="#83">83</a>      <strong>protected</strong> <a href="../../../org/dspace/servicemanager/DSpaceServiceManager.html">DSpaceServiceManager</a>(<a href="../../../org/dspace/servicemanager/config/DSpaceConfigurationService.html">DSpaceConfigurationService</a> configurationService, String... springXmlConfigFiles) {
+<a name="84" href="#84">84</a>          <strong>this</strong>.configurationService = configurationService;
+<a name="85" href="#85">85</a>          <strong>this</strong>.springXmlConfigFiles = springXmlConfigFiles;
+<a name="86" href="#86">86</a>          <strong>this</strong>.testing = <strong>true</strong>;
+<a name="87" href="#87">87</a>          <strong>this</strong>.developing = <strong>true</strong>;
+<a name="88" href="#88">88</a>      }
+<a name="89" href="#89">89</a>  
+<a name="90" href="#90">90</a>      <em>/**<em>*</em></em>
+<a name="91" href="#91">91</a>  <em>     * Registers the activators using this service manager.</em>
+<a name="92" href="#92">92</a>  <em>     */</em>
+<a name="93" href="#93">93</a>      <strong>private</strong> <strong>void</strong> registerActivators() {
+<a name="94" href="#94">94</a>  
+<a name="95" href="#95">95</a>          <strong>for</strong> (Activator activator : <strong>this</strong>.getServicesByType(Activator.<strong>class</strong>))
+<a name="96" href="#96">96</a>          {
+<a name="97" href="#97">97</a>               <em class="comment">// succeeded creating the activator</em>
+<a name="98" href="#98">98</a>              <strong>try</strong> {
+<a name="99" href="#99">99</a>                  activator.start(<strong>this</strong>);
+<a name="100" href="#100">100</a>                 activators.add(activator);
+<a name="101" href="#101">101</a>                 log.info(<span class="string">"Started and registered activator: "</span> + activator.getClass().getName());
+<a name="102" href="#102">102</a>             } <strong>catch</strong> (Exception e1) {
+<a name="103" href="#103">103</a>                 log.error(<span class="string">"ERROR: Failed to start activator ("</span>+ activator.getClass().getName() +<span class="string">"): "</span> + e1, e1);
+<a name="104" href="#104">104</a>             }
+<a name="105" href="#105">105</a>         }
+<a name="106" href="#106">106</a>     }
+<a name="107" href="#107">107</a> 
+<a name="108" href="#108">108</a>     <em>/**<em>*</em></em>
+<a name="109" href="#109">109</a> <em>     * Unregisters all registered activators using this service manager.</em>
+<a name="110" href="#110">110</a> <em>     */</em>
+<a name="111" href="#111">111</a>     <strong>private</strong> <strong>void</strong> unregisterActivators() {
+<a name="112" href="#112">112</a>         <strong>for</strong> (Activator activator : activators) {
+<a name="113" href="#113">113</a>             <strong>if</strong> (activator != <strong>null</strong>) {
+<a name="114" href="#114">114</a>                 String activatorClassName = activator.getClass().getName();
+<a name="115" href="#115">115</a>                 <em class="comment">// succeeded creating the activator</em>
+<a name="116" href="#116">116</a>                 <strong>try</strong> {
+<a name="117" href="#117">117</a>                     activator.stop(<strong>this</strong>);
+<a name="118" href="#118">118</a>                     log.info(<span class="string">"Stopped and unregistered activator: "</span> + activatorClassName);
+<a name="119" href="#119">119</a>                 } <strong>catch</strong> (Exception e1) {
+<a name="120" href="#120">120</a>                     log.error(<span class="string">"ERROR: Failed to stop activator ("</span>+activatorClassName+<span class="string">"): "</span> + e1,e1);
+<a name="121" href="#121">121</a>                 }
+<a name="122" href="#122">122</a>             }
+<a name="123" href="#123">123</a>         }
+<a name="124" href="#124">124</a>         activators.clear();
+<a name="125" href="#125">125</a>     }
+<a name="126" href="#126">126</a> 
+<a name="127" href="#127">127</a>     <em>/**<em>*</em></em>
+<a name="128" href="#128">128</a> <em>     * This will call all the services which want to be notified when the service manager is ready</em>
+<a name="129" href="#129">129</a> <em>     */</em>
+<a name="130" href="#130">130</a>     <strong>public</strong> <strong>void</strong> notifyServiceManagerReady() {
+<a name="131" href="#131">131</a>         <strong>for</strong> (ServiceManagerSystem sms : serviceManagers) {
+<a name="132" href="#132">132</a>             List&lt;ServiceManagerReadyAware> services = sms.getServicesByType(ServiceManagerReadyAware.<strong>class</strong>);
+<a name="133" href="#133">133</a>             <strong>for</strong> (ServiceManagerReadyAware serviceManagerReadyAware : services) {
+<a name="134" href="#134">134</a>                 <strong>try</strong> {
+<a name="135" href="#135">135</a>                     serviceManagerReadyAware.serviceManagerReady(<strong>this</strong>);
+<a name="136" href="#136">136</a>                 } <strong>catch</strong> (Exception e) {
+<a name="137" href="#137">137</a>                     System.err.println(<span class="string">"ERROR: Failure in service when calling serviceManagerReady: "</span> + e);
+<a name="138" href="#138">138</a>                 }
+<a name="139" href="#139">139</a>             }
+<a name="140" href="#140">140</a>         }
+<a name="141" href="#141">141</a>     }
+<a name="142" href="#142">142</a> 
+<a name="143" href="#143">143</a>     <em>/**<em>*</em></em>
+<a name="144" href="#144">144</a> <em>     * Checks to see if a listener should be notified</em>
+<a name="145" href="#145">145</a> <em>     * @param implementedTypes the types implemented by the service changing</em>
+<a name="146" href="#146">146</a> <em>     * @param serviceChangeListener the listener</em>
+<a name="147" href="#147">147</a> <em>     * @return true if it should be notified, false otherwise</em>
+<a name="148" href="#148">148</a> <em>     */</em>
+<a name="149" href="#149">149</a>     <strong>private</strong> <strong>boolean</strong> checkNotifyServiceChange(List&lt;Class&lt;?>> implementedTypes,
+<a name="150" href="#150">150</a>             ServiceChangeListener serviceChangeListener) {
+<a name="151" href="#151">151</a>         <strong>boolean</strong> notify = false;
+<a name="152" href="#152">152</a>         Class&lt;?>[] notifyTypes = serviceChangeListener.notifyForTypes();
+<a name="153" href="#153">153</a>         <strong>if</strong> (not<strong>if</strong>yTypes == <strong>null</strong> || not<strong>if</strong>yTypes.length == 0) {
+<a name="154" href="#154">154</a>             notify = <strong>true</strong>;
+<a name="155" href="#155">155</a>         } <strong>else</strong> {
+<a name="156" href="#156">156</a>             <strong>for</strong> (Class&lt;?> notifyType : notifyTypes) {
+<a name="157" href="#157">157</a>                 <strong>for</strong> (Class&lt;?> implementedType : implementedTypes) {
+<a name="158" href="#158">158</a>                     <strong>if</strong> (not<strong>if</strong>yType.equals(implementedType)) {
+<a name="159" href="#159">159</a>                         notify = <strong>true</strong>;
+<a name="160" href="#160">160</a>                         <strong>break</strong>;
+<a name="161" href="#161">161</a>                     }
+<a name="162" href="#162">162</a>                 }
+<a name="163" href="#163">163</a>             }
+<a name="164" href="#164">164</a>         }
+<a name="165" href="#165">165</a>         <strong>return</strong> notify;
+<a name="166" href="#166">166</a>     }
+<a name="167" href="#167">167</a> 
+<a name="168" href="#168">168</a>     <em>/**<em>*</em></em>
+<a name="169" href="#169">169</a> <em>     * Shut down all service managers, including this one.</em>
+<a name="170" href="#170">170</a> <em>     */</em>
+<a name="171" href="#171">171</a>     <strong>public</strong> <strong>void</strong> shutdown() {
+<a name="172" href="#172">172</a>         unregisterActivators();
+<a name="173" href="#173">173</a>         <strong>for</strong> (ServiceManagerSystem sms : serviceManagers) {
+<a name="174" href="#174">174</a>             <strong>try</strong> {
+<a name="175" href="#175">175</a>                 sms.shutdown();
+<a name="176" href="#176">176</a>             } <strong>catch</strong> (Exception e) {
+<a name="177" href="#177">177</a>                 <em class="comment">// shutdown failures are not great but should NOT cause an interruption of processing</em>
+<a name="178" href="#178">178</a>                 System.err.println(<span class="string">"Failure shutting down service manager ("</span>+sms+<span class="string">"): "</span> + e.getMessage());
+<a name="179" href="#179">179</a>             }
+<a name="180" href="#180">180</a>         }
+<a name="181" href="#181">181</a>         <strong>this</strong>.running = false; <em class="comment">// wait til the end</em>
+<a name="182" href="#182">182</a>         <strong>this</strong>.serviceManagers.clear();
+<a name="183" href="#183">183</a>         <strong>this</strong>.primaryServiceManager = <strong>null</strong>;
+<a name="184" href="#184">184</a>         log.info(<span class="string">"Shutdown DSpace core service manager"</span>);
+<a name="185" href="#185">185</a>     }
+<a name="186" href="#186">186</a> 
+<a name="187" href="#187">187</a>     <strong>public</strong> <strong>void</strong> startup() {
+<a name="188" href="#188">188</a>         <strong>if</strong> (!testing) {
+<a name="189" href="#189">189</a>             <em class="comment">// try to load up extra config files for spring</em>
+<a name="190" href="#190">190</a>             String[] extraConfigs = configurationService.getPropertyAsType(<span class="string">"service.manager.spring.configs"</span>, String[].<strong>class</strong>);
+<a name="191" href="#191">191</a>             <strong>if</strong> (extraConfigs != <strong>null</strong>) {
+<a name="192" href="#192">192</a>                 <strong>if</strong> (springXmlConfigFiles == <strong>null</strong>) {
+<a name="193" href="#193">193</a>                     springXmlConfigFiles = extraConfigs;
+<a name="194" href="#194">194</a>                 } <strong>else</strong> {
+<a name="195" href="#195">195</a>                     springXmlConfigFiles = (String[])ArrayUtils.addAll(springXmlConfigFiles, extraConfigs);
+<a name="196" href="#196">196</a>                 }
+<a name="197" href="#197">197</a>             }
+<a name="198" href="#198">198</a>         }
+<a name="199" href="#199">199</a>         <strong>try</strong> {
+<a name="200" href="#200">200</a>             <em class="comment">// have to put this at the top because otherwise initializing beans will die when they try to use the SMS</em>
+<a name="201" href="#201">201</a>             <strong>this</strong>.running = <strong>true</strong>;
+<a name="202" href="#202">202</a>             <em class="comment">// create the primary SMS and start it</em>
+<a name="203" href="#203">203</a>             <a href="../../../org/dspace/servicemanager/spring/SpringServiceManager.html">SpringServiceManager</a> springSMS = <strong>new</strong> <a href="../../../org/dspace/servicemanager/spring/SpringServiceManager.html">SpringServiceManager</a>(<strong>this</strong>, configurationService, testing, developing, springXmlConfigFiles);
+<a name="204" href="#204">204</a>             <strong>try</strong> {
+<a name="205" href="#205">205</a>                 springSMS.startup();
+<a name="206" href="#206">206</a>             } <strong>catch</strong> (Exception e) {
+<a name="207" href="#207">207</a>                 <em class="comment">// startup failures are deadly</em>
+<a name="208" href="#208">208</a>                 <strong>throw</strong> <strong>new</strong> IllegalStateException(<span class="string">"failure starting up spring service manager: "</span> + e.getMessage(), e);
+<a name="209" href="#209">209</a>             }
+<a name="210" href="#210">210</a>             <em class="comment">// add it to the list of service managers</em>
+<a name="211" href="#211">211</a>             <strong>this</strong>.serviceManagers.add(springSMS);
+<a name="212" href="#212">212</a>             <strong>this</strong>.primaryServiceManager = springSMS;
+<a name="213" href="#213">213</a> 
+<a name="214" href="#214">214</a>             <em class="comment">// now startup the activators</em>
+<a name="215" href="#215">215</a>             registerActivators();
+<a name="216" href="#216">216</a> 
+<a name="217" href="#217">217</a>             <em class="comment">// now we call the ready mixins</em>
+<a name="218" href="#218">218</a>             notifyServiceManagerReady();
+<a name="219" href="#219">219</a>             
+<a name="220" href="#220">220</a>         } <strong>catch</strong> (Exception e) {
+<a name="221" href="#221">221</a>             shutdown(); <em class="comment">// execute the shutdown</em>
+<a name="222" href="#222">222</a>             String message = <span class="string">"Failed to startup the DSpace Service Manager: "</span> + e.getMessage();
+<a name="223" href="#223">223</a>             System.err.println(message);
+<a name="224" href="#224">224</a>             <strong>throw</strong> <strong>new</strong> RuntimeException(message, e);
+<a name="225" href="#225">225</a>         }
+<a name="226" href="#226">226</a>     }
+<a name="227" href="#227">227</a> 
+<a name="228" href="#228">228</a>     <strong>public</strong> <strong>void</strong> registerService(String name, Object service) {
+<a name="229" href="#229">229</a>         checkRunning();
+<a name="230" href="#230">230</a>         <strong>if</strong> (name == <strong>null</strong> || service == <strong>null</strong>) {
+<a name="231" href="#231">231</a>             <strong>throw</strong> <strong>new</strong> IllegalArgumentException(<span class="string">"name and service cannot be null"</span>);
+<a name="232" href="#232">232</a>         }
+<a name="233" href="#233">233</a>         <em class="comment">// register service/provider with all</em>
+<a name="234" href="#234">234</a>         <strong>for</strong> (ServiceManagerSystem sms : serviceManagers) {
+<a name="235" href="#235">235</a>             sms.registerService(name, service);
+<a name="236" href="#236">236</a>         }
+<a name="237" href="#237">237</a>     }
+<a name="238" href="#238">238</a> 
+<a name="239" href="#239">239</a>     <strong>public</strong> &lt;T> T registerServiceClass(String name, Class&lt;T> type) {
+<a name="240" href="#240">240</a>         checkRunning();
+<a name="241" href="#241">241</a>         <strong>if</strong> (name == <strong>null</strong> || type == <strong>null</strong>) {
+<a name="242" href="#242">242</a>             <strong>throw</strong> <strong>new</strong> IllegalArgumentException(<span class="string">"name and type cannot be null"</span>);
+<a name="243" href="#243">243</a>         }
+<a name="244" href="#244">244</a>         <em class="comment">// we only register with the primary</em>
+<a name="245" href="#245">245</a>         <strong>return</strong> primaryServiceManager.registerServiceClass(name, type);
+<a name="246" href="#246">246</a>     }
+<a name="247" href="#247">247</a> 
+<a name="248" href="#248">248</a>     <strong>public</strong> <strong>void</strong> unregisterService(String name) {
+<a name="249" href="#249">249</a>         checkRunning();
+<a name="250" href="#250">250</a>         <strong>if</strong> (name == <strong>null</strong>) {
+<a name="251" href="#251">251</a>             <strong>throw</strong> <strong>new</strong> IllegalArgumentException(<span class="string">"name cannot be null"</span>);
+<a name="252" href="#252">252</a>         }
+<a name="253" href="#253">253</a>         <em class="comment">// only unregister with the primary</em>
+<a name="254" href="#254">254</a>         primaryServiceManager.unregisterService(name);
+<a name="255" href="#255">255</a>     }
+<a name="256" href="#256">256</a> 
+<a name="257" href="#257">257</a>     <strong>public</strong> &lt;T> T getServiceByName(String name, Class&lt;T> type) {
+<a name="258" href="#258">258</a>         checkRunning();
+<a name="259" href="#259">259</a>         <strong>if</strong> (type == <strong>null</strong>) {
+<a name="260" href="#260">260</a>             <strong>throw</strong> <strong>new</strong> IllegalArgumentException(<span class="string">"type cannot be null"</span>);
+<a name="261" href="#261">261</a>         }
+<a name="262" href="#262">262</a>         T service = <strong>null</strong>;
+<a name="263" href="#263">263</a>         <strong>for</strong> (ServiceManagerSystem sms : serviceManagers) {
+<a name="264" href="#264">264</a>             <strong>try</strong> {
+<a name="265" href="#265">265</a>                 service = sms.getServiceByName(name, type);
+<a name="266" href="#266">266</a>                 <strong>if</strong> (service != <strong>null</strong>) {
+<a name="267" href="#267">267</a>                     <strong>break</strong>;
+<a name="268" href="#268">268</a>                 }
+<a name="269" href="#269">269</a>             } <strong>catch</strong> (Exception e) {
+<a name="270" href="#270">270</a>                 <em class="comment">// keep going</em>
+<a name="271" href="#271">271</a>             }
+<a name="272" href="#272">272</a>         }
+<a name="273" href="#273">273</a>         <em class="comment">// need to check the service mixin manager if not found</em>
+<a name="274" href="#274">274</a>         <strong>if</strong> (service == <strong>null</strong> 
+<a name="275" href="#275">275</a>                 &amp;&amp; name != <strong>null</strong>) {
+<a name="276" href="#276">276</a>             <strong>for</strong> (ServiceManagerSystem sms : serviceManagers) {
+<a name="277" href="#277">277</a>                 <strong>if</strong> (service == <strong>null</strong>) {
+<a name="278" href="#278">278</a>                     service = sms.getServiceByName(name, type);
+<a name="279" href="#279">279</a>                 }
+<a name="280" href="#280">280</a>             }
+<a name="281" href="#281">281</a>         }
+<a name="282" href="#282">282</a>         <strong>return</strong> service;
+<a name="283" href="#283">283</a>     }
+<a name="284" href="#284">284</a> 
+<a name="285" href="#285">285</a>     <strong>public</strong> &lt;T> List&lt;T> getServicesByType(Class&lt;T> type) {
+<a name="286" href="#286">286</a>         checkRunning();
+<a name="287" href="#287">287</a>         <strong>if</strong> (type == <strong>null</strong>) {
+<a name="288" href="#288">288</a>             <strong>throw</strong> <strong>new</strong> IllegalArgumentException(<span class="string">"type cannot be null"</span>);
+<a name="289" href="#289">289</a>         }
+<a name="290" href="#290">290</a>         HashSet&lt;T> set = <strong>new</strong> HashSet&lt;T>();
+<a name="291" href="#291">291</a>         <strong>for</strong> (ServiceManagerSystem sms : serviceManagers) {
+<a name="292" href="#292">292</a>             <strong>try</strong> {
+<a name="293" href="#293">293</a>                 set.addAll( sms.getServicesByType(type) );
+<a name="294" href="#294">294</a>             } <strong>catch</strong> (Exception e) {
+<a name="295" href="#295">295</a>                 <em class="comment">// keep going</em>
+<a name="296" href="#296">296</a>             }
+<a name="297" href="#297">297</a>         }
+<a name="298" href="#298">298</a>         <em class="comment">// put the set into a list for easier access and sort it</em>
+<a name="299" href="#299">299</a>         List&lt;T> services = <strong>new</strong> ArrayList&lt;T>(set);
+<a name="300" href="#300">300</a>         Collections.sort(services, <strong>new</strong> ServiceManagerUtils.ServiceComparator());
+<a name="301" href="#301">301</a>         <strong>return</strong> services;
+<a name="302" href="#302">302</a>     }
+<a name="303" href="#303">303</a> 
+<a name="304" href="#304">304</a>     <strong>public</strong> List&lt;String> getServicesNames() {
+<a name="305" href="#305">305</a>         checkRunning();
+<a name="306" href="#306">306</a>         List&lt;String> names = <strong>new</strong> ArrayList&lt;String>();
+<a name="307" href="#307">307</a>         <strong>for</strong> (ServiceManagerSystem sms : serviceManagers) {
+<a name="308" href="#308">308</a>             <strong>try</strong> {
+<a name="309" href="#309">309</a>                 names.addAll( sms.getServicesNames() );
+<a name="310" href="#310">310</a>             } <strong>catch</strong> (Exception e) {
+<a name="311" href="#311">311</a>                 <em class="comment">// keep going</em>
+<a name="312" href="#312">312</a>             }
+<a name="313" href="#313">313</a>         }
+<a name="314" href="#314">314</a>         Collections.sort(names);
+<a name="315" href="#315">315</a>         <strong>return</strong> names;
+<a name="316" href="#316">316</a>     }
+<a name="317" href="#317">317</a> 
+<a name="318" href="#318">318</a>     <strong>public</strong> <strong>boolean</strong> isServiceExists(String name) {
+<a name="319" href="#319">319</a>         checkRunning();
+<a name="320" href="#320">320</a>         <strong>if</strong> (name == <strong>null</strong>) {
+<a name="321" href="#321">321</a>             <strong>throw</strong> <strong>new</strong> IllegalArgumentException(<span class="string">"name cannot be null"</span>);
+<a name="322" href="#322">322</a>         }
+<a name="323" href="#323">323</a>         <strong>boolean</strong> exists = false;
+<a name="324" href="#324">324</a>         <strong>for</strong> (ServiceManagerSystem sms : serviceManagers) {
+<a name="325" href="#325">325</a>             <strong>try</strong> {
+<a name="326" href="#326">326</a>                 exists = sms.isServiceExists(name);
+<a name="327" href="#327">327</a>                 <strong>if</strong> (exists) {
+<a name="328" href="#328">328</a>                     <strong>break</strong>;
+<a name="329" href="#329">329</a>                 }
+<a name="330" href="#330">330</a>             } <strong>catch</strong> (Exception e) {
+<a name="331" href="#331">331</a>                 <em class="comment">// keep going</em>
+<a name="332" href="#332">332</a>             }
+<a name="333" href="#333">333</a>         }
+<a name="334" href="#334">334</a>         <strong>return</strong> exists;
+<a name="335" href="#335">335</a>     }
+<a name="336" href="#336">336</a> 
+<a name="337" href="#337">337</a>     <strong>public</strong> Map&lt;String, Object> getServices() {
+<a name="338" href="#338">338</a>         checkRunning();
+<a name="339" href="#339">339</a>         Map&lt;String, Object> services = <strong>new</strong> HashMap&lt;String, Object>();
+<a name="340" href="#340">340</a>         <strong>for</strong> (ServiceManagerSystem sms : serviceManagers) {
+<a name="341" href="#341">341</a>             <strong>try</strong> {
+<a name="342" href="#342">342</a>                 <strong>for</strong> (Entry&lt;String, Object> entry : sms.getServices().entrySet()) {
+<a name="343" href="#343">343</a>                     <strong>if</strong> (! services.containsKey(entry.getKey())) {
+<a name="344" href="#344">344</a>                         services.put(entry.getKey(), entry.getValue());
+<a name="345" href="#345">345</a>                     }
+<a name="346" href="#346">346</a>                 }
+<a name="347" href="#347">347</a>             } <strong>catch</strong> (Exception e) {
+<a name="348" href="#348">348</a>                 <em class="comment">// keep going if it fails for one</em>
+<a name="349" href="#349">349</a>                 System.err.println(<span class="string">"Failed to get list of services from service manager ("</span>+sms.getClass()+<span class="string">"): "</span> + e);
+<a name="350" href="#350">350</a>             }
+<a name="351" href="#351">351</a>         }
+<a name="352" href="#352">352</a>         <strong>return</strong> services;
+<a name="353" href="#353">353</a>     }
+<a name="354" href="#354">354</a> 
+<a name="355" href="#355">355</a>     <em class="comment">/*</em>
+<a name="356" href="#356">356</a> <em class="comment">     * Handles the configuration push for all services.</em>
+<a name="357" href="#357">357</a> <em class="comment">     * Every service gets called to notify them of the config change</em>
+<a name="358" href="#358">358</a> <em class="comment">     * depending on the the listener they are using.</em>
+<a name="359" href="#359">359</a> <em class="comment">     */</em>
+<a name="360" href="#360">360</a>     <strong>public</strong> <strong>void</strong> pushConfig(Map&lt;String, String> properties) {
+<a name="361" href="#361">361</a>         checkRunning();
+<a name="362" href="#362">362</a>         <strong>if</strong> (properties != <strong>null</strong> &amp;&amp; !properties.isEmpty()) {
+<a name="363" href="#363">363</a>             <em class="comment">// load in the new settings to the config service</em>
+<a name="364" href="#364">364</a>             String[] changedNames = configurationService.loadConfiguration(properties, false);
+<a name="365" href="#365">365</a>             <strong>if</strong> (changedNames.length > 0) {
+<a name="366" href="#366">366</a>                 <em class="comment">// some configs changed so push the changes to the listeners in all known services and providers</em>
+<a name="367" href="#367">367</a>                 <em class="comment">// make the list of changed setting names and map of changed settings</em>
+<a name="368" href="#368">368</a>                 ArrayList&lt;String> changedSettingNames = <strong>new</strong> ArrayList&lt;String>();
+<a name="369" href="#369">369</a>                 Map&lt;String, String> changedSettings = <strong>new</strong> LinkedHashMap&lt;String, String>();
+<a name="370" href="#370">370</a>                 <strong>for</strong> (String configName : changedNames) {
+<a name="371" href="#371">371</a>                     changedSettingNames.add(configName);
+<a name="372" href="#372">372</a>                     changedSettings.put( getSimplerName(configName), configurationService.getProperty(configName) );
+<a name="373" href="#373">373</a>                 }
+<a name="374" href="#374">374</a>                 <em class="comment">// notify the services that implement the mixin</em>
+<a name="375" href="#375">375</a>                 <strong>for</strong> (ServiceManagerSystem sms : serviceManagers) {
+<a name="376" href="#376">376</a>                     List&lt;ConfigChangeListener> configChangeListeners = sms.getServicesByType(ConfigChangeListener.<strong>class</strong>);
+<a name="377" href="#377">377</a>                     <strong>for</strong> (ConfigChangeListener configChangeListener : configChangeListeners) {
+<a name="378" href="#378">378</a>                         String serviceImplName = configChangeListener.getClass().getName();
+<a name="379" href="#379">379</a>                         <em class="comment">// notify this service</em>
+<a name="380" href="#380">380</a>                         <strong>try</strong> {
+<a name="381" href="#381">381</a>                             <strong>boolean</strong> notify = false;
+<a name="382" href="#382">382</a>                             String[] notifyNames = configChangeListener.notifyForConfigNames();
+<a name="383" href="#383">383</a>                             <strong>if</strong> (not<strong>if</strong>yNames == <strong>null</strong> || not<strong>if</strong>yNames.length == 0) {
+<a name="384" href="#384">384</a>                                 notify = <strong>true</strong>;
+<a name="385" href="#385">385</a>                             } <strong>else</strong> {
+<a name="386" href="#386">386</a>                                 <strong>for</strong> (String notifyName : notifyNames) {
+<a name="387" href="#387">387</a>                                     <em class="comment">// check to see if the change was one of the bean properties for our service</em>
+<a name="388" href="#388">388</a>                                     String simplerName = getSimplerName(notifyName);
+<a name="389" href="#389">389</a>                                     String notifyBeanName = DSpaceConfig.getBeanName(notifyName);
+<a name="390" href="#390">390</a>                                     <strong>if</strong> (not<strong>if</strong>yBeanName != <strong>null</strong> &amp;&amp; not<strong>if</strong>yBeanName.equals(serviceImplName)) {
+<a name="391" href="#391">391</a>                                         <em class="comment">// this is a bean key</em>
+<a name="392" href="#392">392</a>                                         notify = <strong>true</strong>;
+<a name="393" href="#393">393</a>                                         <strong>break</strong>;
+<a name="394" href="#394">394</a>                                     }
+<a name="395" href="#395">395</a>                                     <em class="comment">// check to see if the name matches one of those the listener cares about</em>
+<a name="396" href="#396">396</a>                                     <strong>for</strong> (String changedName : changedNames) {
+<a name="397" href="#397">397</a>                                         <strong>if</strong> (simplerName != <strong>null</strong> &amp;&amp; simplerName.equals(changedName)) {
+<a name="398" href="#398">398</a>                                             notify = <strong>true</strong>;
+<a name="399" href="#399">399</a>                                             <strong>break</strong>;
+<a name="400" href="#400">400</a>                                         }
+<a name="401" href="#401">401</a>                                     }
+<a name="402" href="#402">402</a>                                 }
+<a name="403" href="#403">403</a>                             }
+<a name="404" href="#404">404</a>                             <em class="comment">// do the notify if we should at this point</em>
+<a name="405" href="#405">405</a>                             <strong>if</strong> (not<strong>if</strong>y) {
+<a name="406" href="#406">406</a>                                 configChangeListener.configurationChanged(changedSettingNames, changedSettings);
+<a name="407" href="#407">407</a>                             }
+<a name="408" href="#408">408</a>                         } <strong>catch</strong> (Exception e) {
+<a name="409" href="#409">409</a>                             System.err.println(<span class="string">"Failure occurred while trying to notify service of config change: "</span> + e.getMessage());
+<a name="410" href="#410">410</a>                         }
+<a name="411" href="#411">411</a>                     }
+<a name="412" href="#412">412</a>                 }
+<a name="413" href="#413">413</a>             }
+<a name="414" href="#414">414</a>         }
+<a name="415" href="#415">415</a>     }
+<a name="416" href="#416">416</a> 
+<a name="417" href="#417">417</a>     <em>/**<em>*</em></em>
+<a name="418" href="#418">418</a> <em>     * @param key a DSpace config key</em>
+<a name="419" href="#419">419</a> <em>     * @return the simpler name (property name or key without property)</em>
+<a name="420" href="#420">420</a> <em>     */</em>
+<a name="421" href="#421">421</a>     <strong>protected</strong> <strong>static</strong> String getSimplerName(String key) {
+<a name="422" href="#422">422</a>         String simpleName = key;
+<a name="423" href="#423">423</a>         <strong>if</strong> (key != <strong>null</strong>) {
+<a name="424" href="#424">424</a>             String propertyName = DSpaceConfig.getBeanProperty(key);
+<a name="425" href="#425">425</a>             <strong>if</strong> (propertyName != <strong>null</strong>) {
+<a name="426" href="#426">426</a>                 simpleName = propertyName;
+<a name="427" href="#427">427</a>             }
+<a name="428" href="#428">428</a>         }
+<a name="429" href="#429">429</a>         <strong>return</strong> simpleName;
+<a name="430" href="#430">430</a>     }
+<a name="431" href="#431">431</a> 
+<a name="432" href="#432">432</a>     <em class="comment">// STATICS</em>
+<a name="433" href="#433">433</a> 
+<a name="434" href="#434">434</a>     <em>/**<em>*</em></em>
+<a name="435" href="#435">435</a> <em>     * Adds configuration settings into services if possible.</em>
+<a name="436" href="#436">436</a> <em>     * Skips any that are invalid.</em>
+<a name="437" href="#437">437</a> <em>     * </em>
+<a name="438" href="#438">438</a> <em>     * @param serviceName the name of the service</em>
+<a name="439" href="#439">439</a> <em>     * @param service the service object</em>
+<a name="440" href="#440">440</a> <em>     * @param serviceNameConfigs all known service configuration settings (from the DS config service impl)</em>
+<a name="441" href="#441">441</a> <em>     */</em>
+<a name="442" href="#442">442</a>     <strong>public</strong> <strong>static</strong> <strong>void</strong> configureService(String serviceName, Object service, Map&lt;String, Map&lt;String, ServiceConfig>> serviceNameConfigs) {
+<a name="443" href="#443">443</a>         <em class="comment">// stuff the config settings into the bean if there are any</em>
+<a name="444" href="#444">444</a>         <strong>if</strong> (serviceNameConfigs.containsKey(serviceName)) {
+<a name="445" href="#445">445</a>             BeanWrapper beanWrapper = PropertyAccessorFactory.forBeanPropertyAccess(service);
+<a name="446" href="#446">446</a> 
+<a name="447" href="#447">447</a>             Map&lt;String, ServiceConfig> configs = serviceNameConfigs.get(serviceName);
+<a name="448" href="#448">448</a>             <strong>for</strong> (ServiceConfig config : configs.values()) {
+<a name="449" href="#449">449</a>                 <strong>try</strong> {
+<a name="450" href="#450">450</a>                     beanWrapper.setPropertyValue(config.getParamName(), config.getValue());
+<a name="451" href="#451">451</a> 
+<a name="452" href="#452">452</a>                     log.info(<span class="string">"Set param ("</span>+config.getParamName()+<span class="string">") on service bean ("</span>+serviceName+<span class="string">") to: "</span> + config.getValue());
+<a name="453" href="#453">453</a>                 } <strong>catch</strong> (RuntimeException e) {
+<a name="454" href="#454">454</a>                     log.error(<span class="string">"Unable to set param ("</span>+config.getParamName()+<span class="string">") on service bean ("</span>+serviceName+<span class="string">"): "</span> + e.getMessage(), e);
+<a name="455" href="#455">455</a>                 }
+<a name="456" href="#456">456</a>             }
+<a name="457" href="#457">457</a>         }
+<a name="458" href="#458">458</a>     }
+<a name="459" href="#459">459</a> 
+<a name="460" href="#460">460</a>     <em>/**<em>*</em></em>
+<a name="461" href="#461">461</a> <em>     * Initializes a service if it asks to be initialized or does nothing.</em>
+<a name="462" href="#462">462</a> <em>     * @param service any bean</em>
+<a name="463" href="#463">463</a> <em>     * @throws IllegalStateException if the service init fails</em>
+<a name="464" href="#464">464</a> <em>     */</em>
+<a name="465" href="#465">465</a>     <strong>public</strong> <strong>static</strong> <strong>void</strong> initService(Object service) {
+<a name="466" href="#466">466</a>         <strong>if</strong> (service instanceof InitializedService) {
+<a name="467" href="#467">467</a>             <strong>try</strong> {
+<a name="468" href="#468">468</a>                 ((InitializedService) service).init();
+<a name="469" href="#469">469</a>             } <strong>catch</strong> (Exception e) {
+<a name="470" href="#470">470</a>                 <strong>throw</strong> <strong>new</strong> IllegalStateException(<span class="string">"Failure attempting to initialize service ("</span> + service + <span class="string">"): "</span> + e.getMessage());
+<a name="471" href="#471">471</a>             }
+<a name="472" href="#472">472</a>         }
+<a name="473" href="#473">473</a>     }
+<a name="474" href="#474">474</a> 
+<a name="475" href="#475">475</a>     <em>/**<em>*</em></em>
+<a name="476" href="#476">476</a> <em>     * Shuts down a service if it asks to be shutdown or does nothing.</em>
+<a name="477" href="#477">477</a> <em>     * @param service any bean</em>
+<a name="478" href="#478">478</a> <em>     */</em>
+<a name="479" href="#479">479</a>     <strong>public</strong> <strong>static</strong> <strong>void</strong> shutdownService(Object service) {
+<a name="480" href="#480">480</a>         <strong>if</strong> (service instanceof ShutdownService) {
+<a name="481" href="#481">481</a>             <strong>try</strong> {
+<a name="482" href="#482">482</a>                 ((ShutdownService) service).shutdown();
+<a name="483" href="#483">483</a>             } <strong>catch</strong> (Exception e) {
+<a name="484" href="#484">484</a>                 System.err.println(<span class="string">"Failure shutting down service: "</span> + service);
+<a name="485" href="#485">485</a>             }
+<a name="486" href="#486">486</a>         }
+<a name="487" href="#487">487</a>     }
+<a name="488" href="#488">488</a> 
+<a name="489" href="#489">489</a> }
+</pre>
+<hr/><div id="footer">This page was automatically generated by <a href="http://maven.apache.org/">Maven</a></div></body>
+</html>
+

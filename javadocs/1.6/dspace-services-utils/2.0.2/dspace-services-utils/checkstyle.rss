@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<rss version="0.91">
+  <channel>
+    <title>DSpace Services Utilities - Checkstyle report</title>
+    <link>http://projects.dspace.org</link>
+    <description>DSpace Services Utilities - Checkstyle report</description>
+    <language>en-us</language>
+    <copyright>&#169;2008 - 2010 The DSpace Foundation</copyright>
+    <item>
+      <title>File: 13,
+             Errors: 208,
+             Warnings: 0,
+             Infos: 0
+      </title>
+            <link>http://projects.dspace.org/checkstyle.html</link>
+      <description>
+        <p>Click <a href="http://projects.dspace.org/checkstyle.html">here</a> for the full Checkstyle report.</p>
+
+        <table summary="Files" boder="1">
+          <thead>
+            <tr>
+              <th>Files</th>
+              <th style="width:30px;"><abbr title="Info">I</abbr></th>
+              <th style="width:30px;"><abbr title="Warning">W</abbr></th>
+              <th style="width:30px;"><abbr title="Error">E</abbr></th>
+            </tr>
+          </thead>
+          <tbody>
+                          <tr>
+                <td>
+                  <a href="http://projects.dspace.org/checkstyle.html#org.dspace.utils.package-info.java">org/dspace/utils/package-info.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  2
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://projects.dspace.org/checkstyle.html#org.dspace.utils.servicemanager.ProviderHolder.java">org/dspace/utils/servicemanager/ProviderHolder.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  23
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://projects.dspace.org/checkstyle.html#org.dspace.utils.servicemanager.RequestExecutor.java">org/dspace/utils/servicemanager/RequestExecutor.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  37
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://projects.dspace.org/checkstyle.html#org.dspace.utils.servicemanager.ProviderStackComparator.java">org/dspace/utils/servicemanager/ProviderStackComparator.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  10
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://projects.dspace.org/checkstyle.html#org.dspace.utils.servlet.DSpaceWebappServletFilter.java">org/dspace/utils/servlet/DSpaceWebappServletFilter.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  21
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://projects.dspace.org/checkstyle.html#org.dspace.utils.StreamUtils.java">org/dspace/utils/StreamUtils.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  6
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://projects.dspace.org/checkstyle.html#org.dspace.utils.servlet.package-info.java">org/dspace/utils/servlet/package-info.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://projects.dspace.org/checkstyle.html#org.dspace.utils.servicemanager.OrderedServiceComparator.java">org/dspace/utils/servicemanager/OrderedServiceComparator.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  14
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://projects.dspace.org/checkstyle.html#org.dspace.utils.servicemanager.ProviderNotFoundException.java">org/dspace/utils/servicemanager/ProviderNotFoundException.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  8
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://projects.dspace.org/checkstyle.html#org.dspace.utils.servicemanager.ProviderStack.java">org/dspace/utils/servicemanager/ProviderStack.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  54
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://projects.dspace.org/checkstyle.html#org.dspace.utils.servicemanager.package-info.java">org/dspace/utils/servicemanager/package-info.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://projects.dspace.org/checkstyle.html#org.dspace.utils.DSpace.java">org/dspace/utils/DSpace.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  27
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://projects.dspace.org/checkstyle.html#org.dspace.utils.servicemanager.NotProvider.java">org/dspace/utils/servicemanager/NotProvider.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  5
+                </td>
+              </tr>
+                      </tbody>
+        </table>
+        
+      </description>
+    </item>
+  </channel>
+</rss>
+

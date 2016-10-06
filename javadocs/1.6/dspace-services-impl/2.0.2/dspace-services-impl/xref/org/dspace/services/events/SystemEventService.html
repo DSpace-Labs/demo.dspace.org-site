@@ -1,0 +1,345 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1" /><title>SystemEventService xref</title>
+<link type="text/css" rel="stylesheet" href="../../../../stylesheet.css" />
+</head>
+<body>
+<div id="overview"><a href="../../../../../../../../../../apidocs/org/dspace/services/events/SystemEventService.html">View Javadoc</a></div><pre>
+
+<a name="1" href="#1">1</a>   <em>/**<em>*</em></em>
+<a name="2" href="#2">2</a>   <em> * The contents of this file are subject to the license and copyright</em>
+<a name="3" href="#3">3</a>   <em> * detailed in the LICENSE and NOTICE files at the root of the source</em>
+<a name="4" href="#4">4</a>   <em> * tree and available online at</em>
+<a name="5" href="#5">5</a>   <em> *</em>
+<a name="6" href="#6">6</a>   <em> * <a href="http://www.dspace.org/license/" target="alexandria_uri">http://www.dspace.org/license/</a></em>
+<a name="7" href="#7">7</a>   <em> */</em>
+<a name="8" href="#8">8</a>   <strong>package</strong> org.dspace.services.events;
+<a name="9" href="#9">9</a>   
+<a name="10" href="#10">10</a>  <strong>import</strong> java.util.*;
+<a name="11" href="#11">11</a>  <strong>import</strong> java.util.concurrent.ConcurrentHashMap;
+<a name="12" href="#12">12</a>  
+<a name="13" href="#13">13</a>  <strong>import</strong> org.apache.commons.lang.ArrayUtils;
+<a name="14" href="#14">14</a>  <strong>import</strong> org.dspace.kernel.mixins.ShutdownService;
+<a name="15" href="#15">15</a>  <strong>import</strong> org.dspace.services.CachingService;
+<a name="16" href="#16">16</a>  <strong>import</strong> org.dspace.services.EventService;
+<a name="17" href="#17">17</a>  <strong>import</strong> org.dspace.services.RequestService;
+<a name="18" href="#18">18</a>  <strong>import</strong> org.dspace.services.SessionService;
+<a name="19" href="#19">19</a>  <strong>import</strong> org.dspace.services.model.Cache;
+<a name="20" href="#20">20</a>  <strong>import</strong> org.dspace.services.model.CacheConfig;
+<a name="21" href="#21">21</a>  <strong>import</strong> org.dspace.services.model.Event;
+<a name="22" href="#22">22</a>  <strong>import</strong> org.dspace.services.model.EventListener;
+<a name="23" href="#23">23</a>  <strong>import</strong> org.dspace.services.model.RequestInterceptor;
+<a name="24" href="#24">24</a>  <strong>import</strong> org.dspace.services.model.Session;
+<a name="25" href="#25">25</a>  <strong>import</strong> org.dspace.services.model.CacheConfig.CacheScope;
+<a name="26" href="#26">26</a>  <strong>import</strong> org.dspace.services.model.Event.Scope;
+<a name="27" href="#27">27</a>  <strong>import</strong> org.slf4j.Logger;
+<a name="28" href="#28">28</a>  <strong>import</strong> org.slf4j.LoggerFactory;
+<a name="29" href="#29">29</a>  <strong>import</strong> org.springframework.beans.factory.annotation.Autowired;
+<a name="30" href="#30">30</a>  
+<a name="31" href="#31">31</a>  <em>/**<em>*</em></em>
+<a name="32" href="#32">32</a>  <em> * This is a placeholder until we get a real event service going.</em>
+<a name="33" href="#33">33</a>  <em> * It does pretty much everything the service should do EXCEPT sending</em>
+<a name="34" href="#34">34</a>  <em> * the events across a cluster.</em>
+<a name="35" href="#35">35</a>  <em> * </em>
+<a name="36" href="#36">36</a>  <em> * @author Aaron Zeckoski (azeckoski@gmail.com) - azeckoski - 4:02:31 PM Nov 19, 2008</em>
+<a name="37" href="#37">37</a>  <em> */</em>
+<a name="38" href="#38">38</a>  <strong>public</strong> <strong>final</strong> <strong>class</strong> <a href="../../../../org/dspace/services/events/SystemEventService.html">SystemEventService</a> implements EventService, ShutdownService {
+<a name="39" href="#39">39</a>  
+<a name="40" href="#40">40</a>      <strong>private</strong> <strong>final</strong> Logger log = LoggerFactory.getLogger(SystemEventService.<strong>class</strong>);
+<a name="41" href="#41">41</a>  
+<a name="42" href="#42">42</a>      <strong>private</strong> <strong>static</strong> <strong>final</strong> String QUEUE_CACHE_NAME = <span class="string">"eventQueueCache"</span>;
+<a name="43" href="#43">43</a>      
+<a name="44" href="#44">44</a>      <em>/**<em>*</em></em>
+<a name="45" href="#45">45</a>  <em>     * Map for holding onto the listeners which is ClassLoader safe.</em>
+<a name="46" href="#46">46</a>  <em>     */</em>
+<a name="47" href="#47">47</a>      <strong>private</strong> Map&lt;String, EventListener> listenersMap = <strong>new</strong> ConcurrentHashMap&lt;String, EventListener>();
+<a name="48" href="#48">48</a>  
+<a name="49" href="#49">49</a>      <strong>private</strong> <strong>final</strong> RequestService requestService;
+<a name="50" href="#50">50</a>      <strong>private</strong> <strong>final</strong> SessionService sessionService;
+<a name="51" href="#51">51</a>      <strong>private</strong> <strong>final</strong> CachingService cachingService;
+<a name="52" href="#52">52</a>      <strong>private</strong> EventRequestInterceptor requestInterceptor;
+<a name="53" href="#53">53</a>  
+<a name="54" href="#54">54</a>      @Autowired(required=<strong>true</strong>)
+<a name="55" href="#55">55</a>      <strong>public</strong> <a href="../../../../org/dspace/services/events/SystemEventService.html">SystemEventService</a>(RequestService requestService, SessionService sessionService, CachingService cachingService) {
+<a name="56" href="#56">56</a>          <strong>if</strong> (requestService == <strong>null</strong> || cachingService == <strong>null</strong> || sessionService == <strong>null</strong>) {
+<a name="57" href="#57">57</a>              <strong>throw</strong> <strong>new</strong> IllegalArgumentException(<span class="string">"requestService, cachingService, and all inputs must not be null"</span>);
+<a name="58" href="#58">58</a>          }
+<a name="59" href="#59">59</a>          <strong>this</strong>.requestService = requestService;
+<a name="60" href="#60">60</a>          <strong>this</strong>.sessionService = sessionService;
+<a name="61" href="#61">61</a>          <strong>this</strong>.cachingService = cachingService;
+<a name="62" href="#62">62</a>  
+<a name="63" href="#63">63</a>          <em class="comment">// register interceptor</em>
+<a name="64" href="#64">64</a>          <strong>this</strong>.requestInterceptor = <strong>new</strong> EventRequestInterceptor();
+<a name="65" href="#65">65</a>          <strong>this</strong>.requestService.registerRequestInterceptor(<strong>this</strong>.requestInterceptor);
+<a name="66" href="#66">66</a>      }
+<a name="67" href="#67">67</a>  
+<a name="68" href="#68">68</a>      <em class="comment">/*<em class="comment"> (non-Javadoc)</em></em>
+<a name="69" href="#69">69</a>  <em class="comment">     * @see org.dspace.kernel.mixins.ShutdownService#shutdown()</em>
+<a name="70" href="#70">70</a>  <em class="comment">     */</em>
+<a name="71" href="#71">71</a>      <strong>public</strong> <strong>void</strong> shutdown() {
+<a name="72" href="#72">72</a>          <strong>this</strong>.requestInterceptor = <strong>null</strong>; <em class="comment">// clear the interceptor</em>
+<a name="73" href="#73">73</a>          <strong>this</strong>.listenersMap.clear();
+<a name="74" href="#74">74</a>      }
+<a name="75" href="#75">75</a>  
+<a name="76" href="#76">76</a>  
+<a name="77" href="#77">77</a>      <em class="comment">/*<em class="comment"> (non-Javadoc)</em></em>
+<a name="78" href="#78">78</a>  <em class="comment">     * @see org.dspace.services.EventService#fireEvent(org.dspace.services.model.Event)</em>
+<a name="79" href="#79">79</a>  <em class="comment">     */</em>
+<a name="80" href="#80">80</a>      <strong>public</strong> <strong>void</strong> fireEvent(Event event) {
+<a name="81" href="#81">81</a>          validateEvent(event);
+<a name="82" href="#82">82</a>          <em class="comment">// check scopes for this event</em>
+<a name="83" href="#83">83</a>          Scope[] scopes = event.getScopes();
+<a name="84" href="#84">84</a>          <strong>boolean</strong> local = ArrayUtils.contains(scopes, Scope.LOCAL);
+<a name="85" href="#85">85</a>          <strong>if</strong> (local) {
+<a name="86" href="#86">86</a>              fireLocalEvent(event);
+<a name="87" href="#87">87</a>          }
+<a name="88" href="#88">88</a>          <strong>boolean</strong> cluster = ArrayUtils.contains(scopes, Scope.CLUSTER);
+<a name="89" href="#89">89</a>          <strong>if</strong> (cluster) {
+<a name="90" href="#90">90</a>              fireClusterEvent(event);
+<a name="91" href="#91">91</a>          }
+<a name="92" href="#92">92</a>          <strong>boolean</strong> external = ArrayUtils.contains(scopes, Scope.EXTERNAL);
+<a name="93" href="#93">93</a>          <strong>if</strong> (external) {
+<a name="94" href="#94">94</a>              fireExternalEvent(event);
+<a name="95" href="#95">95</a>          }
+<a name="96" href="#96">96</a>      }
+<a name="97" href="#97">97</a>  
+<a name="98" href="#98">98</a>      <em class="comment">/*<em class="comment"> (non-Javadoc)</em></em>
+<a name="99" href="#99">99</a>  <em class="comment">     * @see org.dspace.services.EventService#queueEvent(org.dspace.services.model.Event)</em>
+<a name="100" href="#100">100</a> <em class="comment">     */</em>
+<a name="101" href="#101">101</a>     <strong>public</strong> <strong>void</strong> queueEvent(Event event) {
+<a name="102" href="#102">102</a>         validateEvent(event);
+<a name="103" href="#103">103</a> 
+<a name="104" href="#104">104</a>         <em class="comment">// get the cache</em>
+<a name="105" href="#105">105</a>         Cache queueCache = <strong>this</strong>.cachingService.getCache(QUEUE_CACHE_NAME, <strong>new</strong> CacheConfig(CacheScope.REQUEST));
+<a name="106" href="#106">106</a> 
+<a name="107" href="#107">107</a>         <em class="comment">// put the event in the queue if this is in a request</em>
+<a name="108" href="#108">108</a>         <strong>if</strong> (requestService.getCurrentRequestId() != <strong>null</strong>) {
+<a name="109" href="#109">109</a>             <em class="comment">// create a key which is orderable and unique</em>
+<a name="110" href="#110">110</a>             String key = System.currentTimeMillis() + <span class="string">":"</span> + queueCache.size() + <span class="string">":"</span> + event.getId();
+<a name="111" href="#111">111</a>             queueCache.put(key, event);
+<a name="112" href="#112">112</a>         } <strong>else</strong> {
+<a name="113" href="#113">113</a>             <em class="comment">// no request so fire the event immediately</em>
+<a name="114" href="#114">114</a>             log.info(<span class="string">"No request to queue this event ("</span>+event+<span class="string">") so firing immediately"</span>);
+<a name="115" href="#115">115</a>             fireEvent(event);
+<a name="116" href="#116">116</a>         }
+<a name="117" href="#117">117</a>     }
+<a name="118" href="#118">118</a> 
+<a name="119" href="#119">119</a>     <em class="comment">/*<em class="comment"> (non-Javadoc)</em></em>
+<a name="120" href="#120">120</a> <em class="comment">     * @see org.dspace.services.EventService#registerEventListener(org.dspace.services.model.EventListener)</em>
+<a name="121" href="#121">121</a> <em class="comment">     */</em>
+<a name="122" href="#122">122</a>     <strong>public</strong> <strong>void</strong> registerEventListener(EventListener listener) {
+<a name="123" href="#123">123</a>         <strong>if</strong> (listener == <strong>null</strong>) {
+<a name="124" href="#124">124</a>             <strong>throw</strong> <strong>new</strong> IllegalArgumentException(<span class="string">"Cannot register a listener that is null"</span>);
+<a name="125" href="#125">125</a>         }
+<a name="126" href="#126">126</a>         String key = listener.getClass().getName();
+<a name="127" href="#127">127</a>         <strong>this</strong>.listenersMap.put(key, listener);
+<a name="128" href="#128">128</a>     }
+<a name="129" href="#129">129</a> 
+<a name="130" href="#130">130</a> 
+<a name="131" href="#131">131</a>     <em>/**<em>*</em></em>
+<a name="132" href="#132">132</a> <em>     * Fires off a local event immediately.</em>
+<a name="133" href="#133">133</a> <em>     * This is internal so the event should have already been validated.</em>
+<a name="134" href="#134">134</a> <em>     *</em>
+<a name="135" href="#135">135</a> <em>     * @param event a valid event</em>
+<a name="136" href="#136">136</a> <em>     */</em>
+<a name="137" href="#137">137</a>     <strong>private</strong> <strong>void</strong> fireLocalEvent(Event event) {
+<a name="138" href="#138">138</a>         <em class="comment">// send event to all interested listeners</em>
+<a name="139" href="#139">139</a>         <strong>for</strong> (EventListener listener : listenersMap.values()) {
+<a name="140" href="#140">140</a>             <em class="comment">// filter the event if the listener has filter rules</em>
+<a name="141" href="#141">141</a>             <strong>if</strong> (listener != <strong>null</strong> &amp;&amp; filterEvent(listener, event) ) {
+<a name="142" href="#142">142</a>                 <em class="comment">// passed filters so send the event to this listener</em>
+<a name="143" href="#143">143</a>                 <strong>try</strong> {
+<a name="144" href="#144">144</a>                     listener.receiveEvent(event);
+<a name="145" href="#145">145</a>                 } <strong>catch</strong> (Exception e) {
+<a name="146" href="#146">146</a>                     log.warn(<span class="string">"Listener ("</span>+listener+<span class="string">")["</span>+listener.getClass().getName()+<span class="string">"] failed to recieve event ("</span>+event+<span class="string">"): "</span> + e.getMessage() + <span class="string">":"</span> + e.getCause());
+<a name="147" href="#147">147</a>                 }
+<a name="148" href="#148">148</a>             }
+<a name="149" href="#149">149</a>         }
+<a name="150" href="#150">150</a>     }
+<a name="151" href="#151">151</a> 
+<a name="152" href="#152">152</a>     <em>/**<em>*</em></em>
+<a name="153" href="#153">153</a> <em>     * Will eventually fire events to the entire cluster.</em>
+<a name="154" href="#154">154</a> <em>     * TODO not implemented.</em>
+<a name="155" href="#155">155</a> <em>     * </em>
+<a name="156" href="#156">156</a> <em>     * @param event a validated event</em>
+<a name="157" href="#157">157</a> <em>     */</em>
+<a name="158" href="#158">158</a>     <strong>private</strong> <strong>void</strong> fireClusterEvent(Event event) {
+<a name="159" href="#159">159</a>         log.debug(<span class="string">"fireClusterEvent is not implemented yet, no support for cluster events yet, could not fire event to the cluster: "</span> + event);
+<a name="160" href="#160">160</a>     }
+<a name="161" href="#161">161</a> 
+<a name="162" href="#162">162</a>     <em>/**<em>*</em></em>
+<a name="163" href="#163">163</a> <em>     * Will eventually fire events to external systems.</em>
+<a name="164" href="#164">164</a> <em>     * TODO not implemented.</em>
+<a name="165" href="#165">165</a> <em>     * </em>
+<a name="166" href="#166">166</a> <em>     * @param event a validated event</em>
+<a name="167" href="#167">167</a> <em>     */</em>
+<a name="168" href="#168">168</a>     <strong>private</strong> <strong>void</strong> fireExternalEvent(Event event) {
+<a name="169" href="#169">169</a>         log.debug(<span class="string">"fireExternalEvent is not implemented yet, no support for external events yet, could not fire event to external listeners: "</span> + event);
+<a name="170" href="#170">170</a>     }
+<a name="171" href="#171">171</a> 
+<a name="172" href="#172">172</a>     <em>/**<em>*</em></em>
+<a name="173" href="#173">173</a> <em>     * Fires all queued events for the current request.</em>
+<a name="174" href="#174">174</a> <em>     * </em>
+<a name="175" href="#175">175</a> <em>     * @return the number of events which were fired</em>
+<a name="176" href="#176">176</a> <em>     */</em>
+<a name="177" href="#177">177</a>     <strong>protected</strong> <strong>int</strong> fireQueuedEvents() {
+<a name="178" href="#178">178</a>         <strong>int</strong> fired = 0;
+<a name="179" href="#179">179</a>         Cache queueCache = <strong>this</strong>.cachingService.getCache(QUEUE_CACHE_NAME, <strong>new</strong> CacheConfig(CacheScope.REQUEST));
+<a name="180" href="#180">180</a> 
+<a name="181" href="#181">181</a>         List&lt;String> eventIds = queueCache.getKeys();
+<a name="182" href="#182">182</a>         Collections.sort(eventIds); <em class="comment">// put it in the order they were added (hopefully)</em>
+<a name="183" href="#183">183</a>         <strong>if</strong> (eventIds.size() > 0) {
+<a name="184" href="#184">184</a>             <strong>for</strong> (String eventId : eventIds) {
+<a name="185" href="#185">185</a>                 Event event = (Event) queueCache.get(eventId);
+<a name="186" href="#186">186</a>                 fireEvent(event);
+<a name="187" href="#187">187</a>                 fired++;
+<a name="188" href="#188">188</a>             }
+<a name="189" href="#189">189</a>         }
+<a name="190" href="#190">190</a>         queueCache.clear();
+<a name="191" href="#191">191</a>         <strong>return</strong> fired;
+<a name="192" href="#192">192</a>     }
+<a name="193" href="#193">193</a> 
+<a name="194" href="#194">194</a>     <em>/**<em>*</em></em>
+<a name="195" href="#195">195</a> <em>     * Clears all events for the current request.</em>
+<a name="196" href="#196">196</a> <em>     * </em>
+<a name="197" href="#197">197</a> <em>     * @return the number of events that were cleared</em>
+<a name="198" href="#198">198</a> <em>     */</em>
+<a name="199" href="#199">199</a>     <strong>protected</strong> <strong>int</strong> clearQueuedEvents() {
+<a name="200" href="#200">200</a>         Cache queueCache = <strong>this</strong>.cachingService.getCache(QUEUE_CACHE_NAME, <strong>new</strong> CacheConfig(CacheScope.REQUEST));
+<a name="201" href="#201">201</a>         <strong>int</strong> cleared = queueCache.size();
+<a name="202" href="#202">202</a>         queueCache.clear();
+<a name="203" href="#203">203</a>         <strong>return</strong> cleared;
+<a name="204" href="#204">204</a>     }
+<a name="205" href="#205">205</a> 
+<a name="206" href="#206">206</a>     <em>/**<em>*</em></em>
+<a name="207" href="#207">207</a> <em>     * This will validate the event object and set any values which are </em>
+<a name="208" href="#208">208</a> <em>     * unset but can be figured out.</em>
+<a name="209" href="#209">209</a> <em>     * </em>
+<a name="210" href="#210">210</a> <em>     * @param event the event which is being sent into the system</em>
+<a name="211" href="#211">211</a> <em>     */</em>
+<a name="212" href="#212">212</a>     <strong>private</strong> <strong>void</strong> validateEvent(Event event) {
+<a name="213" href="#213">213</a>         <strong>if</strong> (event == <strong>null</strong>) {
+<a name="214" href="#214">214</a>             <strong>throw</strong> <strong>new</strong> IllegalArgumentException(<span class="string">"Cannot fire null events"</span>);
+<a name="215" href="#215">215</a>         }
+<a name="216" href="#216">216</a>         <strong>if</strong> (event.getName() == <strong>null</strong> || <span class="string">""</span>.equals(event.getName()) ) {
+<a name="217" href="#217">217</a>             <strong>throw</strong> <strong>new</strong> IllegalArgumentException(<span class="string">"Event name must be set"</span>);
+<a name="218" href="#218">218</a>         }
+<a name="219" href="#219">219</a>         <strong>if</strong> (event.getId() == <strong>null</strong> || <span class="string">""</span>.equals(event.getId()) ) {
+<a name="220" href="#220">220</a>             <em class="comment">// generate an id then</em>
+<a name="221" href="#221">221</a>             event.setId(makeEventId());
+<a name="222" href="#222">222</a>         }
+<a name="223" href="#223">223</a>         <strong>if</strong> (event.getUserId() == <strong>null</strong> || <span class="string">""</span>.equals(event.getUserId()) ) {
+<a name="224" href="#224">224</a>             <em class="comment">// set to the current user</em>
+<a name="225" href="#225">225</a>             String userId = <strong>this</strong>.sessionService.getCurrentUserId();
+<a name="226" href="#226">226</a>             event.setUserId(userId);
+<a name="227" href="#227">227</a>         }
+<a name="228" href="#228">228</a>         <strong>if</strong> (event.getScopes() == <strong>null</strong>) {
+<a name="229" href="#229">229</a>             <em class="comment">// set to local/cluster scope</em>
+<a name="230" href="#230">230</a>             event.setScopes( <strong>new</strong> Event.Scope[] {Scope.LOCAL, Scope.CLUSTER});
+<a name="231" href="#231">231</a>         }
+<a name="232" href="#232">232</a>     }
+<a name="233" href="#233">233</a> 
+<a name="234" href="#234">234</a>     <em>/**<em>*</em></em>
+<a name="235" href="#235">235</a> <em>     * Checks to see if the filtering in the given listener allows the </em>
+<a name="236" href="#236">236</a> <em>     * event to be received.</em>
+<a name="237" href="#237">237</a> <em>     * </em>
+<a name="238" href="#238">238</a> <em>     * @param listener an event listener</em>
+<a name="239" href="#239">239</a> <em>     * @param event an event</em>
+<a name="240" href="#240">240</a> <em>     * @return true if the event should be received, false if the event is filtered out</em>
+<a name="241" href="#241">241</a> <em>     */</em>
+<a name="242" href="#242">242</a>     <strong>private</strong> <strong>boolean</strong> filterEvent(EventListener listener, Event event) {
+<a name="243" href="#243">243</a>         <strong>if</strong> (listener == <strong>null</strong> || event == <strong>null</strong>) {
+<a name="244" href="#244">244</a>             <strong>return</strong> false;
+<a name="245" href="#245">245</a>         }
+<a name="246" href="#246">246</a>         <em class="comment">// filter the event if the listener has filter rules</em>
+<a name="247" href="#247">247</a>         <strong>boolean</strong> allowName = <strong>true</strong>;
+<a name="248" href="#248">248</a>         <strong>try</strong> {
+<a name="249" href="#249">249</a>             String[] namePrefixes = listener.getEventNamePrefixes();
+<a name="250" href="#250">250</a>             <strong>if</strong> (namePrefixes != <strong>null</strong> &amp;&amp; namePrefixes.length > 0) {
+<a name="251" href="#251">251</a>                 allowName = false;
+<a name="252" href="#252">252</a>                 <strong>for</strong> (String namePrefix : namePrefixes) {
+<a name="253" href="#253">253</a>                     String eventName = event.getName();
+<a name="254" href="#254">254</a>                     <strong>if</strong> (namePrefix != <strong>null</strong> &amp;&amp; namePrefix.length() > 0 &amp;&amp; eventName.startsWith(namePrefix)) {
+<a name="255" href="#255">255</a>                         allowName = <strong>true</strong>;
+<a name="256" href="#256">256</a>                         <strong>break</strong>;
+<a name="257" href="#257">257</a>                     }
+<a name="258" href="#258">258</a>                 }
+<a name="259" href="#259">259</a>             }
+<a name="260" href="#260">260</a>         } <strong>catch</strong> (Exception e1) {
+<a name="261" href="#261">261</a>             log.warn(<span class="string">"Listener ("</span>+listener+<span class="string">")["</span>+listener.getClass().getName()+<span class="string">"] failure calling getEventNamePrefixes: "</span> + e1.getMessage() + <span class="string">":"</span> + e1.getCause());
+<a name="262" href="#262">262</a>         }
+<a name="263" href="#263">263</a>         <strong>boolean</strong> allowResource = <strong>true</strong>;
+<a name="264" href="#264">264</a>         <strong>try</strong> {
+<a name="265" href="#265">265</a>             String resourcePrefix = listener.getResourcePrefix();
+<a name="266" href="#266">266</a>             <strong>if</strong> (resourcePrefix != <strong>null</strong> &amp;&amp; resourcePrefix.length() > 0) {
+<a name="267" href="#267">267</a>                 allowResource = false;
+<a name="268" href="#268">268</a>                 String resRef = event.getResourceReference();
+<a name="269" href="#269">269</a>                 <strong>if</strong> (resRef == <strong>null</strong>) {
+<a name="270" href="#270">270</a>                     <em class="comment">// null references default to unfiltered</em>
+<a name="271" href="#271">271</a>                     allowResource = <strong>true</strong>;
+<a name="272" href="#272">272</a>                 } <strong>else</strong> {
+<a name="273" href="#273">273</a>                     <strong>if</strong> (resRef.startsWith(resourcePrefix)) {
+<a name="274" href="#274">274</a>                         allowResource = <strong>true</strong>;
+<a name="275" href="#275">275</a>                     }
+<a name="276" href="#276">276</a>                 }
+<a name="277" href="#277">277</a>             }
+<a name="278" href="#278">278</a>         } <strong>catch</strong> (Exception e1) {
+<a name="279" href="#279">279</a>             log.warn(<span class="string">"Listener ("</span>+listener+<span class="string">")["</span>+listener.getClass().getName()+<span class="string">"] failure calling getResourcePrefix: "</span> + e1.getMessage() + <span class="string">":"</span> + e1.getCause());
+<a name="280" href="#280">280</a>         }
+<a name="281" href="#281">281</a> 
+<a name="282" href="#282">282</a>         <strong>return</strong> allowName &amp;&amp; allowResource;
+<a name="283" href="#283">283</a>     }
+<a name="284" href="#284">284</a> 
+<a name="285" href="#285">285</a>     <strong>private</strong> Random random = <strong>new</strong> Random();
+<a name="286" href="#286">286</a>     <em>/**<em>*</em></em>
+<a name="287" href="#287">287</a> <em>     * Generate an event ID used to identify and track this event uniquely.</em>
+<a name="288" href="#288">288</a> <em>     *</em>
+<a name="289" href="#289">289</a> <em>     * @return event Id</em>
+<a name="290" href="#290">290</a> <em>     */</em>
+<a name="291" href="#291">291</a>     <strong>private</strong> String makeEventId() {
+<a name="292" href="#292">292</a>         <strong>return</strong> <span class="string">"event-"</span> + random.nextInt(1000) + <span class="string">"-"</span> + System.currentTimeMillis();
+<a name="293" href="#293">293</a>     }
+<a name="294" href="#294">294</a> 
+<a name="295" href="#295">295</a>     <em>/**<em>*</em></em>
+<a name="296" href="#296">296</a> <em>     * The request interceptor for the event service.</em>
+<a name="297" href="#297">297</a> <em>     * This will take care of firing queued events at the end of the request.</em>
+<a name="298" href="#298">298</a> <em>     * </em>
+<a name="299" href="#299">299</a> <em>     * @author Aaron Zeckoski (azeckoski@gmail.com) - azeckoski - 10:24:58 AM Nov 20, 2008</em>
+<a name="300" href="#300">300</a> <em>     */</em>
+<a name="301" href="#301">301</a>     <strong>public</strong> <strong>final</strong> <strong>class</strong> EventRequestInterceptor implements RequestInterceptor {
+<a name="302" href="#302">302</a> 
+<a name="303" href="#303">303</a>         <em class="comment">/*<em class="comment"> (non-Javadoc)</em></em>
+<a name="304" href="#304">304</a> <em class="comment">         * @see org.dspace.services.model.RequestInterceptor#onStart(java.lang.String, org.dspace.services.model.Session)</em>
+<a name="305" href="#305">305</a> <em class="comment">         */</em>
+<a name="306" href="#306">306</a>         <strong>public</strong> <strong>void</strong> onStart(String requestId, Session session) {
+<a name="307" href="#307">307</a>             <em class="comment">// nothing to really do here unless we decide we should purge out any existing events? -AZ</em>
+<a name="308" href="#308">308</a>         }
+<a name="309" href="#309">309</a> 
+<a name="310" href="#310">310</a>         <em class="comment">/*<em class="comment"> (non-Javadoc)</em></em>
+<a name="311" href="#311">311</a> <em class="comment">         * @see org.dspace.services.model.RequestInterceptor#onEnd(java.lang.String, org.dspace.services.model.Session, boolean, java.lang.Exception)</em>
+<a name="312" href="#312">312</a> <em class="comment">         */</em>
+<a name="313" href="#313">313</a>         <strong>public</strong> <strong>void</strong> onEnd(String requestId, Session session, <strong>boolean</strong> succeeded, Exception failure) {
+<a name="314" href="#314">314</a>             <strong>if</strong> (succeeded) {
+<a name="315" href="#315">315</a>                 <strong>int</strong> fired = fireQueuedEvents();
+<a name="316" href="#316">316</a>                 log.debug(<span class="string">"Fired "</span>+fired+<span class="string">" events at the end of the request ("</span>+requestId+<span class="string">")"</span>);
+<a name="317" href="#317">317</a>             } <strong>else</strong> {
+<a name="318" href="#318">318</a>                 <strong>int</strong> cleared = clearQueuedEvents();
+<a name="319" href="#319">319</a>                 log.debug(<span class="string">"Cleared/cancelled "</span>+cleared+<span class="string">" events at the end of the failed request ("</span>+requestId+<span class="string">")"</span>);
+<a name="320" href="#320">320</a>             }
+<a name="321" href="#321">321</a>         }
+<a name="322" href="#322">322</a> 
+<a name="323" href="#323">323</a>         <em class="comment">/*<em class="comment"> (non-Javadoc)</em></em>
+<a name="324" href="#324">324</a> <em class="comment">         * @see org.dspace.kernel.mixins.OrderedService#getOrder()</em>
+<a name="325" href="#325">325</a> <em class="comment">         */</em>
+<a name="326" href="#326">326</a>         <strong>public</strong> <strong>int</strong> getOrder() {
+<a name="327" href="#327">327</a>             <strong>return</strong> 20; <em class="comment">// this should fire pretty late</em>
+<a name="328" href="#328">328</a>         }
+<a name="329" href="#329">329</a> 
+<a name="330" href="#330">330</a>     }
+<a name="331" href="#331">331</a> 
+<a name="332" href="#332">332</a> }
+</pre>
+<hr/><div id="footer">This page was automatically generated by <a href="http://maven.apache.org/">Maven</a></div></body>
+</html>
+

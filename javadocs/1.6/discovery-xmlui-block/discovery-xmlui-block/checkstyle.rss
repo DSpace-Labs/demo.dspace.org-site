@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<rss version="0.91">
+  <channel>
+    <title>DSpace Discovery :: Discovery XMLUI Block - Checkstyle report</title>
+    <link>http://projects.dspace.org/dspace-pom/discovery-modules/discovery-xmlui-block</link>
+    <description>DSpace Discovery :: Discovery XMLUI Block - Checkstyle report</description>
+    <language>en-us</language>
+    <copyright>&#169;2010 The DSpace Foundation</copyright>
+    <item>
+      <title>File: 17,
+             Errors: 1803,
+             Warnings: 0,
+             Infos: 0
+      </title>
+            <link>http://projects.dspace.org/dspace-pom/discovery-modules/discovery-xmlui-block/checkstyle.html</link>
+      <description>
+        <p>Click <a href="http://projects.dspace.org/dspace-pom/discovery-modules/discovery-xmlui-block/checkstyle.html">here</a> for the full Checkstyle report.</p>
+
+        <table summary="Files" boder="1">
+          <thead>
+            <tr>
+              <th>Files</th>
+              <th style="width:30px;"><abbr title="Info">I</abbr></th>
+              <th style="width:30px;"><abbr title="Warning">W</abbr></th>
+              <th style="width:30px;"><abbr title="Error">E</abbr></th>
+            </tr>
+          </thead>
+          <tbody>
+                          <tr>
+                <td>
+                  <a href="http://projects.dspace.org/dspace-pom/discovery-modules/discovery-xmlui-block/checkstyle.html#org.dspace.app.xmlui.aspect.discovery.CollectionViewer.java">org/dspace/app/xmlui/aspect/discovery/CollectionViewer.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  164
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://projects.dspace.org/dspace-pom/discovery-modules/discovery-xmlui-block/checkstyle.html#org.dspace.app.xmlui.aspect.discovery.SiteViewer.java">org/dspace/app/xmlui/aspect/discovery/SiteViewer.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  72
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://projects.dspace.org/dspace-pom/discovery-modules/discovery-xmlui-block/checkstyle.html#org.dspace.app.xmlui.aspect.discovery.Navigation.java">org/dspace/app/xmlui/aspect/discovery/Navigation.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  102
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://projects.dspace.org/dspace-pom/discovery-modules/discovery-xmlui-block/checkstyle.html#org.dspace.app.xmlui.aspect.discovery.AbstractSearch.java">org/dspace/app/xmlui/aspect/discovery/AbstractSearch.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  255
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://projects.dspace.org/dspace-pom/discovery-modules/discovery-xmlui-block/checkstyle.html#org.dspace.app.xmlui.aspect.discovery.SimpleSearch.java">org/dspace/app/xmlui/aspect/discovery/SimpleSearch.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  72
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://projects.dspace.org/dspace-pom/discovery-modules/discovery-xmlui-block/checkstyle.html#org.dspace.app.xmlui.aspect.discovery.RelatedItems.java">org/dspace/app/xmlui/aspect/discovery/RelatedItems.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  72
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://projects.dspace.org/dspace-pom/discovery-modules/discovery-xmlui-block/checkstyle.html#org.dspace.app.xmlui.aspect.discovery.CommunitySearch.java">org/dspace/app/xmlui/aspect/discovery/CommunitySearch.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  119
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://projects.dspace.org/dspace-pom/discovery-modules/discovery-xmlui-block/checkstyle.html#org.dspace.app.xmlui.aspect.discovery.SiteRecentSubmissions.java">org/dspace/app/xmlui/aspect/discovery/SiteRecentSubmissions.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  36
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://projects.dspace.org/dspace-pom/discovery-modules/discovery-xmlui-block/checkstyle.html#org.dspace.app.xmlui.aspect.discovery.SearchForm.java">org/dspace/app/xmlui/aspect/discovery/SearchForm.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  66
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://projects.dspace.org/dspace-pom/discovery-modules/discovery-xmlui-block/checkstyle.html#org.dspace.app.xmlui.aspect.discovery.AbstractFiltersTransformer.java">org/dspace/app/xmlui/aspect/discovery/AbstractFiltersTransformer.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  125
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://projects.dspace.org/dspace-pom/discovery-modules/discovery-xmlui-block/checkstyle.html#org.dspace.app.xmlui.aspect.discovery.CollectionSearch.java">org/dspace/app/xmlui/aspect/discovery/CollectionSearch.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  135
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://projects.dspace.org/dspace-pom/discovery-modules/discovery-xmlui-block/checkstyle.html#org.dspace.app.xmlui.aspect.discovery.ItemFacets.java">org/dspace/app/xmlui/aspect/discovery/ItemFacets.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  32
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://projects.dspace.org/dspace-pom/discovery-modules/discovery-xmlui-block/checkstyle.html#org.dspace.app.xmlui.aspect.discovery.CommunityRecentSubmissions.java">org/dspace/app/xmlui/aspect/discovery/CommunityRecentSubmissions.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  37
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://projects.dspace.org/dspace-pom/discovery-modules/discovery-xmlui-block/checkstyle.html#org.dspace.app.xmlui.aspect.discovery.ItemViewer.java">org/dspace/app/xmlui/aspect/discovery/ItemViewer.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  125
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://projects.dspace.org/dspace-pom/discovery-modules/discovery-xmlui-block/checkstyle.html#org.dspace.app.xmlui.aspect.discovery.BrowseFacet.java">org/dspace/app/xmlui/aspect/discovery/BrowseFacet.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  131
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://projects.dspace.org/dspace-pom/discovery-modules/discovery-xmlui-block/checkstyle.html#org.dspace.app.xmlui.aspect.discovery.CollectionRecentSubmissions.java">org/dspace/app/xmlui/aspect/discovery/CollectionRecentSubmissions.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  34
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://projects.dspace.org/dspace-pom/discovery-modules/discovery-xmlui-block/checkstyle.html#org.dspace.app.xmlui.aspect.discovery.CommunityViewer.java">org/dspace/app/xmlui/aspect/discovery/CommunityViewer.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  226
+                </td>
+              </tr>
+                      </tbody>
+        </table>
+        
+      </description>
+    </item>
+  </channel>
+</rss>
+

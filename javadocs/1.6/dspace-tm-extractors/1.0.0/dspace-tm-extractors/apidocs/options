@@ -1,0 +1,28 @@
+-classpath
+'/Users/mdiggory/Documents/Development/DSpace-Async/modules/dspace-tm-extractors/target/checkout/target/classes:/Users/mdiggory/.m2/repository/xmlunit/xmlunit/1.1/xmlunit-1.1.jar:/Users/mdiggory/.m2/repository/log4j/log4j/1.2.13/log4j-1.2.13.jar:/Users/mdiggory/.m2/repository/commons-logging/commons-logging/1.1/commons-logging-1.1.jar:/Users/mdiggory/.m2/repository/org/apache/poi/poi/3.0.1-FINAL/poi-3.0.1-FINAL.jar:/Users/mdiggory/.m2/repository/junit/junit/4.1/junit-4.1.jar'
+-encoding
+'UTF-8'
+-protected
+-sourcepath
+'/Users/mdiggory/Documents/Development/DSpace-Async/modules/dspace-tm-extractors/target/checkout/src/main/java'
+-author
+-bottom
+'Copyright &#169; 2010 <a href="http://www.dspace.org">DuraSpace</a>. All Rights Reserved.'
+-charset
+'UTF-8'
+-d
+'/Users/mdiggory/Documents/Development/DSpace-Async/modules/dspace-tm-extractors/target/checkout/target/site/apidocs'
+-docencoding
+'UTF-8'
+-doctitle
+'DSpace TM-Extractors Dependency 1.0.0 API'
+-link
+'http://java.sun.com/j2se/1.5.0/docs/api'
+-link
+'http://junit.sourceforge.net/javadoc'
+-link
+'http://java.sun.com/javase/6/docs/api'
+-use
+-version
+-windowtitle
+'DSpace TM-Extractors Dependency 1.0.0 API'

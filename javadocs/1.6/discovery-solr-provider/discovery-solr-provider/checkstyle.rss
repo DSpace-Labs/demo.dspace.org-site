@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<rss version="0.91">
+  <channel>
+    <title>DSpace Discovery :: Provider Library - Checkstyle report</title>
+    <link>http://projects.dspace.org/dspace-pom/discovery-modules/discovery-solr-provider</link>
+    <description>DSpace Discovery :: Provider Library - Checkstyle report</description>
+    <language>en-us</language>
+    <copyright>&#169;2010 The DSpace Foundation</copyright>
+    <item>
+      <title>File: 7,
+             Errors: 361,
+             Warnings: 0,
+             Infos: 0
+      </title>
+            <link>http://projects.dspace.org/dspace-pom/discovery-modules/discovery-solr-provider/checkstyle.html</link>
+      <description>
+        <p>Click <a href="http://projects.dspace.org/dspace-pom/discovery-modules/discovery-solr-provider/checkstyle.html">here</a> for the full Checkstyle report.</p>
+
+        <table summary="Files" boder="1">
+          <thead>
+            <tr>
+              <th>Files</th>
+              <th style="width:30px;"><abbr title="Info">I</abbr></th>
+              <th style="width:30px;"><abbr title="Warning">W</abbr></th>
+              <th style="width:30px;"><abbr title="Error">E</abbr></th>
+            </tr>
+          </thead>
+          <tbody>
+                          <tr>
+                <td>
+                  <a href="http://projects.dspace.org/dspace-pom/discovery-modules/discovery-solr-provider/checkstyle.html#org.dspace.discovery.SearchServiceException.java">org/dspace/discovery/SearchServiceException.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  12
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://projects.dspace.org/dspace-pom/discovery-modules/discovery-solr-provider/checkstyle.html#org.dspace.discovery.IndexClient.java">org/dspace/discovery/IndexClient.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  22
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://projects.dspace.org/dspace-pom/discovery-modules/discovery-solr-provider/checkstyle.html#org.dspace.discovery.SearchUtils.java">org/dspace/discovery/SearchUtils.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  30
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://projects.dspace.org/dspace-pom/discovery-modules/discovery-solr-provider/checkstyle.html#org.dspace.discovery.SearchService.java">org/dspace/discovery/SearchService.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  11
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://projects.dspace.org/dspace-pom/discovery-modules/discovery-solr-provider/checkstyle.html#org.dspace.discovery.IndexEventConsumer.java">org/dspace/discovery/IndexEventConsumer.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  39
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://projects.dspace.org/dspace-pom/discovery-modules/discovery-solr-provider/checkstyle.html#org.dspace.discovery.SolrServiceImpl.java">org/dspace/discovery/SolrServiceImpl.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  235
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://projects.dspace.org/dspace-pom/discovery-modules/discovery-solr-provider/checkstyle.html#org.dspace.discovery.IndexingService.java">org/dspace/discovery/IndexingService.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  12
+                </td>
+              </tr>
+                      </tbody>
+        </table>
+        
+      </description>
+    </item>
+  </channel>
+</rss>
+

@@ -1,0 +1,7 @@
+org.textmining.extraction
+org.textmining.extraction.excel
+org.textmining.extraction.word
+org.textmining.extraction.word.chp
+org.textmining.extraction.word.model
+org.textmining.extraction.word.sprm
+org.textmining.extraction.word.test

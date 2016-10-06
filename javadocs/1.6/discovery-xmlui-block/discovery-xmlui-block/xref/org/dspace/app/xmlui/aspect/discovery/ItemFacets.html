@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1" /><title>ItemFacets xref</title>
+<link type="text/css" rel="stylesheet" href="../../../../../../stylesheet.css" />
+</head>
+<body>
+<div id="overview"><a href="../../../../../../../../../../../../../../apidocs/org/dspace/app/xmlui/aspect/discovery/ItemFacets.html">View Javadoc</a></div><pre>
+
+<a name="1" href="#1">1</a>   <em>/**<em>*</em></em>
+<a name="2" href="#2">2</a>   <em> * $Id: RelatedItems.java 4782 2010-02-26 13:11:40Z mdiggory $</em>
+<a name="3" href="#3">3</a>   <em> * $URL: https://scm.dspace.org/svn/repo/modules/dspace-discovery/trunk/block/src/main/java/org/dspace/app/xmlui/aspect/discovery/RelatedItems.java $</em>
+<a name="4" href="#4">4</a>   <em> * *************************************************************************</em>
+<a name="5" href="#5">5</a>   <em> * Copyright (c) 2002-2009, DuraSpace.  All rights reserved</em>
+<a name="6" href="#6">6</a>   <em> * Licensed under the DuraSpace License.</em>
+<a name="7" href="#7">7</a>   <em> *</em>
+<a name="8" href="#8">8</a>   <em> * A copy of the DuraSpace License has been included in this</em>
+<a name="9" href="#9">9</a>   <em> * distribution and is available at: <a href="http://scm.dspace.org/svn/repo/licenses/LICENSE.txt" target="alexandria_uri">http://scm.dspace.org/svn/repo/licenses/LICENSE.txt</a></em>
+<a name="10" href="#10">10</a>  <em> */</em>
+<a name="11" href="#11">11</a>  <strong>package</strong> org.dspace.app.xmlui.aspect.discovery;
+<a name="12" href="#12">12</a>  
+<a name="13" href="#13">13</a>  <em>/**<em>*</em></em>
+<a name="14" href="#14">14</a>  <em> * Display a single item.</em>
+<a name="15" href="#15">15</a>  <em> *</em>
+<a name="16" href="#16">16</a>  <em> * @author Mark Diggory</em>
+<a name="17" href="#17">17</a>  <em> */</em>
+<a name="18" href="#18">18</a>  <strong>public</strong> <strong>class</strong> <a href="../../../../../../org/dspace/app/xmlui/aspect/discovery/ItemFacets.html">ItemFacets</a> <strong>extends</strong> org.dspace.app.xmlui.aspect.discovery.AbstractFiltersTransformer
+<a name="19" href="#19">19</a>  {
+<a name="20" href="#20">20</a>  
+<a name="21" href="#21">21</a>      <strong>private</strong> <strong>static</strong> <strong>final</strong> org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(org.dspace.app.xmlui.aspect.discovery.ItemFacets.<strong>class</strong>);
+<a name="22" href="#22">22</a>  
+<a name="23" href="#23">23</a>      <em>/**<em>*</em></em>
+<a name="24" href="#24">24</a>  <em>     * Display a single item</em>
+<a name="25" href="#25">25</a>  <em>     */</em>
+<a name="26" href="#26">26</a>      <strong>public</strong> <strong>void</strong> addBody(org.dspace.app.xmlui.wing.element.Body body) throws org.xml.sax.SAXException, org.dspace.app.xmlui.wing.WingException,
+<a name="27" href="#27">27</a>              org.dspace.app.xmlui.utils.UIException, java.sql.SQLException, java.io.IOException, org.dspace.authorize.AuthorizeException
+<a name="28" href="#28">28</a>      {
+<a name="29" href="#29">29</a>  
+<a name="30" href="#30">30</a>          org.dspace.content.DSpaceObject dso = org.dspace.app.xmlui.utils.HandleUtil.obtainHandle(objectModel);
+<a name="31" href="#31">31</a>          <strong>if</strong> (!(dso instanceof org.dspace.content.Item))
+<a name="32" href="#32">32</a>              <strong>return</strong>;
+<a name="33" href="#33">33</a>          org.dspace.content.Item item = (org.dspace.content.Item) dso;
+<a name="34" href="#34">34</a>  
+<a name="35" href="#35">35</a>          <strong>try</strong> {
+<a name="36" href="#36">36</a>              performSearch(item);
+<a name="37" href="#37">37</a>          } <strong>catch</strong> (org.dspace.discovery.SearchServiceException e) {
+<a name="38" href="#38">38</a>              log.error(e.getMessage(),e);
+<a name="39" href="#39">39</a>          }
+<a name="40" href="#40">40</a>  
+<a name="41" href="#41">41</a>  
+<a name="42" href="#42">42</a>      }
+<a name="43" href="#43">43</a>  
+<a name="44" href="#44">44</a>      @Override
+<a name="45" href="#45">45</a>      <strong>public</strong> <strong>void</strong> performSearch(org.dspace.content.DSpaceObject dso) throws org.dspace.discovery.SearchServiceException {
+<a name="46" href="#46">46</a>  
+<a name="47" href="#47">47</a>          <strong>if</strong>(queryResults != <strong>null</strong>)
+<a name="48" href="#48">48</a>              <strong>return</strong>;
+<a name="49" href="#49">49</a>  
+<a name="50" href="#50">50</a>          <strong>this</strong>.queryArgs = prepareDefaultFilters(<span class="string">"item"</span>);
+<a name="51" href="#51">51</a>          
+<a name="52" href="#52">52</a>          <strong>this</strong>.queryArgs.setRows(1);
+<a name="53" href="#53">53</a>          <strong>this</strong>.queryArgs.setQuery(<span class="string">"handle:"</span> + dso.getHandle());
+<a name="54" href="#54">54</a>  
+<a name="55" href="#55">55</a>          queryResults = getSearchService().search(queryArgs);
+<a name="56" href="#56">56</a>      }
+<a name="57" href="#57">57</a>  
+<a name="58" href="#58">58</a>      <em>/**<em>*</em></em>
+<a name="59" href="#59">59</a>  <em>     * Recycle</em>
+<a name="60" href="#60">60</a>  <em>     */</em>
+<a name="61" href="#61">61</a>      <strong>public</strong> <strong>void</strong> recycle() {
+<a name="62" href="#62">62</a>          <strong>this</strong>.queryArgs = <strong>null</strong>;
+<a name="63" href="#63">63</a>          <strong>this</strong>.queryResults = <strong>null</strong>;
+<a name="64" href="#64">64</a>      	<strong>super</strong>.recycle();
+<a name="65" href="#65">65</a>      }
+<a name="66" href="#66">66</a>  }
+</pre>
+<hr/><div id="footer">This page was automatically generated by <a href="http://maven.apache.org/">Maven</a></div></body>
+</html>
+

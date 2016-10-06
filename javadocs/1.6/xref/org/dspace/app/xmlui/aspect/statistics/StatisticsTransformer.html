@@ -1,0 +1,401 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1" />
+<title>StatisticsTransformer xref</title>
+<link type="text/css" rel="stylesheet" href="../../../../../../stylesheet.css" />
+</head>
+<body>
+<div id="overview"><a href="../../../../../../../apidocs/org/dspace/app/xmlui/aspect/statistics/StatisticsTransformer.html">View Javadoc</a></div><pre>
+
+<a name="1" href="#1">1</a>   <em class="jxr_javadoccomment">/**</em>
+<a name="2" href="#2">2</a>   <em class="jxr_javadoccomment"> * $Id: StatisticsTransformer.java 4402 2009-10-07 08:31:24Z mdiggory $</em>
+<a name="3" href="#3">3</a>   <em class="jxr_javadoccomment"> * $URL: https://scm.dspace.org/svn/repo/modules/dspace-stats/trunk/dspace-xmlui-stats/src/main/java/org/dspace/app/xmlui/aspect/statistics/StatisticsTransformer.java $</em>
+<a name="4" href="#4">4</a>   <em class="jxr_javadoccomment"> * *************************************************************************</em>
+<a name="5" href="#5">5</a>   <em class="jxr_javadoccomment"> * Copyright (c) 2002-2009, DuraSpace.  All rights reserved</em>
+<a name="6" href="#6">6</a>   <em class="jxr_javadoccomment"> * Licensed under the DuraSpace Foundation License.</em>
+<a name="7" href="#7">7</a>   <em class="jxr_javadoccomment"> *</em>
+<a name="8" href="#8">8</a>   <em class="jxr_javadoccomment"> * A copy of the DuraSpace License has been included in this</em>
+<a name="9" href="#9">9</a>   <em class="jxr_javadoccomment"> * distribution and is available at: <a href="http://scm.dspace.org/svn/repo/licenses/LICENSE.txt" target="alexandria_uri">http://scm.dspace.org/svn/repo/licenses/LICENSE.txt</a></em>
+<a name="10" href="#10">10</a>  <em class="jxr_javadoccomment"> */</em>
+<a name="11" href="#11">11</a>  <strong class="jxr_keyword">package</strong> org.dspace.app.xmlui.aspect.statistics;
+<a name="12" href="#12">12</a>  
+<a name="13" href="#13">13</a>  <strong class="jxr_keyword">import</strong> java.io.IOException;
+<a name="14" href="#14">14</a>  <strong class="jxr_keyword">import</strong> java.sql.SQLException;
+<a name="15" href="#15">15</a>  <strong class="jxr_keyword">import</strong> java.text.ParseException;
+<a name="16" href="#16">16</a>  
+<a name="17" href="#17">17</a>  <strong class="jxr_keyword">import</strong> org.apache.log4j.Logger;
+<a name="18" href="#18">18</a>  <strong class="jxr_keyword">import</strong> org.apache.solr.client.solrj.SolrServerException;
+<a name="19" href="#19">19</a>  <strong class="jxr_keyword">import</strong> org.dspace.app.xmlui.cocoon.AbstractDSpaceTransformer;
+<a name="20" href="#20">20</a>  <strong class="jxr_keyword">import</strong> org.dspace.app.xmlui.utils.HandleUtil;
+<a name="21" href="#21">21</a>  <strong class="jxr_keyword">import</strong> org.dspace.app.xmlui.utils.UIException;
+<a name="22" href="#22">22</a>  <strong class="jxr_keyword">import</strong> org.dspace.app.xmlui.wing.WingException;
+<a name="23" href="#23">23</a>  <strong class="jxr_keyword">import</strong> org.dspace.app.xmlui.wing.Message;
+<a name="24" href="#24">24</a>  <strong class="jxr_keyword">import</strong> org.dspace.app.xmlui.wing.element.*;
+<a name="25" href="#25">25</a>  <strong class="jxr_keyword">import</strong> org.dspace.authorize.AuthorizeException;
+<a name="26" href="#26">26</a>  <strong class="jxr_keyword">import</strong> org.dspace.content.DSpaceObject;
+<a name="27" href="#27">27</a>  <strong class="jxr_keyword">import</strong> org.dspace.core.Constants;
+<a name="28" href="#28">28</a>  <strong class="jxr_keyword">import</strong> org.dspace.statistics.Dataset;
+<a name="29" href="#29">29</a>  <strong class="jxr_keyword">import</strong> org.dspace.statistics.content.*;
+<a name="30" href="#30">30</a>  <strong class="jxr_keyword">import</strong> org.dspace.handle.HandleManager;
+<a name="31" href="#31">31</a>  <strong class="jxr_keyword">import</strong> org.xml.sax.SAXException;
+<a name="32" href="#32">32</a>  
+<a name="33" href="#33">33</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../../../org/dspace/app/xmlui/aspect/statistics/StatisticsTransformer.html">StatisticsTransformer</a> <strong class="jxr_keyword">extends</strong> <a href="../../../../../../org/dspace/app/xmlui/cocoon/AbstractDSpaceTransformer.html">AbstractDSpaceTransformer</a> {
+<a name="34" href="#34">34</a>  
+<a name="35" href="#35">35</a>  	<strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> Logger log = Logger.getLogger(StatisticsTransformer.<strong class="jxr_keyword">class</strong>);
+<a name="36" href="#36">36</a>  
+<a name="37" href="#37">37</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> <a href="../../../../../../org/dspace/app/xmlui/wing/Message.html">Message</a> T_dspace_home = message(<span class="jxr_string">"xmlui.general.dspace_home"</span>);
+<a name="38" href="#38">38</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> <a href="../../../../../../org/dspace/app/xmlui/wing/Message.html">Message</a> T_head_title = message(<span class="jxr_string">"xmlui.statistics.title"</span>);
+<a name="39" href="#39">39</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> <a href="../../../../../../org/dspace/app/xmlui/wing/Message.html">Message</a> T_statistics_trail = message(<span class="jxr_string">"xmlui.statistics.trail"</span>);
+<a name="40" href="#40">40</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String T_head_visits_total = <span class="jxr_string">"xmlui.statistics.visits.total"</span>;
+<a name="41" href="#41">41</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String T_head_visits_month = <span class="jxr_string">"xmlui.statistics.visits.month"</span>;
+<a name="42" href="#42">42</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String T_head_visits_views = <span class="jxr_string">"xmlui.statistics.visits.views"</span>;
+<a name="43" href="#43">43</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String T_head_visits_countries = <span class="jxr_string">"xmlui.statistics.visits.countries"</span>;
+<a name="44" href="#44">44</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String T_head_visits_cities = <span class="jxr_string">"xmlui.statistics.visits.cities"</span>;
+<a name="45" href="#45">45</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String T_head_visits_bitstream = <span class="jxr_string">"xmlui.statistics.visits.bitstreams"</span>;
+<a name="46" href="#46">46</a>  
+<a name="47" href="#47">47</a>      <em class="jxr_javadoccomment">/**</em>
+<a name="48" href="#48">48</a>  <em class="jxr_javadoccomment">     * Add a page title and trail links</em>
+<a name="49" href="#49">49</a>  <em class="jxr_javadoccomment">     */</em>
+<a name="50" href="#50">50</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> addPageMeta(<a href="../../../../../../org/dspace/app/xmlui/wing/element/PageMeta.html">PageMeta</a> pageMeta) <strong class="jxr_keyword">throws</strong> SAXException, WingException, UIException, SQLException, IOException, AuthorizeException {
+<a name="51" href="#51">51</a>          String handle = parameters.getParameter(<span class="jxr_string">"handle"</span>, <strong class="jxr_keyword">null</strong>);
+<a name="52" href="#52">52</a>          <a href="../../../../../../org/dspace/content/DSpaceObject.html">DSpaceObject</a> dso = <strong class="jxr_keyword">null</strong>;
+<a name="53" href="#53">53</a>          <strong class="jxr_keyword">if</strong>(handle != <strong class="jxr_keyword">null</strong>)
+<a name="54" href="#54">54</a>              dso = HandleManager.resolveToObject(context, handle);
+<a name="55" href="#55">55</a>  
+<a name="56" href="#56">56</a>          pageMeta.addTrailLink(contextPath + <span class="jxr_string">"/"</span>,T_dspace_home);
+<a name="57" href="#57">57</a>  
+<a name="58" href="#58">58</a>          <strong class="jxr_keyword">if</strong>(dso != <strong class="jxr_keyword">null</strong>)
+<a name="59" href="#59">59</a>              HandleUtil.buildHandleTrail(dso,pageMeta,contextPath);
+<a name="60" href="#60">60</a>          pageMeta.addTrailLink(contextPath + <span class="jxr_string">"/handle"</span> + (dso != <strong class="jxr_keyword">null</strong> &amp;&amp; dso.getHandle() != <strong class="jxr_keyword">null</strong> ? <span class="jxr_string">"/"</span> + dso.getHandle() : <span class="jxr_string">"/statistics"</span>), T_statistics_trail);
+<a name="61" href="#61">61</a>  
+<a name="62" href="#62">62</a>          <em class="jxr_comment">// Add the page title</em>
+<a name="63" href="#63">63</a>          pageMeta.addMetadata(<span class="jxr_string">"title"</span>).addContent(T_head_title);
+<a name="64" href="#64">64</a>      }
+<a name="65" href="#65">65</a>  
+<a name="66" href="#66">66</a>      <em class="jxr_javadoccomment">/**</em>
+<a name="67" href="#67">67</a>  <em class="jxr_javadoccomment">	 * What to add at the end of the body</em>
+<a name="68" href="#68">68</a>  <em class="jxr_javadoccomment">	 */</em>
+<a name="69" href="#69">69</a>  	<strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> addBody(<a href="../../../../../../org/dspace/app/xmlui/wing/element/Body.html">Body</a> body) <strong class="jxr_keyword">throws</strong> SAXException, WingException,
+<a name="70" href="#70">70</a>  			UIException, SQLException, IOException, <a href="../../../../../../org/dspace/authorize/AuthorizeException.html">AuthorizeException</a> {
+<a name="71" href="#71">71</a>  
+<a name="72" href="#72">72</a>          <em class="jxr_comment">//Try to find our dspace object</em>
+<a name="73" href="#73">73</a>          String handle = parameters.getParameter(<span class="jxr_string">"handle"</span>, <strong class="jxr_keyword">null</strong>);
+<a name="74" href="#74">74</a>          <a href="../../../../../../org/dspace/content/DSpaceObject.html">DSpaceObject</a> dso = <strong class="jxr_keyword">null</strong>;
+<a name="75" href="#75">75</a>          <strong class="jxr_keyword">if</strong>(handle != <strong class="jxr_keyword">null</strong>)
+<a name="76" href="#76">76</a>              dso = HandleManager.resolveToObject(context, handle);
+<a name="77" href="#77">77</a>  
+<a name="78" href="#78">78</a>  		<strong class="jxr_keyword">try</strong>
+<a name="79" href="#79">79</a>  		{
+<a name="80" href="#80">80</a>  			<strong class="jxr_keyword">if</strong>(dso != <strong class="jxr_keyword">null</strong>)
+<a name="81" href="#81">81</a>  			{
+<a name="82" href="#82">82</a>  				renderViewer(body, dso);
+<a name="83" href="#83">83</a>  			}
+<a name="84" href="#84">84</a>  			
+<a name="85" href="#85">85</a>  			<em class="jxr_comment">/*<em class="jxr_comment"> TODO: Fix rendering of Home Page Statistics</em></em>
+<a name="86" href="#86">86</a>  <em class="jxr_comment">			else</em>
+<a name="87" href="#87">87</a>  <em class="jxr_comment">			{</em>
+<a name="88" href="#88">88</a>  <em class="jxr_comment">				renderHome(body);</em>
+<a name="89" href="#89">89</a>  <em class="jxr_comment">			}</em>
+<a name="90" href="#90">90</a>  <em class="jxr_comment">			*/</em>
+<a name="91" href="#91">91</a>  			
+<a name="92" href="#92">92</a>  		} <strong class="jxr_keyword">catch</strong> (Throwable t) {
+<a name="93" href="#93">93</a>  			log.error(t.getMessage(), t);
+<a name="94" href="#94">94</a>  		}
+<a name="95" href="#95">95</a>  
+<a name="96" href="#96">96</a>  	}
+<a name="97" href="#97">97</a>  
+<a name="98" href="#98">98</a>  	<strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> renderHome(<a href="../../../../../../org/dspace/app/xmlui/wing/element/Body.html">Body</a> body) <strong class="jxr_keyword">throws</strong> WingException {
+<a name="99" href="#99">99</a>  		
+<a name="100" href="#100">100</a> 		Division home = body.addDivision(<span class="jxr_string">"home"</span>, <span class="jxr_string">"primary repository"</span>);
+<a name="101" href="#101">101</a> 		Division division = home.addDivision(<span class="jxr_string">"stats"</span>, <span class="jxr_string">"secondary stats"</span>);
+<a name="102" href="#102">102</a> 		division.setHead(T_head_title);
+<a name="103" href="#103">103</a> 
+<a name="104" href="#104">104</a> 		<strong class="jxr_keyword">try</strong> {
+<a name="105" href="#105">105</a> 
+<a name="106" href="#106">106</a> 			StatisticsTable statisticsTable = <strong class="jxr_keyword">new</strong> <a href="../../../../../../org/dspace/statistics/content/StatisticsTable.html">StatisticsTable</a>(
+<a name="107" href="#107">107</a> 					<strong class="jxr_keyword">new</strong> <a href="../../../../../../org/dspace/statistics/content/StatisticsDataVisits.html">StatisticsDataVisits</a>());
+<a name="108" href="#108">108</a> 
+<a name="109" href="#109">109</a> 			statisticsTable.setTitle(T_head_visits_month);
+<a name="110" href="#110">110</a> 			statisticsTable.setId(<span class="jxr_string">"tab1"</span>);
+<a name="111" href="#111">111</a> 
+<a name="112" href="#112">112</a> 			DatasetTimeGenerator timeAxis = <strong class="jxr_keyword">new</strong> <a href="../../../../../../org/dspace/statistics/content/DatasetTimeGenerator.html">DatasetTimeGenerator</a>();
+<a name="113" href="#113">113</a> 			timeAxis.setDateInterval(<span class="jxr_string">"month"</span>, <span class="jxr_string">"-6"</span>, <span class="jxr_string">"+1"</span>);
+<a name="114" href="#114">114</a> 			statisticsTable.addDatasetGenerator(timeAxis);
+<a name="115" href="#115">115</a> 
+<a name="116" href="#116">116</a> 			addDisplayTable(division, statisticsTable);
+<a name="117" href="#117">117</a> 
+<a name="118" href="#118">118</a> 		} <strong class="jxr_keyword">catch</strong> (Exception e) {
+<a name="119" href="#119">119</a> 			log.error(<span class="jxr_string">"Error occured while creating statistics for home page"</span>,
+<a name="120" href="#120">120</a> 					e);
+<a name="121" href="#121">121</a> 		}
+<a name="122" href="#122">122</a> 		
+<a name="123" href="#123">123</a> 		<strong class="jxr_keyword">try</strong> {
+<a name="124" href="#124">124</a> 			StatisticsListing statListing = <strong class="jxr_keyword">new</strong> <a href="../../../../../../org/dspace/statistics/content/StatisticsListing.html">StatisticsListing</a>(
+<a name="125" href="#125">125</a> 					<strong class="jxr_keyword">new</strong> <a href="../../../../../../org/dspace/statistics/content/StatisticsDataVisits.html">StatisticsDataVisits</a>());
+<a name="126" href="#126">126</a> 
+<a name="127" href="#127">127</a> 			statListing.setTitle(T_head_visits_total);
+<a name="128" href="#128">128</a> 			statListing.setId(<span class="jxr_string">"list1"</span>);
+<a name="129" href="#129">129</a> 
+<a name="130" href="#130">130</a> 			addDisplayListing(division, statListing);
+<a name="131" href="#131">131</a> 
+<a name="132" href="#132">132</a> 		} <strong class="jxr_keyword">catch</strong> (Exception e) {
+<a name="133" href="#133">133</a> 			log.error(<span class="jxr_string">"Error occured while creating statistics for home page"</span>, e);
+<a name="134" href="#134">134</a> 		}
+<a name="135" href="#135">135</a> 
+<a name="136" href="#136">136</a> 	}
+<a name="137" href="#137">137</a> 
+<a name="138" href="#138">138</a> 	<strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> renderViewer(<a href="../../../../../../org/dspace/app/xmlui/wing/element/Body.html">Body</a> body, <a href="../../../../../../org/dspace/content/DSpaceObject.html">DSpaceObject</a> dso) <strong class="jxr_keyword">throws</strong> WingException {
+<a name="139" href="#139">139</a> 
+<a name="140" href="#140">140</a> 		Division home = body.addDivision(
+<a name="141" href="#141">141</a> 				Constants.typeText[dso.getType()].toLowerCase() + <span class="jxr_string">"-home"</span>, 
+<a name="142" href="#142">142</a> 				<span class="jxr_string">"primary repository "</span> + Constants.typeText[dso.getType()].toLowerCase());
+<a name="143" href="#143">143</a> 		
+<a name="144" href="#144">144</a> 		<em class="jxr_comment">// Build the collection viewer division.</em>
+<a name="145" href="#145">145</a> 		Division division = home.addDivision(<span class="jxr_string">"stats"</span>, <span class="jxr_string">"secondary stats"</span>);
+<a name="146" href="#146">146</a> 		division.setHead(T_head_title);
+<a name="147" href="#147">147</a> 
+<a name="148" href="#148">148</a> 		
+<a name="149" href="#149">149</a> 		<strong class="jxr_keyword">try</strong> {
+<a name="150" href="#150">150</a> 			StatisticsListing statListing = <strong class="jxr_keyword">new</strong> <a href="../../../../../../org/dspace/statistics/content/StatisticsListing.html">StatisticsListing</a>(
+<a name="151" href="#151">151</a> 					<strong class="jxr_keyword">new</strong> <a href="../../../../../../org/dspace/statistics/content/StatisticsDataVisits.html">StatisticsDataVisits</a>(dso));
+<a name="152" href="#152">152</a> 
+<a name="153" href="#153">153</a> 			statListing.setTitle(T_head_visits_total);
+<a name="154" href="#154">154</a> 			statListing.setId(<span class="jxr_string">"list1"</span>);
+<a name="155" href="#155">155</a> 
+<a name="156" href="#156">156</a> 			DatasetDSpaceObjectGenerator dsoAxis = <strong class="jxr_keyword">new</strong> <a href="../../../../../../org/dspace/statistics/content/DatasetDSpaceObjectGenerator.html">DatasetDSpaceObjectGenerator</a>();
+<a name="157" href="#157">157</a> 			dsoAxis.addDsoChild(dso.getType(), 10, false, -1);
+<a name="158" href="#158">158</a> 			statListing.addDatasetGenerator(dsoAxis);
+<a name="159" href="#159">159</a> 
+<a name="160" href="#160">160</a> 			addDisplayListing(division, statListing);
+<a name="161" href="#161">161</a> 
+<a name="162" href="#162">162</a> 		} <strong class="jxr_keyword">catch</strong> (Exception e) {
+<a name="163" href="#163">163</a> 			log.error(
+<a name="164" href="#164">164</a> 					<span class="jxr_string">"Error occured while creating statistics for dso with ID: "</span>
+<a name="165" href="#165">165</a> 							+ dso.getID() + <span class="jxr_string">" and type "</span> + dso.getType()
+<a name="166" href="#166">166</a> 							+ <span class="jxr_string">" and handle: "</span> + dso.getHandle(), e);
+<a name="167" href="#167">167</a> 		}
+<a name="168" href="#168">168</a> 		
+<a name="169" href="#169">169</a> 		
+<a name="170" href="#170">170</a> 		
+<a name="171" href="#171">171</a> 		<strong class="jxr_keyword">try</strong> {
+<a name="172" href="#172">172</a> 
+<a name="173" href="#173">173</a> 			StatisticsTable statisticsTable = <strong class="jxr_keyword">new</strong> <a href="../../../../../../org/dspace/statistics/content/StatisticsTable.html">StatisticsTable</a>(<strong class="jxr_keyword">new</strong> <a href="../../../../../../org/dspace/statistics/content/StatisticsDataVisits.html">StatisticsDataVisits</a>(dso));
+<a name="174" href="#174">174</a> 
+<a name="175" href="#175">175</a> 			statisticsTable.setTitle(T_head_visits_month);
+<a name="176" href="#176">176</a> 			statisticsTable.setId(<span class="jxr_string">"tab1"</span>);
+<a name="177" href="#177">177</a> 
+<a name="178" href="#178">178</a> 			DatasetTimeGenerator timeAxis = <strong class="jxr_keyword">new</strong> <a href="../../../../../../org/dspace/statistics/content/DatasetTimeGenerator.html">DatasetTimeGenerator</a>();
+<a name="179" href="#179">179</a> 			timeAxis.setDateInterval(<span class="jxr_string">"month"</span>, <span class="jxr_string">"-6"</span>, <span class="jxr_string">"+1"</span>);
+<a name="180" href="#180">180</a> 			statisticsTable.addDatasetGenerator(timeAxis);
+<a name="181" href="#181">181</a> 
+<a name="182" href="#182">182</a> 			DatasetDSpaceObjectGenerator dsoAxis = <strong class="jxr_keyword">new</strong> <a href="../../../../../../org/dspace/statistics/content/DatasetDSpaceObjectGenerator.html">DatasetDSpaceObjectGenerator</a>();
+<a name="183" href="#183">183</a> 			dsoAxis.addDsoChild(dso.getType(), 10, false, -1);
+<a name="184" href="#184">184</a> 			statisticsTable.addDatasetGenerator(dsoAxis);
+<a name="185" href="#185">185</a> 
+<a name="186" href="#186">186</a> 			addDisplayTable(division, statisticsTable);
+<a name="187" href="#187">187</a> 
+<a name="188" href="#188">188</a> 		} <strong class="jxr_keyword">catch</strong> (Exception e) {
+<a name="189" href="#189">189</a> 			log.error(
+<a name="190" href="#190">190</a> 					<span class="jxr_string">"Error occured while creating statistics for dso with ID: "</span>
+<a name="191" href="#191">191</a> 							+ dso.getID() + <span class="jxr_string">" and type "</span> + dso.getType()
+<a name="192" href="#192">192</a> 							+ <span class="jxr_string">" and handle: "</span> + dso.getHandle(), e);
+<a name="193" href="#193">193</a> 		}
+<a name="194" href="#194">194</a> 
+<a name="195" href="#195">195</a>          <strong class="jxr_keyword">if</strong>(dso instanceof org.dspace.content.Item){
+<a name="196" href="#196">196</a>              <em class="jxr_comment">//Make sure our item has at least one bitstream</em>
+<a name="197" href="#197">197</a>              org.dspace.content.Item item = (org.dspace.content.Item) dso;
+<a name="198" href="#198">198</a>             <strong class="jxr_keyword">try</strong> {
+<a name="199" href="#199">199</a>                 <strong class="jxr_keyword">if</strong>(item.hasUploadedFiles()){
+<a name="200" href="#200">200</a>                     <a href="../../../../../../org/dspace/statistics/content/StatisticsListing.html">StatisticsListing</a> statsList = <strong class="jxr_keyword">new</strong> <a href="../../../../../../org/dspace/statistics/content/StatisticsListing.html">StatisticsListing</a>(<strong class="jxr_keyword">new</strong> <a href="../../../../../../org/dspace/statistics/content/StatisticsDataVisits.html">StatisticsDataVisits</a>(dso));
+<a name="201" href="#201">201</a> 
+<a name="202" href="#202">202</a>                     statsList.setTitle(T_head_visits_bitstream);
+<a name="203" href="#203">203</a>                     statsList.setId(<span class="jxr_string">"list-bit"</span>);
+<a name="204" href="#204">204</a> 
+<a name="205" href="#205">205</a>                     <a href="../../../../../../org/dspace/statistics/content/DatasetDSpaceObjectGenerator.html">DatasetDSpaceObjectGenerator</a> dsoAxis = <strong class="jxr_keyword">new</strong> <a href="../../../../../../org/dspace/statistics/content/DatasetDSpaceObjectGenerator.html">DatasetDSpaceObjectGenerator</a>();
+<a name="206" href="#206">206</a>                     dsoAxis.addDsoChild(Constants.BITSTREAM, 10, false, -1);
+<a name="207" href="#207">207</a>                     statsList.addDatasetGenerator(dsoAxis);
+<a name="208" href="#208">208</a> 
+<a name="209" href="#209">209</a>                     addDisplayListing(division, statsList);
+<a name="210" href="#210">210</a>                 }
+<a name="211" href="#211">211</a>             } <strong class="jxr_keyword">catch</strong> (Exception e) {
+<a name="212" href="#212">212</a>                 log.error(
+<a name="213" href="#213">213</a>                         <span class="jxr_string">"Error occured while creating statistics for dso with ID: "</span>
+<a name="214" href="#214">214</a>                                 + dso.getID() + <span class="jxr_string">" and type "</span> + dso.getType()
+<a name="215" href="#215">215</a>                                 + <span class="jxr_string">" and handle: "</span> + dso.getHandle(), e);
+<a name="216" href="#216">216</a>             }
+<a name="217" href="#217">217</a>         }
+<a name="218" href="#218">218</a> 
+<a name="219" href="#219">219</a>         <strong class="jxr_keyword">try</strong> {
+<a name="220" href="#220">220</a>             <a href="../../../../../../org/dspace/statistics/content/StatisticsListing.html">StatisticsListing</a> statListing = <strong class="jxr_keyword">new</strong> <a href="../../../../../../org/dspace/statistics/content/StatisticsListing.html">StatisticsListing</a>(
+<a name="221" href="#221">221</a>                        <strong class="jxr_keyword">new</strong> <a href="../../../../../../org/dspace/statistics/content/StatisticsDataVisits.html">StatisticsDataVisits</a>(dso));
+<a name="222" href="#222">222</a> 
+<a name="223" href="#223">223</a>             statListing.setTitle(T_head_visits_countries);
+<a name="224" href="#224">224</a>             statListing.setId(<span class="jxr_string">"list2"</span>);
+<a name="225" href="#225">225</a> 
+<a name="226" href="#226">226</a> <em class="jxr_comment">//            DatasetDSpaceObjectGenerator dsoAxis = new DatasetDSpaceObjectGenerator();</em>
+<a name="227" href="#227">227</a> <em class="jxr_comment">//            dsoAxis.addDsoChild(dso.getType(), 10, false, -1);</em>
+<a name="228" href="#228">228</a> 
+<a name="229" href="#229">229</a>             <a href="../../../../../../org/dspace/statistics/content/DatasetTypeGenerator.html">DatasetTypeGenerator</a> typeAxis = <strong class="jxr_keyword">new</strong> <a href="../../../../../../org/dspace/statistics/content/DatasetTypeGenerator.html">DatasetTypeGenerator</a>();
+<a name="230" href="#230">230</a>             typeAxis.setType(<span class="jxr_string">"countryCode"</span>);
+<a name="231" href="#231">231</a>             typeAxis.setMax(10);
+<a name="232" href="#232">232</a>             statListing.addDatasetGenerator(typeAxis);
+<a name="233" href="#233">233</a> 
+<a name="234" href="#234">234</a>             addDisplayListing(division, statListing);
+<a name="235" href="#235">235</a>         } <strong class="jxr_keyword">catch</strong> (Exception e) {
+<a name="236" href="#236">236</a>             log.error(
+<a name="237" href="#237">237</a>                     <span class="jxr_string">"Error occured while creating statistics for dso with ID: "</span>
+<a name="238" href="#238">238</a>                             + dso.getID() + <span class="jxr_string">" and type "</span> + dso.getType()
+<a name="239" href="#239">239</a>                             + <span class="jxr_string">" and handle: "</span> + dso.getHandle(), e);
+<a name="240" href="#240">240</a>         }
+<a name="241" href="#241">241</a> 
+<a name="242" href="#242">242</a>         <strong class="jxr_keyword">try</strong> {
+<a name="243" href="#243">243</a>             <a href="../../../../../../org/dspace/statistics/content/StatisticsListing.html">StatisticsListing</a> statListing = <strong class="jxr_keyword">new</strong> <a href="../../../../../../org/dspace/statistics/content/StatisticsListing.html">StatisticsListing</a>(
+<a name="244" href="#244">244</a>                        <strong class="jxr_keyword">new</strong> <a href="../../../../../../org/dspace/statistics/content/StatisticsDataVisits.html">StatisticsDataVisits</a>(dso));
+<a name="245" href="#245">245</a> 
+<a name="246" href="#246">246</a>             statListing.setTitle(T_head_visits_cities);
+<a name="247" href="#247">247</a>             statListing.setId(<span class="jxr_string">"list3"</span>);
+<a name="248" href="#248">248</a> 
+<a name="249" href="#249">249</a> <em class="jxr_comment">//            DatasetDSpaceObjectGenerator dsoAxis = new DatasetDSpaceObjectGenerator();</em>
+<a name="250" href="#250">250</a> <em class="jxr_comment">//            dsoAxis.addDsoChild(dso.getType(), 10, false, -1);</em>
+<a name="251" href="#251">251</a> 
+<a name="252" href="#252">252</a>             <a href="../../../../../../org/dspace/statistics/content/DatasetTypeGenerator.html">DatasetTypeGenerator</a> typeAxis = <strong class="jxr_keyword">new</strong> <a href="../../../../../../org/dspace/statistics/content/DatasetTypeGenerator.html">DatasetTypeGenerator</a>();
+<a name="253" href="#253">253</a>             typeAxis.setType(<span class="jxr_string">"city"</span>);
+<a name="254" href="#254">254</a>             typeAxis.setMax(10);
+<a name="255" href="#255">255</a>             statListing.addDatasetGenerator(typeAxis);
+<a name="256" href="#256">256</a> 
+<a name="257" href="#257">257</a>             addDisplayListing(division, statListing);
+<a name="258" href="#258">258</a>         } <strong class="jxr_keyword">catch</strong> (Exception e) {
+<a name="259" href="#259">259</a>             log.error(
+<a name="260" href="#260">260</a>                     <span class="jxr_string">"Error occured while creating statistics for dso with ID: "</span>
+<a name="261" href="#261">261</a>                             + dso.getID() + <span class="jxr_string">" and type "</span> + dso.getType()
+<a name="262" href="#262">262</a>                             + <span class="jxr_string">" and handle: "</span> + dso.getHandle(), e);
+<a name="263" href="#263">263</a>         }
+<a name="264" href="#264">264</a> 
+<a name="265" href="#265">265</a> 	}
+<a name="266" href="#266">266</a> 
+<a name="267" href="#267">267</a> 	
+<a name="268" href="#268">268</a> 	<em class="jxr_javadoccomment">/**</em>
+<a name="269" href="#269">269</a> <em class="jxr_javadoccomment">	 * Adds a table layout to the page</em>
+<a name="270" href="#270">270</a> <em class="jxr_javadoccomment">	 * </em>
+<a name="271" href="#271">271</a> <em class="jxr_javadoccomment">	 * @param mainDiv</em>
+<a name="272" href="#272">272</a> <em class="jxr_javadoccomment">	 *            the div to add the table to</em>
+<a name="273" href="#273">273</a> <em class="jxr_javadoccomment">	 * @param display</em>
+<a name="274" href="#274">274</a> <em class="jxr_javadoccomment">	 * @throws SAXException</em>
+<a name="275" href="#275">275</a> <em class="jxr_javadoccomment">	 * @throws WingException</em>
+<a name="276" href="#276">276</a> <em class="jxr_javadoccomment">	 * @throws ParseException</em>
+<a name="277" href="#277">277</a> <em class="jxr_javadoccomment">	 * @throws IOException</em>
+<a name="278" href="#278">278</a> <em class="jxr_javadoccomment">	 * @throws SolrServerException</em>
+<a name="279" href="#279">279</a> <em class="jxr_javadoccomment">	 * @throws SQLException</em>
+<a name="280" href="#280">280</a> <em class="jxr_javadoccomment">	 */</em>
+<a name="281" href="#281">281</a> 	<strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> addDisplayTable(<a href="../../../../../../org/dspace/app/xmlui/wing/element/Division.html">Division</a> mainDiv, <a href="../../../../../../org/dspace/statistics/content/StatisticsTable.html">StatisticsTable</a> display)
+<a name="282" href="#282">282</a> 			<strong class="jxr_keyword">throws</strong> SAXException, WingException, SQLException,
+<a name="283" href="#283">283</a> 			SolrServerException, IOException, ParseException {
+<a name="284" href="#284">284</a> 
+<a name="285" href="#285">285</a> 		String title = display.getTitle();
+<a name="286" href="#286">286</a> 
+<a name="287" href="#287">287</a> 		Dataset dataset = display.getDataset();
+<a name="288" href="#288">288</a> 
+<a name="289" href="#289">289</a> 		<strong class="jxr_keyword">if</strong> (dataset == <strong class="jxr_keyword">null</strong>) {
+<a name="290" href="#290">290</a> 			<em class="jxr_javadoccomment">/**</em><em class="jxr_javadoccomment"> activate dataset query */</em>
+<a name="291" href="#291">291</a> 			dataset = display.getDataset(context);
+<a name="292" href="#292">292</a> 		}
+<a name="293" href="#293">293</a> 
+<a name="294" href="#294">294</a> 		<strong class="jxr_keyword">if</strong> (dataset != <strong class="jxr_keyword">null</strong>) {
+<a name="295" href="#295">295</a> 
+<a name="296" href="#296">296</a> 			String[][] matrix = dataset.getMatrixFormatted();
+<a name="297" href="#297">297</a> 
+<a name="298" href="#298">298</a> 			<em class="jxr_javadoccomment">/**</em><em class="jxr_javadoccomment"> Generate <a href="../../../../../../org/dspace/app/xmlui/wing/element/Table.html">Table</a> */</em>
+<a name="299" href="#299">299</a> 			Division wrapper = mainDiv.addDivision(<span class="jxr_string">"tablewrapper"</span>);
+<a name="300" href="#300">300</a> 			Table table = wrapper.addTable(<span class="jxr_string">"list-table"</span>, 1, 1,
+<a name="301" href="#301">301</a> 					title == <strong class="jxr_keyword">null</strong> ? <span class="jxr_string">""</span> : <span class="jxr_string">"tableWithTitle"</span>);
+<a name="302" href="#302">302</a> 			<strong class="jxr_keyword">if</strong> (title != <strong class="jxr_keyword">null</strong>)
+<a name="303" href="#303">303</a> 				table.setHead(message(title));
+<a name="304" href="#304">304</a> 
+<a name="305" href="#305">305</a> 			<em class="jxr_javadoccomment">/**</em><em class="jxr_javadoccomment"> Generate Header <a href="../../../../../../org/dspace/app/xmlui/wing/element/Row.html">Row</a> */</em>
+<a name="306" href="#306">306</a> 			Row headerRow = table.addRow();
+<a name="307" href="#307">307</a> 			headerRow.addCell(<span class="jxr_string">"spacer"</span>, Cell.ROLE_DATA, <span class="jxr_string">"labelcell"</span>);
+<a name="308" href="#308">308</a> 
+<a name="309" href="#309">309</a> 			String[] cLabels = dataset.getColLabels().toArray(<strong class="jxr_keyword">new</strong> String[0]);
+<a name="310" href="#310">310</a> 			<strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">int</strong> row = 0; row &lt; cLabels.length; row++) {
+<a name="311" href="#311">311</a> 				Cell cell = headerRow.addCell(0 + <span class="jxr_string">"-"</span> + row + <span class="jxr_string">"-h"</span>,
+<a name="312" href="#312">312</a> 						Cell.ROLE_DATA, <span class="jxr_string">"labelcell"</span>);
+<a name="313" href="#313">313</a> 				cell.addContent(cLabels[row]);
+<a name="314" href="#314">314</a> 			}
+<a name="315" href="#315">315</a> 
+<a name="316" href="#316">316</a> 			<em class="jxr_javadoccomment">/**</em><em class="jxr_javadoccomment"> Generate <a href="../../../../../../org/dspace/app/xmlui/wing/element/Table.html">Table</a> <a href="../../../../../../org/dspace/app/xmlui/wing/element/Body.html">Body</a> */</em>
+<a name="317" href="#317">317</a> 			<strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">int</strong> row = 0; row &lt; matrix.length; row++) {
+<a name="318" href="#318">318</a> 				Row valListRow = table.addRow();
+<a name="319" href="#319">319</a> 
+<a name="320" href="#320">320</a> 				<em class="jxr_javadoccomment">/**</em><em class="jxr_javadoccomment"> Add <a href="../../../../../../org/dspace/app/xmlui/wing/element/Row.html">Row</a> Title */</em>
+<a name="321" href="#321">321</a> 				valListRow.addCell(<span class="jxr_string">""</span> + row, Cell.ROLE_DATA, <span class="jxr_string">"labelcell"</span>)
+<a name="322" href="#322">322</a> 						.addContent(dataset.getRowLabels().get(row));
+<a name="323" href="#323">323</a> 
+<a name="324" href="#324">324</a> 				<em class="jxr_javadoccomment">/**</em><em class="jxr_javadoccomment"> Add Rest of <a href="../../../../../../org/dspace/app/xmlui/wing/element/Row.html">Row</a> */</em>
+<a name="325" href="#325">325</a> 				<strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">int</strong> col = 0; col &lt; matrix[row].length; col++) {
+<a name="326" href="#326">326</a> 					Cell cell = valListRow.addCell(row + <span class="jxr_string">"-"</span> + col,
+<a name="327" href="#327">327</a> 							Cell.ROLE_DATA, <span class="jxr_string">"datacell"</span>);
+<a name="328" href="#328">328</a> 					cell.addContent(matrix[row][col]);
+<a name="329" href="#329">329</a> 				}
+<a name="330" href="#330">330</a> 			}
+<a name="331" href="#331">331</a> 		}
+<a name="332" href="#332">332</a> 
+<a name="333" href="#333">333</a> 	}
+<a name="334" href="#334">334</a> 
+<a name="335" href="#335">335</a> 	<strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> addDisplayListing(<a href="../../../../../../org/dspace/app/xmlui/wing/element/Division.html">Division</a> mainDiv, <a href="../../../../../../org/dspace/statistics/content/StatisticsListing.html">StatisticsListing</a> display)
+<a name="336" href="#336">336</a> 			<strong class="jxr_keyword">throws</strong> SAXException, WingException, SQLException,
+<a name="337" href="#337">337</a> 			SolrServerException, IOException, ParseException {
+<a name="338" href="#338">338</a> 
+<a name="339" href="#339">339</a> 		String title = display.getTitle();
+<a name="340" href="#340">340</a> 
+<a name="341" href="#341">341</a> 		Dataset dataset = display.getDataset();
+<a name="342" href="#342">342</a> 
+<a name="343" href="#343">343</a> 		<strong class="jxr_keyword">if</strong> (dataset == <strong class="jxr_keyword">null</strong>) {
+<a name="344" href="#344">344</a> 			<em class="jxr_javadoccomment">/**</em><em class="jxr_javadoccomment"> activate dataset query */</em>
+<a name="345" href="#345">345</a> 			dataset = display.getDataset(context);
+<a name="346" href="#346">346</a> 		}
+<a name="347" href="#347">347</a> 
+<a name="348" href="#348">348</a> 		<strong class="jxr_keyword">if</strong> (dataset != <strong class="jxr_keyword">null</strong>) {
+<a name="349" href="#349">349</a> 
+<a name="350" href="#350">350</a> 			String[][] matrix = dataset.getMatrixFormatted();
+<a name="351" href="#351">351</a> 
+<a name="352" href="#352">352</a> 			<em class="jxr_comment">// String[] rLabels = dataset.getRowLabels().toArray(new String[0]);</em>
+<a name="353" href="#353">353</a> 
+<a name="354" href="#354">354</a> 			Table table = mainDiv.addTable(<span class="jxr_string">"list-table"</span>, matrix.length, 2,
+<a name="355" href="#355">355</a> 					title == <strong class="jxr_keyword">null</strong> ? <span class="jxr_string">""</span> : <span class="jxr_string">"tableWithTitle"</span>);
+<a name="356" href="#356">356</a> 			<strong class="jxr_keyword">if</strong> (title != <strong class="jxr_keyword">null</strong>)
+<a name="357" href="#357">357</a> 				table.setHead(message(title));
+<a name="358" href="#358">358</a> 
+<a name="359" href="#359">359</a> 			Row headerRow = table.addRow();
+<a name="360" href="#360">360</a> 
+<a name="361" href="#361">361</a> 			headerRow.addCell(<span class="jxr_string">""</span>, Cell.ROLE_DATA, <span class="jxr_string">"labelcell"</span>);
+<a name="362" href="#362">362</a> 			
+<a name="363" href="#363">363</a> 			headerRow.addCell(<span class="jxr_string">""</span>, Cell.ROLE_DATA, <span class="jxr_string">"labelcell"</span>).addContent(message(T_head_visits_views));
+<a name="364" href="#364">364</a> 
+<a name="365" href="#365">365</a> 			<em class="jxr_javadoccomment">/**</em><em class="jxr_javadoccomment"> Generate <a href="../../../../../../org/dspace/app/xmlui/wing/element/Table.html">Table</a> <a href="../../../../../../org/dspace/app/xmlui/wing/element/Body.html">Body</a> */</em>
+<a name="366" href="#366">366</a> 			<strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">int</strong> col = 0; col &lt; matrix[0].length; col++) {
+<a name="367" href="#367">367</a> 				Row valListRow = table.addRow();
+<a name="368" href="#368">368</a> 
+<a name="369" href="#369">369</a> 				Cell catCell = valListRow.addCell(col + <span class="jxr_string">"1"</span>, Cell.ROLE_DATA,
+<a name="370" href="#370">370</a> 						<span class="jxr_string">"labelcell"</span>);
+<a name="371" href="#371">371</a> 				catCell.addContent(dataset.getColLabels().get(col));
+<a name="372" href="#372">372</a> 
+<a name="373" href="#373">373</a> 				Cell valCell = valListRow.addCell(col + <span class="jxr_string">"2"</span>, Cell.ROLE_DATA,
+<a name="374" href="#374">374</a> 						<span class="jxr_string">"datacell"</span>);
+<a name="375" href="#375">375</a> 				valCell.addContent(matrix[0][col]);
+<a name="376" href="#376">376</a> 
+<a name="377" href="#377">377</a> 			}
+<a name="378" href="#378">378</a> 
+<a name="379" href="#379">379</a> 			<strong class="jxr_keyword">if</strong> (!<span class="jxr_string">""</span>.equals(display.getCss())) {
+<a name="380" href="#380">380</a> 				List attrlist = mainDiv.addList(<span class="jxr_string">"divattrs"</span>);
+<a name="381" href="#381">381</a> 				attrlist.addItem(<span class="jxr_string">"style"</span>, display.getCss());
+<a name="382" href="#382">382</a> 			}
+<a name="383" href="#383">383</a> 
+<a name="384" href="#384">384</a> 		}
+<a name="385" href="#385">385</a> 
+<a name="386" href="#386">386</a> 	}
+<a name="387" href="#387">387</a> }
+</pre>
+<hr/><div id="footer">This page was automatically generated by <a href="http://maven.apache.org/">Maven</a></div></body>
+</html>
+

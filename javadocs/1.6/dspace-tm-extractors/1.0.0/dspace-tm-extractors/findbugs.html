@@ -1,0 +1,493 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+
+
+
+
+
+
+
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>DSpace TM-Extractors Dependency - FindBugs Bug Detector Report</title>
+    <style type="text/css" media="all">
+      @import url("./css/maven-base.css");
+      @import url("./css/maven-theme.css");
+      @import url("./css/site.css");
+    </style>
+    <link rel="stylesheet" href="./css/print.css" type="text/css" media="print" />
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+      </head>
+  <body class="composite">
+    <div id="banner">
+                    <span id="bannerLeft">
+    
+            DSpace TM-Extractors Dependency
+    
+            </span>
+                    <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="breadcrumbs">
+          
+  
+
+  
+    
+  
+  
+    
+            <div class="xleft">
+        Last Published: 2010-10-07
+                      </div>
+            <div class="xright">            <a href="">DSpace TM-Extractors Dependency</a>
+            
+  
+
+  
+    
+  
+  
+    
+  </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="leftColumn">
+      <div id="navcolumn">
+           
+  
+
+  
+    
+  
+  
+    
+                             <h5>Project Documentation</h5>
+            <ul>
+              
+                
+              
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+              
+        <li class="collapsed">
+                    <a href="project-info.html">Project Information</a>
+                </li>
+              
+                
+              
+      
+            
+      
+            
+            
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+              
+            <li class="expanded">
+                    <a href="project-reports.html">Project Reports</a>
+                  <ul>
+                  
+    <li class="none">
+                    <a href="checkstyle.html">Checkstyle</a>
+          </li>
+                  
+    <li class="none">
+                    <a href="cobertura/index.html">Cobertura Test Coverage</a>
+          </li>
+                  
+    <li class="none">
+              <strong>FindBugs Report</strong>
+        </li>
+                  
+    <li class="none">
+                    <a href="apidocs/index.html">JavaDocs</a>
+          </li>
+                  
+    <li class="none">
+                    <a href="jdepend-report.html">JDepend</a>
+          </li>
+                  
+    <li class="none">
+                    <a href="jxr.html">Source Xref</a>
+          </li>
+                  
+    <li class="none">
+                    <a href="surefire-report.html">Surefire Report</a>
+          </li>
+                  
+    <li class="none">
+                    <a href="taglist.html">Tag List</a>
+          </li>
+              </ul>
+        </li>
+          </ul>
+                                           <a href="http://maven.apache.org/" title="Built by Maven" class="poweredBy">
+            <img alt="Built by Maven" src="./images/logos/maven-feather.png"></img>
+          </a>
+                       
+  
+
+  
+    
+  
+  
+    
+        </div>
+    </div>
+    <div id="bodyColumn">
+      <div id="contentBox">
+        <div class="section"><h2>FindBugs Bug Detector Report</h2>
+<p>The following document contains the results of <a href="http://findbugs.sourceforge.net" class="externalLink">FindBugs Report</a></p>
+<p>FindBugs Version is <i>1.3.9</i></p>
+<p>Threshold is <i>medium</i></p>
+<p>Effort is <i>min</i></p>
+</div>
+<div class="section"><h2>Summary</h2>
+<table class="bodyTable"><tr class="a"><th>Classes</th>
+<th>Bugs</th>
+<th>Errors</th>
+<th>Missing Classes</th>
+</tr>
+<tr class="b"><td>35</td>
+<td>21</td>
+<td>0</td>
+<td>0</td>
+</tr>
+</table>
+</div>
+<div class="section"><h2>Files</h2>
+<table class="bodyTable"><tr class="a"><th>Class</th>
+<th>Bugs</th>
+</tr>
+<tr class="b"><td><a href="#org.textmining.extraction.excel.ExcelTextExtractor">org.textmining.extraction.excel.ExcelTextExtractor</a></td>
+<td>1</td>
+</tr>
+<tr class="a"><td><a href="#org.textmining.extraction.word.Word97TextExtractor">org.textmining.extraction.word.Word97TextExtractor</a></td>
+<td>1</td>
+</tr>
+<tr class="b"><td><a href="#org.textmining.extraction.word.WordExtractorFactory">org.textmining.extraction.word.WordExtractorFactory</a></td>
+<td>1</td>
+</tr>
+<tr class="a"><td><a href="#org.textmining.extraction.word.WordTextExtractor">org.textmining.extraction.word.WordTextExtractor</a></td>
+<td>1</td>
+</tr>
+<tr class="b"><td><a href="#org.textmining.extraction.word.WordVersion">org.textmining.extraction.word.WordVersion</a></td>
+<td>4</td>
+</tr>
+<tr class="a"><td><a href="#org.textmining.extraction.word.model.CHPX">org.textmining.extraction.word.model.CHPX</a></td>
+<td>1</td>
+</tr>
+<tr class="b"><td><a href="#org.textmining.extraction.word.model.FormattedDiskPage">org.textmining.extraction.word.model.FormattedDiskPage</a></td>
+<td>1</td>
+</tr>
+<tr class="a"><td><a href="#org.textmining.extraction.word.model.GenericPropertyNode">org.textmining.extraction.word.model.GenericPropertyNode</a></td>
+<td>1</td>
+</tr>
+<tr class="b"><td><a href="#org.textmining.extraction.word.model.PieceDescriptor">org.textmining.extraction.word.model.PieceDescriptor</a></td>
+<td>3</td>
+</tr>
+<tr class="a"><td><a href="#org.textmining.extraction.word.model.PropertyNode">org.textmining.extraction.word.model.PropertyNode</a></td>
+<td>3</td>
+</tr>
+<tr class="b"><td><a href="#org.textmining.extraction.word.model.TextPiece">org.textmining.extraction.word.model.TextPiece</a></td>
+<td>3</td>
+</tr>
+<tr class="a"><td><a href="#org.textmining.extraction.word.sprm.SprmIterator">org.textmining.extraction.word.sprm.SprmIterator</a></td>
+<td>1</td>
+</tr>
+</table>
+</div>
+<a name="org.textmining.extraction.excel.ExcelTextExtractor"></a><div class="section"><h3>org.textmining.extraction.excel.ExcelTextExtractor</h3>
+<table class="bodyTable"><tr class="b"><th>Bug</th>
+<th>Category</th>
+<th>Details</th>
+<th>Line</th>
+<th>Priority</th>
+</tr>
+<tr class="a"><td>new org.textmining.extraction.excel.ExcelTextExtractor(InputStream) ignores result of org.apache.poi.poifs.filesystem.DocumentInputStream.read(byte[])</td>
+<td>BAD_PRACTICE</td>
+<td><a href="http://findbugs.sourceforge.net/bugDescriptions.html#RR_NOT_CHECKED" class="externalLink">RR_NOT_CHECKED</a></td>
+<td><a href="./xref/org/textmining/extraction/excel/ExcelTextExtractor.html#47">47</a></td>
+<td>Medium</td>
+</tr>
+</table>
+</div>
+<a name="org.textmining.extraction.word.Word97TextExtractor"></a><div class="section"><h3>org.textmining.extraction.word.Word97TextExtractor</h3>
+<table class="bodyTable"><tr class="b"><th>Bug</th>
+<th>Category</th>
+<th>Details</th>
+<th>Line</th>
+<th>Priority</th>
+</tr>
+<tr class="a"><td>org.textmining.extraction.word.Word97TextExtractor.getText(Writer) ignores result of org.apache.poi.poifs.filesystem.DocumentInputStream.read(byte[])</td>
+<td>BAD_PRACTICE</td>
+<td><a href="http://findbugs.sourceforge.net/bugDescriptions.html#RR_NOT_CHECKED" class="externalLink">RR_NOT_CHECKED</a></td>
+<td><a href="./xref/org/textmining/extraction/word/Word97TextExtractor.html#92">92</a></td>
+<td>Medium</td>
+</tr>
+</table>
+</div>
+<a name="org.textmining.extraction.word.WordExtractorFactory"></a><div class="section"><h3>org.textmining.extraction.word.WordExtractorFactory</h3>
+<table class="bodyTable"><tr class="b"><th>Bug</th>
+<th>Category</th>
+<th>Details</th>
+<th>Line</th>
+<th>Priority</th>
+</tr>
+<tr class="a"><td>org.textmining.extraction.word.WordExtractorFactory.initWordHeader(InputStream) ignores result of org.apache.poi.poifs.filesystem.DocumentInputStream.read(byte[])</td>
+<td>BAD_PRACTICE</td>
+<td><a href="http://findbugs.sourceforge.net/bugDescriptions.html#RR_NOT_CHECKED" class="externalLink">RR_NOT_CHECKED</a></td>
+<td><a href="./xref/org/textmining/extraction/word/WordExtractorFactory.html#48">48</a></td>
+<td>Medium</td>
+</tr>
+</table>
+</div>
+<a name="org.textmining.extraction.word.WordTextExtractor"></a><div class="section"><h3>org.textmining.extraction.word.WordTextExtractor</h3>
+<table class="bodyTable"><tr class="b"><th>Bug</th>
+<th>Category</th>
+<th>Details</th>
+<th>Line</th>
+<th>Priority</th>
+</tr>
+<tr class="a"><td>org.textmining.extraction.word.WordTextExtractor.initWordHeader(InputStream) ignores result of org.apache.poi.poifs.filesystem.DocumentInputStream.read(byte[])</td>
+<td>BAD_PRACTICE</td>
+<td><a href="http://findbugs.sourceforge.net/bugDescriptions.html#RR_NOT_CHECKED" class="externalLink">RR_NOT_CHECKED</a></td>
+<td><a href="./xref/org/textmining/extraction/word/WordTextExtractor.html#97">97</a></td>
+<td>Medium</td>
+</tr>
+</table>
+</div>
+<a name="org.textmining.extraction.word.WordVersion"></a><div class="section"><h3>org.textmining.extraction.word.WordVersion</h3>
+<table class="bodyTable"><tr class="b"><th>Bug</th>
+<th>Category</th>
+<th>Details</th>
+<th>Line</th>
+<th>Priority</th>
+</tr>
+<tr class="a"><td>org.textmining.extraction.word.WordVersion.Word6 isn't final but should be</td>
+<td>MALICIOUS_CODE</td>
+<td><a href="http://findbugs.sourceforge.net/bugDescriptions.html#MS_SHOULD_BE_FINAL" class="externalLink">MS_SHOULD_BE_FINAL</a></td>
+<td><a href="./xref/org/textmining/extraction/word/WordVersion.html#25">25</a></td>
+<td>Medium</td>
+</tr>
+<tr class="b"><td>org.textmining.extraction.word.WordVersion.Word97 isn't final but should be</td>
+<td>MALICIOUS_CODE</td>
+<td><a href="http://findbugs.sourceforge.net/bugDescriptions.html#MS_SHOULD_BE_FINAL" class="externalLink">MS_SHOULD_BE_FINAL</a></td>
+<td><a href="./xref/org/textmining/extraction/word/WordVersion.html#26">26</a></td>
+<td>Medium</td>
+</tr>
+<tr class="a"><td>The field name org.textmining.extraction.word.WordVersion.Word6 doesn't start with a lower case letter</td>
+<td>BAD_PRACTICE</td>
+<td><a href="http://findbugs.sourceforge.net/bugDescriptions.html#NM_FIELD_NAMING_CONVENTION" class="externalLink">NM_FIELD_NAMING_CONVENTION</a></td>
+<td><a href="./xref/org/textmining/extraction/word/WordVersion.html#">Not available</a></td>
+<td>Medium</td>
+</tr>
+<tr class="b"><td>The field name org.textmining.extraction.word.WordVersion.Word97 doesn't start with a lower case letter</td>
+<td>BAD_PRACTICE</td>
+<td><a href="http://findbugs.sourceforge.net/bugDescriptions.html#NM_FIELD_NAMING_CONVENTION" class="externalLink">NM_FIELD_NAMING_CONVENTION</a></td>
+<td><a href="./xref/org/textmining/extraction/word/WordVersion.html#">Not available</a></td>
+<td>Medium</td>
+</tr>
+</table>
+</div>
+<a name="org.textmining.extraction.word.model.CHPX"></a><div class="section"><h3>org.textmining.extraction.word.model.CHPX</h3>
+<table class="bodyTable"><tr class="a"><th>Bug</th>
+<th>Category</th>
+<th>Details</th>
+<th>Line</th>
+<th>Priority</th>
+</tr>
+<tr class="b"><td>org.textmining.extraction.word.model.CHPX inherits equals and uses Object.hashCode()</td>
+<td>BAD_PRACTICE</td>
+<td><a href="http://findbugs.sourceforge.net/bugDescriptions.html#HE_INHERITS_EQUALS_USE_HASHCODE" class="externalLink">HE_INHERITS_EQUALS_USE_HASHCODE</a></td>
+<td><a href="./xref/org/textmining/extraction/word/model/CHPX.html#36">36-44</a></td>
+<td>Medium</td>
+</tr>
+</table>
+</div>
+<a name="org.textmining.extraction.word.model.FormattedDiskPage"></a><div class="section"><h3>org.textmining.extraction.word.model.FormattedDiskPage</h3>
+<table class="bodyTable"><tr class="a"><th>Bug</th>
+<th>Category</th>
+<th>Details</th>
+<th>Line</th>
+<th>Priority</th>
+</tr>
+<tr class="b"><td>new org.textmining.extraction.word.model.FormattedDiskPage(byte[], int, NodeHelper) may expose internal representation by storing an externally mutable object into FormattedDiskPage._fkp</td>
+<td>MALICIOUS_CODE</td>
+<td><a href="http://findbugs.sourceforge.net/bugDescriptions.html#EI_EXPOSE_REP2" class="externalLink">EI_EXPOSE_REP2</a></td>
+<td><a href="./xref/org/textmining/extraction/word/model/FormattedDiskPage.html#67">67</a></td>
+<td>Medium</td>
+</tr>
+</table>
+</div>
+<a name="org.textmining.extraction.word.model.GenericPropertyNode"></a><div class="section"><h3>org.textmining.extraction.word.model.GenericPropertyNode</h3>
+<table class="bodyTable"><tr class="a"><th>Bug</th>
+<th>Category</th>
+<th>Details</th>
+<th>Line</th>
+<th>Priority</th>
+</tr>
+<tr class="b"><td>org.textmining.extraction.word.model.GenericPropertyNode inherits equals and uses Object.hashCode()</td>
+<td>BAD_PRACTICE</td>
+<td><a href="http://findbugs.sourceforge.net/bugDescriptions.html#HE_INHERITS_EQUALS_USE_HASHCODE" class="externalLink">HE_INHERITS_EQUALS_USE_HASHCODE</a></td>
+<td><a href="./xref/org/textmining/extraction/word/model/GenericPropertyNode.html#28">28-33</a></td>
+<td>Medium</td>
+</tr>
+</table>
+</div>
+<a name="org.textmining.extraction.word.model.PieceDescriptor"></a><div class="section"><h3>org.textmining.extraction.word.model.PieceDescriptor</h3>
+<table class="bodyTable"><tr class="a"><th>Bug</th>
+<th>Category</th>
+<th>Details</th>
+<th>Line</th>
+<th>Priority</th>
+</tr>
+<tr class="b"><td>Equals method for org.textmining.extraction.word.model.PieceDescriptor assumes the argument is of type PieceDescriptor</td>
+<td>BAD_PRACTICE</td>
+<td><a href="http://findbugs.sourceforge.net/bugDescriptions.html#BC_EQUALS_METHOD_SHOULD_WORK_FOR_ALL_OBJECTS" class="externalLink">BC_EQUALS_METHOD_SHOULD_WORK_FOR_ALL_OBJECTS</a></td>
+<td><a href="./xref/org/textmining/extraction/word/model/PieceDescriptor.html#110">110</a></td>
+<td>Medium</td>
+</tr>
+<tr class="a"><td>org.textmining.extraction.word.model.PieceDescriptor defines equals and uses Object.hashCode()</td>
+<td>BAD_PRACTICE</td>
+<td><a href="http://findbugs.sourceforge.net/bugDescriptions.html#HE_EQUALS_USE_HASHCODE" class="externalLink">HE_EQUALS_USE_HASHCODE</a></td>
+<td><a href="./xref/org/textmining/extraction/word/model/PieceDescriptor.html#110">110-112</a></td>
+<td>High</td>
+</tr>
+<tr class="b"><td>org.textmining.extraction.word.model.PieceDescriptor.equals(Object) does not check for null argument</td>
+<td>BAD_PRACTICE</td>
+<td><a href="http://findbugs.sourceforge.net/bugDescriptions.html#NP_EQUALS_SHOULD_HANDLE_NULL_ARGUMENT" class="externalLink">NP_EQUALS_SHOULD_HANDLE_NULL_ARGUMENT</a></td>
+<td><a href="./xref/org/textmining/extraction/word/model/PieceDescriptor.html#110">110-112</a></td>
+<td>High</td>
+</tr>
+</table>
+</div>
+<a name="org.textmining.extraction.word.model.PropertyNode"></a><div class="section"><h3>org.textmining.extraction.word.model.PropertyNode</h3>
+<table class="bodyTable"><tr class="a"><th>Bug</th>
+<th>Category</th>
+<th>Details</th>
+<th>Line</th>
+<th>Priority</th>
+</tr>
+<tr class="b"><td>Equals method for org.textmining.extraction.word.model.PropertyNode assumes the argument is of type PropertyNode</td>
+<td>BAD_PRACTICE</td>
+<td><a href="http://findbugs.sourceforge.net/bugDescriptions.html#BC_EQUALS_METHOD_SHOULD_WORK_FOR_ALL_OBJECTS" class="externalLink">BC_EQUALS_METHOD_SHOULD_WORK_FOR_ALL_OBJECTS</a></td>
+<td><a href="./xref/org/textmining/extraction/word/model/PropertyNode.html#112">112</a></td>
+<td>Medium</td>
+</tr>
+<tr class="a"><td>org.textmining.extraction.word.model.PropertyNode defines equals and uses Object.hashCode()</td>
+<td>BAD_PRACTICE</td>
+<td><a href="http://findbugs.sourceforge.net/bugDescriptions.html#HE_EQUALS_USE_HASHCODE" class="externalLink">HE_EQUALS_USE_HASHCODE</a></td>
+<td><a href="./xref/org/textmining/extraction/word/model/PropertyNode.html#110">110-119</a></td>
+<td>Medium</td>
+</tr>
+<tr class="b"><td>org.textmining.extraction.word.model.PropertyNode.equals(Object) does not check for null argument</td>
+<td>BAD_PRACTICE</td>
+<td><a href="http://findbugs.sourceforge.net/bugDescriptions.html#NP_EQUALS_SHOULD_HANDLE_NULL_ARGUMENT" class="externalLink">NP_EQUALS_SHOULD_HANDLE_NULL_ARGUMENT</a></td>
+<td><a href="./xref/org/textmining/extraction/word/model/PropertyNode.html#110">110-119</a></td>
+<td>High</td>
+</tr>
+</table>
+</div>
+<a name="org.textmining.extraction.word.model.TextPiece"></a><div class="section"><h3>org.textmining.extraction.word.model.TextPiece</h3>
+<table class="bodyTable"><tr class="a"><th>Bug</th>
+<th>Category</th>
+<th>Details</th>
+<th>Line</th>
+<th>Priority</th>
+</tr>
+<tr class="b"><td>org.textmining.extraction.word.model.TextPiece inherits equals and uses Object.hashCode()</td>
+<td>BAD_PRACTICE</td>
+<td><a href="http://findbugs.sourceforge.net/bugDescriptions.html#HE_INHERITS_EQUALS_USE_HASHCODE" class="externalLink">HE_INHERITS_EQUALS_USE_HASHCODE</a></td>
+<td><a href="./xref/org/textmining/extraction/word/model/TextPiece.html#32">32-82</a></td>
+<td>Medium</td>
+</tr>
+<tr class="a"><td>org.textmining.extraction.word.model.TextPiece.ASCII_ENC isn't final but should be</td>
+<td>MALICIOUS_CODE</td>
+<td><a href="http://findbugs.sourceforge.net/bugDescriptions.html#MS_SHOULD_BE_FINAL" class="externalLink">MS_SHOULD_BE_FINAL</a></td>
+<td><a href="./xref/org/textmining/extraction/word/model/TextPiece.html#33">33</a></td>
+<td>High</td>
+</tr>
+<tr class="b"><td>org.textmining.extraction.word.model.TextPiece.UNICODE_ENC isn't final but should be</td>
+<td>MALICIOUS_CODE</td>
+<td><a href="http://findbugs.sourceforge.net/bugDescriptions.html#MS_SHOULD_BE_FINAL" class="externalLink">MS_SHOULD_BE_FINAL</a></td>
+<td><a href="./xref/org/textmining/extraction/word/model/TextPiece.html#32">32</a></td>
+<td>High</td>
+</tr>
+</table>
+</div>
+<a name="org.textmining.extraction.word.sprm.SprmIterator"></a><div class="section"><h3>org.textmining.extraction.word.sprm.SprmIterator</h3>
+<table class="bodyTable"><tr class="a"><th>Bug</th>
+<th>Category</th>
+<th>Details</th>
+<th>Line</th>
+<th>Priority</th>
+</tr>
+<tr class="b"><td>new org.textmining.extraction.word.sprm.SprmIterator(byte[]) may expose internal representation by storing an externally mutable object into SprmIterator._grpprl</td>
+<td>MALICIOUS_CODE</td>
+<td><a href="http://findbugs.sourceforge.net/bugDescriptions.html#EI_EXPOSE_REP2" class="externalLink">EI_EXPOSE_REP2</a></td>
+<td><a href="./xref/org/textmining/extraction/word/sprm/SprmIterator.html#38">38</a></td>
+<td>Medium</td>
+</tr>
+</table>
+</div>
+
+      </div>
+    </div>
+    <div class="clear">
+      <hr/>
+    </div>
+    <div id="footer">
+      <div class="xright">&#169;  
+          2010
+    
+          DuraSpace
+          
+  
+
+  
+    
+  
+  
+    
+  </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+  </body>
+</html>
