@@ -29,6 +29,12 @@ JAVA_OPTS=-Xmx512M -Xms512M -Dfile.encoding=UTF-8
 # Reset DSpace demo passwords every twenty minutes to 'dspace'
 18,38,58 * * * * $HOME/bin/reset-dspace-passwords > /dev/null
 
+# Restart Kompewter IRC bot if not currently running
+0,20,40 * * * * ps aux | grep -w kompewter | grep -v 'grep' > /dev/null || /usr/bin/nohup $HOME/kompewter/jenni > $HOME/kompewter/kompewter.log &
+
+# Restart Slack IRC sync bot if not currently running
+0,20,40 * * * * ps aux | grep -w slack-irc | grep -v 'grep' > /dev/null || /usr/bin/nohup /usr/local/bin/slack-irc --config $HOME/slack-irc/config.json > $HOME/slack-irc/slack-irc.log &
+
 #############
 # Nightly
 #############
