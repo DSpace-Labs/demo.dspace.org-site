@@ -202,38 +202,9 @@ checkerr
 
 echo ""
 
-## DSpace 5 should now create the tables on its own thanks to Flyway
-# Add 'dspace' database tables
-#echo "... Recreating all necessary DSpace database tables"
-#$POSTGRES_HOME/bin/psql -U dspace dspace -f $HOME/dspace/etc/postgres/database_schema.sql
-#checkerr
-
 echo "... Running migrations to assemble the tables"
+# NOTE: This not only creates the tables, but also triggers loading Registries & creating default Groups
 $HOME/dspace/bin/dspace database migrate
-checkerr
-
-echo ""
-
-echo "... Loading Bitstream Formats Registry"
-$HOME/dspace/bin/dspace registry-loader -bitstream $HOME/dspace/config/registries/bitstream-formats.xml
-checkerr
-
-echo ""
-
-echo "... Loading Dublin Core Registry"
-$HOME/dspace/bin/dspace dsrun org.dspace.administer.MetadataImporter -f $HOME/dspace/config/registries/dublin-core-types.xml
-checkerr
-
-echo ""
-
-echo "... Loading DCTerms Registry"
-$HOME/dspace/bin/dspace dsrun org.dspace.administer.MetadataImporter -f $HOME/dspace/config/registries/dcterms-types.xml
-checkerr
-
-echo ""
-
-echo "... Loading SWORD Metadata Registry"
-$HOME/dspace/bin/dspace dsrun org.dspace.administer.MetadataImporter -f $HOME/dspace/config/registries/sword-metadata.xml
 checkerr
 
 echo ""
@@ -250,7 +221,7 @@ echo ""
 
 echo "Recursively restoring content from AIPs at $AIP_DIR (starting with $SITE_AIP_NAME AIP)"
 #create upload directory as it will be used as temporary directory
-mkdir $HOME/dspace/upload
+mkdir -p $HOME/dspace/upload
 # This packager command performs a recursive AIP ingest, starting with the Site AIP
 # * It creates missing metadata fields (createMetadataFields)
 # * It also skips over any "could not find a parent DSpaceObject" errors (skipIfParentMissing)
@@ -265,24 +236,15 @@ checkerr
 
 echo ""
 
-# ----------------------------------------------
-# Step 6 : Re-index content (only necessary for DSpace 3.x and earlier)
-# ----------------------------------------------
-
-#echo "Reindexing all content in DSpace..."
-#$HOME/dspace/bin/dspace index-init
-#checkerr
-
-#echo ""
-
 # --------------------------------------
-# Step 7 : Start up Tomcat
+# Step 6 : Start up Tomcat
 # --------------------------------------
 #$HOME/bin/start-jetty
 #checkerr
 
 #echo ""
 
+echo "Starting Tomcat..."
 sudo service tomcat7 start
 checkerr
 
@@ -292,9 +254,8 @@ echo ""
 # Step 8 : Rebuild/Reset Discovery indexes
 # --------------------------------------
 echo "Rebuilding Discovery (Solr) Indexes..."
-# Note: the '-f' option tells Discovery to force a reindex of everything and remove docs which no longer exist
-# NOTE: Prior to DSpace 4 this was the "update-discovery-index" script. It has been renamed to "index-discovery"
-$HOME/dspace/bin/dspace index-discovery -f
+# Note: the '-b' option tells Discovery to rebuild entire index (wiping out existing one)
+$HOME/dspace/bin/dspace index-discovery -b
 checkerr
 
 # --------------------------------------
