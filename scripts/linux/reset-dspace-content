@@ -234,6 +234,10 @@ mkdir -p $HOME/dspace/upload
 $HOME/dspace/bin/dspace packager -u -r -a -f -t AIP -e $ADMIN_EMAIL -i 10673/0 -o skipIfParentMissing=true -o createMetadataFields=true $AIP_DIR/$SITE_AIP_NAME
 checkerr
 
+echo "Resetting database sequences (via update-sequences.sql)..."
+/usr/bin/psql -U dspace -f $HOME/dspace/etc/postgres/update-sequences.sql dspace > /dev/null
+checkerr
+
 echo ""
 
 # --------------------------------------
