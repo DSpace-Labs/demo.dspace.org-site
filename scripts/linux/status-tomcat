@@ -1,0 +1,19 @@
+#!/bin/sh
+#
+# report status of tomcat service from systemd
+# report status of tomcat service from catalina.out
+#
+# this script may be called at the end of ~/.bashrc
+
+echo -n "systemd: tomcat7.service "
+systemctl status tomcat7.service | grep Active
+
+
+lastlog=`grep -B1 -e "INFO: Starting service Catalina" -e "INFO: Server startup in" /home/dspace/tomcat/logs/catalina.out | tail -n 5`
+lastline=`echo "$lastlog" | tail -1 | grep startup`
+if [ $? -eq 0 ]; then
+  echo -n "catalina.out: Tomcat last started "
+else
+  echo -n "catalina.out: Tomcat startup in progress since "
+fi
+echo "$lastlog" | tail -2 | head -1 | cut -c 1-24
