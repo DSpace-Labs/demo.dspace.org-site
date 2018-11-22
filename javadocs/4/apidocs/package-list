@@ -86,6 +86,7 @@ org.dspace.content.license
 org.dspace.content.packager
 org.dspace.content.service
 org.dspace.core
+org.dspace.core.service
 org.dspace.ctask.general
 org.dspace.curate
 org.dspace.discovery
