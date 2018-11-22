@@ -6,7 +6,7 @@
 # this script may be called at the end of ~/.bashrc
 
 echo -n "systemd: tomcat7.service "
-systemctl status tomcat7.service | grep Active
+SYSTEMD_COLORS=1 systemctl status tomcat7.service | grep --color=never Active
 
 
 lastlog=`grep -B1 -e "INFO: Starting service Catalina" -e "INFO: Server startup in" /home/dspace/tomcat/logs/catalina.out | tail -n 5`
