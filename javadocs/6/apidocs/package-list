@@ -97,7 +97,6 @@ org.dspace.authority
 org.dspace.authority.factory
 org.dspace.authority.indexer
 org.dspace.authority.orcid
-org.dspace.authority.orcid.model
 org.dspace.authority.orcid.xml
 org.dspace.authority.rest
 org.dspace.authority.service
@@ -117,6 +116,7 @@ org.dspace.content
 org.dspace.content.authority
 org.dspace.content.authority.factory
 org.dspace.content.authority.service
+org.dspace.content.comparator
 org.dspace.content.crosswalk
 org.dspace.content.dao
 org.dspace.content.dao.impl
@@ -125,6 +125,7 @@ org.dspace.content.license
 org.dspace.content.packager
 org.dspace.content.service
 org.dspace.core
+org.dspace.core.exception
 org.dspace.core.factory
 org.dspace.core.service
 org.dspace.ctask.general
