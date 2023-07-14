@@ -121,7 +121,7 @@ echo ""
 # so that we can specify the '-w' (wait) flag.
 echo "Stopping PostgreSQL: "
 # Stop Postgres quickly & wait until completely stopped (-w)
-sudo /usr/bin/pg_ctlcluster $PG_VERSION $PG_CLUSTER stop -m fast -- -s -W
+sudo /usr/bin/pg_ctlcluster $PG_VERSION $PG_CLUSTER stop -m fast
 #$PGCTL stop -D "$PGDATA" -s -m fast -w
 checkerr
 echo "ok"
@@ -129,7 +129,7 @@ echo ""
 
 echo "Starting PostgreSQL: "
 # Start Postgres and wait until completely started (-w)
-sudo /usr/bin/pg_ctlcluster $PG_VERSION $PG_CLUSTER start -- -w
+sudo /usr/bin/pg_ctlcluster $PG_VERSION $PG_CLUSTER start
 #$PGCTL start -D "$PGDATA" -w >>$PGLOG 2>&1
 checkerr
 echo "ok"
