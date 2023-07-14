@@ -1,4 +1,4 @@
-This codebase manages the homepage content for the http://demo.dspace.org/ website. The codebase is available publicly on GitHub at http://github.com/DSpace/demo.dspace.org
+This codebase manages the homepage content for the http://demo6.dspace.org/ website (DSpace v6 Demo Site). The codebase is available publicly on GitHub at http://github.com/DSpace/demo.dspace.org
 
 To Install/Use: 
  - Move/Rename the default [Tomcat]/webapps/ROOT/ folder
@@ -13,4 +13,4 @@ For additional Git hints see: http://gitref.org/
 
 All content is subject to the license and copyright terms available at http://www.dspace.org/license/
 
-Use at your own risk. This codebase is meant to be a resource for managing the http://demo.dspace.org/ splashpage.
+Use at your own risk. This codebase is meant to be a resource for managing the http://demo6.dspace.org/ splashpage.
